@@ -1,0 +1,144 @@
+:root {
+  background: #ffe;
+  font-size: 16px;
+  font-family: monospace;
+}
+
+/* .App {
+  margin: 2em auto;
+  width: min-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+} */
+
+.picker-container {
+  position: relative;
+  display: inline-block;
+}
+
+.picker-container button {
+  width: 100%;
+}
+
+.picker-container .picker-popper {
+  position: absolute;
+  z-index: 2;
+  padding-top: 4px;
+}
+
+.picker-popper div.github-picker {
+  background: black;
+  border-radius: 0 !important;
+  border: 1px solid #ddd !important;
+  padding: 8px !important;
+  background: #fffffe !important;
+  box-shadow: 8px 8px #995 !important;
+}
+
+.github-picker > span > div {
+  width: 30px !important;
+  height: 30px !important;
+  margin: 1px;
+}
+
+.canvas:not(.disabled) {
+  border: 1px solid #ddd;
+  cursor: none;
+  box-shadow: 4px 4px #995;
+  margin: 6px 4px 6px 0;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.button-container > * {
+  width: 33.33%;
+}
+
+button {
+  -webkit-appearance: none;
+  background: #bba;
+  padding: 0.5em 1em;
+  font-family: inherit;
+  font-size: inherit;
+  margin: 0;
+
+  border-block-end-color: rgb(192, 192, 192);
+  border-block-end-style: outset;
+  border-block-end-width: 2px;
+  border-block-start-color: rgb(192, 192, 192);
+  border-block-start-style: outset;
+  border-block-start-width: 2px;
+  border-bottom-color: rgb(192, 192, 192);
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-bottom-style: outset;
+  border-bottom-width: 2px;
+  border-collapse: separate;
+  border-inline-end-color: rgb(192, 192, 192);
+  border-inline-end-style: outset;
+  border-inline-end-width: 2px;
+  border-inline-start-color: rgb(192, 192, 192);
+  border-inline-start-style: outset;
+  border-inline-start-width: 2px;
+  border-left-color: rgb(192, 192, 192);
+  border-left-style: outset;
+  border-left-width: 2px;
+  border-right-color: rgb(192, 192, 192);
+  border-right-style: outset;
+  border-right-width: 2px;
+  border-top-color: rgb(192, 192, 192);
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-top-style: outset;
+  border-top-width: 2px;
+}
+
+button.palette:hover {
+  background: #008b02;
+  color: white;
+}
+
+button.undo:hover {
+  background: #fccb00;
+}
+
+button.clear:hover {
+  background: #b80000;
+  color: white;
+}
+
+button.clear .hover {
+  display: none;
+}
+
+button.clear:hover .non-hover {
+  display: none;
+}
+button.clear:hover .hover {
+  display: inline;
+}
+
+/* debugging */
+
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 1em 0;
+  -webkit-appearance: none;
+  font-family: inherit;
+  background: #995;
+  padding: 0.5em;
+  border: 1px solid #995;
+  color: white;
+  font-size: inherit;
+}
+.stream-container {
+	padding: 0;
+}
+.isSpeaker{
+	border: 3px solid red;
+}
