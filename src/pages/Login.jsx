@@ -5,12 +5,17 @@ const Login = () => {
   const goToKakao = () => {
     window.location.href = KAKAO_AUTH_URL;
   };
+  const goToGoogle = () => {
+    window.location.href;
+  };
   return (
     <div>
       <button type="button" onClick={goToKakao}>
         KAKAO
       </button>
-      {/* <GoogleBtn>GOOGLE</GoogleBtn> */}
+      <button type="button" onClick={goToGoogle}>
+        GOOGLE
+      </button>
     </div>
   );
 };
