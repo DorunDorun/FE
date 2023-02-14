@@ -1,3 +1,4 @@
+/*
 html {
 	position: relative;
 	min-height: 100%;
@@ -184,7 +185,7 @@ a:hover .demo-logo {
 	width: 100%;
 	height: auto;
 }*/
-
+/*
 #main-video p {
 	position: absolute;
 	display: inline-block;
@@ -218,10 +219,10 @@ a:hover .demo-logo {
 	object-fit: cover;
 	height: 180px;
 }
-
+*/
 
 /* xs ans md screen resolutions*/
-
+/*
 @media screen and (max-width: 991px) {
 	.vertical-center {
 		width: 85%;
@@ -229,3 +230,5 @@ a:hover .demo-logo {
 		top: 57%;
 	}
 }
+
+*/
