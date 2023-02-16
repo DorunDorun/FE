@@ -51,7 +51,7 @@ const Kakao = () => {
     localStorage.setItem("profile", profile);
     localStorage.setItem("thumbnail_image_url", thumbnail_image_url);
     // fetch(fetchdata(token));
-    // window.location.replace("/room");
+    // window.location.replace("/roomList");
   }, []);
 
   return <div>Kakao</div>;

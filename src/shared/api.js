@@ -4,7 +4,6 @@ import axios from "axios";
 export const server_url = process.env.REACT_APP_API_URL
 
 
-
 export const api = axios.create({
   baseURL: server_url,
   timeout: 1000,
@@ -17,12 +16,12 @@ export const api = axios.create({
 
 api.interceptors.request.use(
     function (config) {
-      const authoriztion = localStorage.getItem("Authoriztion");
-      const refresh = localStorage.getItem("Refresh");
+      const accessToken = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
       try {
-        if (authoriztion && refresh) {
-          config.headers.authorization = authoriztion;
-          config.headers.refreshauthorization = refresh;
+        if (accessToken && refreshToken) {
+          config.headers.authorization = accessToken;
+          config.headers.refresh = refreshToken;
         }
         return config;
       } catch (error) {
