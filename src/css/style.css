@@ -4,6 +4,13 @@
   font-family: monospace;
 }
 
+.d-block{
+  visibility: visible;
+}
+.d-none{
+  visibility: hidden;
+}
+
 /* .App {
   margin: 2em auto;
   width: min-content;
@@ -12,6 +19,7 @@
   align-items: center;
 } */
 
+/*캔버스*/
 .picker-container {
   position: relative;
   display: inline-block;
@@ -19,6 +27,8 @@
 
 .picker-container button {
   width: 100%;
+  border-radius: 20px;
+  cursor: pointer;
 }
 
 .picker-container .picker-popper {
@@ -33,7 +43,7 @@
   border: 1px solid #ddd !important;
   padding: 8px !important;
   background: #fffffe !important;
-  box-shadow: 8px 8px #995 !important;
+  /*box-shadow: 8px 8px #995 !important;*/
 }
 
 .github-picker > span > div {
@@ -41,26 +51,43 @@
   height: 30px !important;
   margin: 1px;
 }
-
+.canvas{
+  background: transparent !important;
+  width: 1196px !important;
+  height: 476px !important;
+}
+.canvas > canvas{
+  width: 100% !important;
+  height: 100% !important;
+}
 .canvas:not(.disabled) {
-  border: 1px solid #ddd;
+  border: 2px solid #8600F0;
+  border-radius: 10px;
   cursor: none;
-  box-shadow: 4px 4px #995;
+  /*box-shadow: 4px 4px #995;*/
   margin: 6px 4px 6px 0;
 }
 
 .button-container {
   display: flex;
   flex-direction: row;
+  column-gap: 10px;
   width: 100%;
-}
-.button-container > * {
-  width: 33.33%;
+  justify-content: flex-start;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
 }
 
-button {
+.button-container > * {
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+
+.canvasButton {
   -webkit-appearance: none;
-  background: #bba;
+  background: transparent;
   padding: 0.5em 1em;
   font-family: inherit;
   font-size: inherit;
@@ -95,6 +122,8 @@ button {
   border-top-right-radius: 0px;
   border-top-style: outset;
   border-top-width: 2px;
+  border: 1px solid #e2e2e2;
+  border-radius: 20px;
 }
 
 button.palette:hover {
@@ -136,9 +165,43 @@ textarea {
   color: white;
   font-size: inherit;
 }
+.canvasWrap{
+  background: transparent;
+  position: absolute;
+  top: 50px;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  height: 480px;
+  
+}
+.canvasWrap.defaultNone{
+  display: none;
+}
+.canvasSaveDataBox{
+  display: none;
+}
+/*캔버스 끝*/
+
+/*stream*/
 .stream-container {
 	padding: 0;
 }
 .isSpeaker{
-	border: 3px solid red;
+	border: 4px solid #8F22F7 !important;
+  border-radius: 5px;
+}
+.sessionStreamBox{
+  flex-basis: 32%;
+  height: 215px;
+  overflow: auto;
+}
+.sessionStreamBox > div{
+  height: 100%;
+  border: 4px solid #d5d5d5;
+  border-radius: 5px;
+  position: relative;
+}
+.UserVideoComponent{
+  overflow: auto;
 }
