@@ -50,8 +50,10 @@ const Google = () => {
     localStorage.setItem("email", email);
     localStorage.setItem("name", name);
     localStorage.setItem("profile", profile);
+
     fetchData(token);
-    window.location.replace("/room");
+    window.location.replace("/roomList");
+
   }, []);
 
   if (loading) {

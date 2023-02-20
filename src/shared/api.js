@@ -2,6 +2,7 @@ import axios from "axios";
 
 
 export const server_url = process.env.REACT_APP_API_URL
+export const server_url_openvidu = process.env.REACT_APP_API_URL_OPENVIDU 
 
 
 export const api = axios.create({

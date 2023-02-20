@@ -3,25 +3,24 @@ import {api} from '../shared/api'
 
 
 
-const useStoreRoomCreate = create((set) => ({
+const useStoreRoomDelete = create((set) => ({
   data: [],
   loading: false,
   hasErrors: false,
-  fetch: async (payload) => {
+  fetchDeleteRoom: async (payload) => {
     set(() => ({ loading: true }));
     try {
-        console.log('fetch 할 data : ', payload)
-      const data = await api.post(
-        "api/rooms" , payload
+      console.log("방 삭제 payload:", payload)
+      const data = await api.delete(
+        `api/rooms/${payload}`
       );
       set((state) => ({ data: (state.data = data.data), loading: false }));
       return data
-      
     } catch (err) {
       set(() => ({ hasErrors: true, loading: false }));
-      console.log('fetch 에러 : ' , err)
+      alert("방 삭제 error")
     }
   },
 }));
 
-export default useStoreRoomCreate;
+export default useStoreRoomDelete;

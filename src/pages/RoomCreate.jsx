@@ -4,6 +4,7 @@ import React, { useState, Component, useRef, useEffect } from 'react';
 import styled from "styled-components";
 import { OpenVidu } from 'openvidu-browser';
 import { nanoid } from 'nanoid'
+import { useNavigate } from 'react-router-dom';
 
 //컴포넌트
 import ButtonDefault from '../Components/ButtonDefault';
@@ -14,8 +15,10 @@ import InputWithLabelDefault from '../Components/InputWithLabelDefault'
 //버튼 이미지
 import joinRoomButtonImageList from '../Components/joinRoomButtonImagePath';
 
-//스토어
+//스토어 방 생성
 import useStoreRoomCreate from '../zustand/storeRoomCreate';
+//스토어 방장 상태
+import useStoreRoomMasterCheck from '../zustand/stoerRoomMasterCheck';
 
 //api
 import { server_url } from '../shared/api';
@@ -25,6 +28,9 @@ const APPLICATION_SERVER_URL = server_url
 
 
 function RoomCreate () {
+
+    const navigate = useNavigate()
+
 
     const [roomInfo, setRoomInfo]=useState({
         nickName: 'user' + Math.floor(Math.random() * 1000),
@@ -196,15 +202,17 @@ function RoomCreate () {
 
 
     //방 생성 데이터
-    const data = useStoreRoomCreate((state) => state.data);
+    const {data} = useStoreRoomCreate((state) => state.data);
     const loading = useStoreRoomCreate((state) => state.loading);
     const hasErrors = useStoreRoomCreate((state) => state.hasErrors);
     const fetchData = useStoreRoomCreate((state) => state.fetch);
+    
+    //방장 상태
+    const roomMasterStatus = useStoreRoomMasterCheck((state) => state.roomMasterStatus);
 
 
-
-    //방 입장
-    const joinSession = (e) => {
+    //방 생성
+    const roomCreate = (e) => {
         e.preventDefault()
         //유효성 검사
         const regexpnew={
@@ -239,7 +247,18 @@ function RoomCreate () {
     
             const newRoomCreatObj = roomStatus ? newRoomCreateOpen : newRoomCreatePrivate
             console.log('✨ newRoomCreatObj : ' , newRoomCreatObj)
-            return fetchData(newRoomCreatObj)
+            fetchData(newRoomCreatObj)
+            .then((res)=>{
+                console.log("fetchData 후 응답 값 : " , res)
+                const sessionId = res.data.data.sessionId
+                const token = res.data.data.token
+                if(sessionId && token){
+                    console.log(`sessionId : ${sessionId} / token : ${token}`)
+                    roomMasterStatus(true) //방장 상태 true
+                    navigate('/room')
+                }
+                
+            })
             
         }
 
@@ -258,28 +277,8 @@ function RoomCreate () {
     return (
         <StRoomCreateWrap>
             <h2> Room Create </h2>
-            <StRoomCreateForm onSubmit={(e)=>{joinSession(e)}}>
-                <StRoomCreateInputDiv>
-                    <StLabel>닉네임(임시) : </StLabel>
-                    <StInputDefault
-                        value={nickName}
-                        //onChange={handleChangeUserName}
-                        onChange={(e)=>{setRoomInfo({...roomInfo, nickName:e.target.value})}}
-                        required
-                    />
-                </StRoomCreateInputDiv>
-
-                {/* 세션 id
-                <StRoomCreateInputDiv>
-                    <StLabel htmlFor=""> 세션 ID : </StLabel>
-                        <StInputDefault
-                            name="radioSessionId"
-                            value={sessionId}
-                            onChange={(e)=>{setRoomInfo({...roomInfo, sessionId:e.target.value})}}
-                            required
-                        />
-                </StRoomCreateInputDiv> */}
-                
+            <StRoomCreateForm onSubmit={(e)=>{roomCreate(e)}}>
+                {/* 방 제목 */}
                 <StRoomCreateInputDiv>
                     <InputWithLabelDefault
                     width="300px"
@@ -293,7 +292,7 @@ function RoomCreate () {
                     inputPaceholder={messageForm.title}
                 />
                 </StRoomCreateInputDiv>
-
+                {/* 방 내용 */}
                 <StRoomCreateInputDiv>
                 <InputWithLabelDefault
                     width="300px"
@@ -307,9 +306,8 @@ function RoomCreate () {
                     inputPaceholder={messageForm.subTitle}
                 />
                 </StRoomCreateInputDiv>
-
+                {/* 카테고리 */}
                 <StRoomCreateInputDiv>
-                    체크박스로
                     카테고리 : 
                     {categoryList.map((category)=>{
                         return(
@@ -323,6 +321,7 @@ function RoomCreate () {
                         )
                     })}
                 </StRoomCreateInputDiv>
+                {/* 공개 여부 */}
                 <StRoomCreateInputDivFlex>
                     <StSpanDiv>공개여부 :</StSpanDiv>
                     <StInputBox>
@@ -363,6 +362,7 @@ function RoomCreate () {
                         </StInputItem>
                     </StInputBox>
                 </StRoomCreateInputDivFlex>
+                {/* 버튼 이미지 */}
                 <StRoomCreateInputDiv>
                     입장 버튼 이미지 : 
                     {joinRoomButtonImages.map((image)=>{
@@ -377,7 +377,6 @@ function RoomCreate () {
                         )
                     })}
                 </StRoomCreateInputDiv>
-                
                 
                 <ButtonDefault bgColor="orange" hoverBgColor="purple">방 생성</ButtonDefault>
 
