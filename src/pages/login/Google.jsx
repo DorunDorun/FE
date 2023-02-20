@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { LoginStore } from "../../zustand/Store";
 
 const Google = () => {
   //   window.location.href;
@@ -30,6 +31,17 @@ const Google = () => {
   // console.log("social", social);
   // console.log("profile", profile);
 
+  //방 생성 데이터
+  const data = LoginStore((state) => state.data);
+  const loading = LoginStore((state) => state.loading);
+  const hasErrors = LoginStore((state) => state.hasErrors);
+  const fetchData = LoginStore((state) => state.fetch);
+
+  const token = {
+    Authorization: accessToken,
+    Refresh: refreshToken,
+  };
+
   useEffect(() => {
     localStorage.clear();
     localStorage.setItem("accessToken", accessToken);
@@ -38,8 +50,18 @@ const Google = () => {
     localStorage.setItem("email", email);
     localStorage.setItem("name", name);
     localStorage.setItem("profile", profile);
+
+    fetchData(token);
     window.location.replace("/roomList");
+
   }, []);
+
+  if (loading) {
+    return <p>Loading</p>;
+  }
+  if (hasErrors) {
+    return <p>cannot read data : 서버 응답 에러</p>;
+  }
 
   return <div>Google</div>;
 };

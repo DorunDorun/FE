@@ -1,23 +1,31 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Landing from "../pages/Landing";
 
+// 페이지
+import Landing from "../pages/Landing";
+import Info from "../pages/Info";
+import Notice from "../pages/Notice";
+
+// 로그인관련
 import Login from "../pages/login/Login";
 import Kakao from "../pages/login/Kakao";
-
-//방 관련
-import RoomCreate from '../pages/RoomCreate';
-import RoomList from '../pages/RoomList';
-import Room from "../pages/Room";
 import Google from "../pages/login/Google";
 import Naver from "../pages/login/Naver";
+
+//방 관련
+import RoomCreate from "../pages/RoomCreate";
+import RoomList from "../pages/RoomList";
+import Room from "../pages/Room";
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/Login" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/info" element={<Info />} />
+        <Route path="/notice" element={<Notice />} />
+
         {/* 리다이렉트 주소 */}
         <Route path="/kakao" element={<Kakao />} />
         <Route path="/google" element={<Google />} />
@@ -27,7 +35,6 @@ const Router = () => {
         <Route path="/roomCreate" element={<RoomCreate />} />
         <Route path="/roomList" element={<RoomList />} />
         <Route path="/room" element={<Room />} />
-        
       </Routes>
     </BrowserRouter>
   );
