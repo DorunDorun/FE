@@ -81,7 +81,7 @@ function RoomCreate () {
 
     //카테고리 목록
     const categoryList=[
-        {id: nanoid(), categoryName: "공부", categoryValue:"STUDDY"},
+        {id: nanoid(), categoryName: "공부", categoryValue:"STUDY"},
         {id: nanoid(), categoryName: "친목", categoryValue:"SOCIAL"},
         {id: nanoid(), categoryName: "취미", categoryValue:"HOBBY"},
         {id: nanoid(), categoryName: "운동", categoryValue:"WORKOUT"},

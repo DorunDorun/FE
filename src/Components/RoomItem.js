@@ -153,7 +153,7 @@ const StRoomItemMainInfo=styled.div`
 const StRoomItem=styled.div`
   border: 1px solid purple;
   border-radius: 10px;
-  flex-basis: 18.5%;
+  flex-basis: 23.7%;
 `
 
 

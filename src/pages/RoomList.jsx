@@ -210,7 +210,7 @@ const StRoomListHeader=styled.div`
 
 const StRoomListCenter=styled.div`
   max-width: 1400px;
-  min-width: 1112px;
+  min-width: 1200px;
   border: 1px solid green;
   padding: 20px;
 `
