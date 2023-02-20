@@ -38,7 +38,7 @@ const Google = () => {
     localStorage.setItem("email", email);
     localStorage.setItem("name", name);
     localStorage.setItem("profile", profile);
-    // window.location.replace("/room");
+    window.location.replace("/roomList");
   }, []);
 
   return <div>Google</div>;
