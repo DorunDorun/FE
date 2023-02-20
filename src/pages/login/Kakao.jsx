@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { kakaoStore } from "../../zustand/Store";
+import { LoginStore } from "../../zustand/Store";
 
 const Kakao = () => {
   // 카카오
@@ -33,13 +33,16 @@ const Kakao = () => {
   // console.log("profile", profile);
   // console.log("thumbnail_image_url", thumbnail_image_url);
 
-  // const header = kakaoStore((state) => state.header);
+  //방 생성 데이터
+  const data = LoginStore((state) => state.data);
+  const loading = LoginStore((state) => state.loading);
+  const hasErrors = LoginStore((state) => state.hasErrors);
+  const fetchData = LoginStore((state) => state.fetch);
 
   const token = {
-    Authorization: localStorage.getItem("accessToken"),
-    Refresh: localStorage.getItem("refreshToken"),
+    Authorization: accessToken,
+    Refresh: refreshToken,
   };
-  const fetchdata = kakaoStore((state) => state.fetchdata);
 
   useEffect(() => {
     localStorage.clear();
@@ -50,9 +53,16 @@ const Kakao = () => {
     localStorage.setItem("name", name);
     localStorage.setItem("profile", profile);
     localStorage.setItem("thumbnail_image_url", thumbnail_image_url);
-    // fetch(fetchdata(token));
-    // window.location.replace("/roomList");
+    fetchData(token);
+    window.location.replace("/room");
   }, []);
+
+  if (loading) {
+    return <p>Loading</p>;
+  }
+  if (hasErrors) {
+    return <p>cannot read data : 서버 응답 에러</p>;
+  }
 
   return <div>Kakao</div>;
 };
