@@ -1,3 +1,4 @@
+import { connect } from "net";
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import SockJS from "sockjs-client";
@@ -6,9 +7,12 @@ import styled from "styled-components";
 
 // 스토어
 import useStoreRoomCreate from "../zustand/storeRoomCreate";
+import { api } from "../shared/api";
+import { sendMessage } from "../zustand/storeSendMessage";
+import Wait from "./Wait";
 
 const Chat = ({ props }) => {
-  console.log(props);
+  const sessionId = props;
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
   const id = localStorage.getItem("id");
@@ -19,8 +23,6 @@ const Chat = ({ props }) => {
 
   const chatRef = useRef("");
 
-  const navigate = useNavigate();
-
   const sock = new SockJS("https://dorundorun.shop/ws-stomp");
   const client = Stomp.over(sock);
 
@@ -29,8 +31,15 @@ const Chat = ({ props }) => {
     Refresh: refreshToken,
   };
 
+  // 스토어
+
   const data = useStoreRoomCreate((state) => state.data);
-  console.log(data);
+
+  //소켓
+  const msg = sendMessage((state) => state.data);
+  const loading = sendMessage((state) => state.loading);
+  const hasErrors = sendMessage((state) => state.hasErrors);
+  const fetchData = sendMessage((state) => state.fetch);
 
   //  data에 뭐가 찍힐까요?
 
@@ -45,29 +54,23 @@ const Chat = ({ props }) => {
   useEffect(() => {
     stompConnect();
   }, []);
-
+  console.log(headers);
   // 소켓 연결
   const stompConnect = () => {
-    // console.log(sessionid)
-    // if(sessionid){
-    // console.log(sessionid)
-    // }
+    if (sessionId) {
+    }
     try {
-      client.debug = null;
-      //웹소켓 연결시 stomp에서 자동으로 connect이 되었다는것을
-      //console에 보여주는데 그것을 감추기 위한 debug
-
       client.connect(headers, () => {
-        // console.log(sessionid)
+        console.log("connect", sessionId);
+        // 채팅방 구독
         client.subscribe(
-          `/sub/chat/room/{sessionId}`,
+          `/sub/chat/room/${data.data.sessionId}`,
           (res) => {
             console.log(res.body);
             const receive = JSON.parse(res.body);
             console.log(receive);
-            // fetchdata();
+            fetchData(receive);
             // fetchdata로 보낼것들
-            // 토큰값, 방정보= sessionid nickname, message, file, id
           },
           headers
         );
@@ -92,27 +95,66 @@ const Chat = ({ props }) => {
 
   // 채팅 전송
   const sendChat = () => {
-    client.debug = null;
-    const message = chatRef.current.value;
-    if (message === "") {
+    const msg = chatRef.current.value;
+    if (msg === "") {
       return;
     }
     client.send(
-      `/pub/chat`,
-      headers,
+      `/pub/chat/room`,
+      {},
       JSON.stringify({
-        userEmail: email,
-        message: message,
+        sessionId: data.data.sessionId,
+        socialUid: id,
+        nickname: name,
+        message: msg,
+        // imgByteCode: "이미지 바이트 코드",
       })
     );
     chatRef.current.value = null;
   };
   // console.log(9999, message);
 
+  if (loading) {
+    return <Wait />;
+  }
+  if (hasErrors) {
+    return <p>cannot read data : 서버 응답 에러</p>;
+  }
+
+  console.log("주스탠드 타고와", msg);
+
+  // const chatlog = msg.map(
+  //   (chating) => console.log(1234, chating.receive.message)
+  // console.log(9875, chating.message)
+  // <div>
+  //   <span>{chating.message}</span>
+  // </div>
+  // );
+  // console.log(1234, chatlog);
+
   return (
     <Container>
+      <ChatHistory>
+        {msg.map(
+          (chating) => (
+            // chating.receive.sessionId === sessionId ?
+            // (
+            <SendMessage key={chating.receive.messageId}>
+              <div>
+                <span>{chating.receive.message}</span>
+              </div>
+            </SendMessage>
+          )
+          // ) : (
+          // <div>
+          // <span>{chating.receive.message}</span>
+          // </div>
+          // )
+        )}
+      </ChatHistory>
       <Wirte>
-        <textarea type="text" ref={chatRef} onKeyDown={handleEnterPress} />
+        <button>+</button>
+        <Input type="text" ref={chatRef} onKeyDown={handleEnterPress} />
         <button onClick={sendChat}>전송</button>
       </Wirte>
     </Container>
@@ -133,16 +175,41 @@ const Container = styled.div`
   color: #202020;
 `;
 
+const ChatHistory = styled.div`
+  display: flex;
+  flex-direction: column-reverse;
+  height: calc(100% - 155px);
+  overflow-y: scroll;
+  align-self: flex-end;
+
+  padding: 10px;
+  /* justify-content: flex-end; */
+`;
+
+const SendMessage = styled.div`
+  display: flex;
+  width: 100%;
+  /* text-align: right; */
+  /* border: 1px solid black; */
+  div {
+    display: flex;
+    justify-content: flex-end;
+    align-self: flex-end;
+
+    color: #000;
+  }
+`;
+
 const Wirte = styled.div`
   display: flex;
   flex-direction: row;
   background-color: #fff;
-  margin-top: 760px;
-  textarea {
-    width: 280px;
-    height: 80px;
-    border-radius: 10px;
-    background-color: #fff;
-    color: #000;
-  }
+`;
+
+const Input = styled.input`
+  width: 280px;
+  height: 80px;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #000;
 `;
