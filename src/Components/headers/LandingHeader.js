@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import "../../css/fonts/Fonts.css";
 
 const LandingHeader = () => {
   const token = localStorage.getItem("accessToken");
@@ -8,7 +9,7 @@ const LandingHeader = () => {
   const navigate = useNavigate();
   const gotoRoom = () => {
     if (token && refresh) {
-      navigate("/Room");
+      navigate("/RoomList");
     } else {
       navigate("/Login");
     }
@@ -21,14 +22,16 @@ const LandingHeader = () => {
   };
   const gotoLogin = () => {
     if (token && refresh) {
-      navigate("/Room");
+      navigate("/RoomList");
     } else {
       navigate("/Login");
     }
   };
   return (
     <HearderContainer>
-      <Logo>DooRun</Logo>
+      <Logo>
+        D<span>oo</span>Run
+      </Logo>
       <Room onClick={gotoRoom}>라이브룸</Room>
       <Info onClick={gotoInfo}>만든 사람들</Info>
       <Notice onClick={gotoNotice}>공지사항</Notice>
@@ -57,44 +60,68 @@ const Logo = styled.div`
   height: 40px;
   left: 25px;
   align-items: center;
-  font-family: "LOTTERIA CHAB";
+  font-family: "LottriaChab";
   font-style: normal;
+  font-size: 30px;
   font-weight: 400;
   font-size: 28px;
   line-height: 40px;
-  color: #8600f0;
+  span {
+    color: #8600f0;
+  }
 `;
 
 const Room = styled.div`
+  /* Layout Properties */
   display: flex;
   justify-content: center;
   align-items: center;
   position: absolute;
-  width: 85px;
-  height: 35px;
   left: 200px;
-  align-items: center;
+  width: 70px;
+  height: 24px;
+  /* UI Properties */
+  text-align: left;
+  font: 20px/24px Pretendard;
+  letter-spacing: 0px;
+  color: #a5a5a5;
+  opacity: 1;
 `;
 
 const Info = styled.div`
+  /* Layout Properties */
+
   display: flex;
   justify-content: center;
   align-items: center;
   position: absolute;
-  width: 90px;
-  height: 35px;
-  left: 365px;
-  align-items: center;
+  left: 300px;
+  width: 100px;
+  height: 24px;
+  /* UI Properties */
+  text-align: left;
+  font: 20px/24px Pretendard;
+  letter-spacing: 0px;
+  color: #a5a5a5;
+  opacity: 1;
 `;
 
 const Notice = styled.div`
+  /* Layout Properties */
+
   display: flex;
   justify-content: center;
   align-items: center;
   position: absolute;
-  width: 85px;
-  height: 35px;
-  left: 509px;
+  left: 430px;
+  width: 70px;
+  height: 24px;
+  /* UI Properties */
+  text-align: left;
+  font: 20px/24px Pretendard;
+  letter-spacing: 0px;
+  color: #a5a5a5;
+  opacity: 1;
 `;
 
 const Login = styled.button`
