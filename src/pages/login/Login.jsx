@@ -35,7 +35,9 @@ const Login = () => {
 
 export default Login;
 const Container = styled.div`
-  /* background-color: #fff; */
+  background-color: #fff;
+  width: 100%;
+  height: 100vh;
 `;
 
 const Text = styled.text`

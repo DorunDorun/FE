@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import Wait from "../../Components/Wait";
 import { LoginStore } from "../../zustand/Store";
 
 const Kakao = () => {
@@ -56,11 +57,10 @@ const Kakao = () => {
 
     fetchData(token);
     window.location.replace("/roomList");
-
   }, []);
 
   if (loading) {
-    return <p>Loading</p>;
+    return <Wait />;
   }
   if (hasErrors) {
     return <p>cannot read data : 서버 응답 에러</p>;

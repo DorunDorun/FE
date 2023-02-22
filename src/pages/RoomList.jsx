@@ -1,8 +1,8 @@
 //기본
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { nanoid } from 'nanoid';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { nanoid } from "nanoid";
+import { useNavigate } from "react-router-dom";
 
 //컴포넌트, 스타일, 아이콘
 import ButtonDefault from '../Components/ButtonDefault';
@@ -17,12 +17,11 @@ import { COLOR } from '../Components/style/style';
 
 
 //스토어 방 목록
-import useStoreRoomList from '../zustand/storeRoomList';
+import useStoreRoomList from "../zustand/storeRoomList";
 
 
 const RoomList = () => {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   //방 목록 데이터
   const fetchGetRoomList = useStoreRoomList((state) => state.fetchGetRoomList);
@@ -34,7 +33,9 @@ const RoomList = () => {
 /*
 
   //방 입장 데이터
-  const fetchPostRoomJoin = useStoreRoomJoin((state) => state.fetchPostRoomJoin);
+  const fetchPostRoomJoin = useStoreRoomJoin(
+    (state) => state.fetchPostRoomJoin
+  );
   const roomJoinData = useStoreRoomJoin((state) => state.data);
   const roomInfo = useStoreRoomJoin((state) => state.roomInfo);
 
@@ -50,22 +51,20 @@ const RoomList = () => {
 */
 
   //방 목록 무한스크롤 api
-  let roomGetPageCount = 1
+  let roomGetPageCount = 1;
 
-  useEffect(()=>{
-    getRoomList(roomGetPageCount)
-  },[roomGetPageCount])
+  useEffect(() => {
+    getRoomList(roomGetPageCount);
+  }, [roomGetPageCount]);
 
-  const getRoomList=(roomGetPageCount)=>{
-    fetchGetRoomList(roomGetPageCount)
-    .then((res)=>{
-      console.log('방 목록 fetch res data :', res)
-      console.log('방 목록 chattingRoomList :', roomList)
-    })
-    
-  }
-  console.log("data : ", data)
-  console.log("roomList : ", roomList)
+  const getRoomList = (roomGetPageCount) => {
+    fetchGetRoomList(roomGetPageCount).then((res) => {
+      console.log("방 목록 fetch res data :", res);
+      console.log("방 목록 chattingRoomList :", roomList);
+    });
+  };
+  console.log("data : ", data);
+  console.log("roomList : ", roomList);
 
 
   const onClickRoomJoin=(title, sessionId, status)=>{
@@ -86,21 +85,21 @@ const RoomList = () => {
   }
 
   //방 만들기 클릭
-  const onClickRoomCreate=()=>{
-    navigate('/roomCreate')
-  }
+  const onClickRoomCreate = () => {
+    navigate("/roomCreate");
+  };
 
-
+  /*
   if (loading) {
-    return <p>Loading</p>;
+    return <Wait />;
   }
+  */
   if (hasErrors) {
-      return <p>cannot read data : 서버 응답 에러</p>;
+    return <p>cannot read data : 서버 응답 에러</p>;
   }
   if(roomList.length === 0){
     return <p>채팅방이 존재하지 않습니다~!</p>
   }
-
 
   return (
     <StRoomListWrap>
@@ -123,29 +122,34 @@ const RoomList = () => {
               >라이브룸 만들기</ButtonDefault>
           </StRoomListHeader>
 
-          <StRoomListCategorySlide>
-            <ButtonDefault>카테고리1</ButtonDefault>
-            <ButtonDefault>카테고리2</ButtonDefault>
-            <ButtonDefault>카테고리3</ButtonDefault>
-          </StRoomListCategorySlide>
+        <StRoomListCategorySlide>
+          <ButtonDefault>카테고리1</ButtonDefault>
+          <ButtonDefault>카테고리2</ButtonDefault>
+          <ButtonDefault>카테고리3</ButtonDefault>
+        </StRoomListCategorySlide>
 
-          <StRoomListBox>
-            <StRoomListBoxInfo>
-              <StRoomListBoxInfoH2>두런두런에 오신걸 환영합니다!</StRoomListBoxInfoH2>
-              <StRoomListBoxInfoSortBox>
-                <StRoomListSortSelectBox>
-                  <option>생성일</option>
-                </StRoomListSortSelectBox>
-                <StButtonTransparent><BsFillGridFill/></StButtonTransparent>
-                <StButtonTransparent><GrSort/></StButtonTransparent>
-              </StRoomListBoxInfoSortBox>
-            </StRoomListBoxInfo>
+        <StRoomListBox>
+          <StRoomListBoxInfo>
+            <StRoomListBoxInfoH2>
+              두런두런에 오신걸 환영합니다!
+            </StRoomListBoxInfoH2>
+            <StRoomListBoxInfoSortBox>
+              <StRoomListSortSelectBox>
+                <option>생성일</option>
+              </StRoomListSortSelectBox>
+              <StButtonTransparent>
+                <BsFillGridFill />
+              </StButtonTransparent>
+              <StButtonTransparent>
+                <GrSort />
+              </StButtonTransparent>
+            </StRoomListBoxInfoSortBox>
+          </StRoomListBoxInfo>
 
-            <StRoomListBoxRooms>
-              <StRoomListBoxRoomsContainer>
-
+          <StRoomListBoxRooms>
+            <StRoomListBoxRoomsContainer>
               {/* category, title, subtitle, privateStatus, peopleCount */}
-              {roomList?.map((room)=>{
+              {roomList?.map((room) => {
                 return (
                   <RoomItem
                   key={nanoid()}
@@ -158,14 +162,12 @@ const RoomList = () => {
                   password={room.password}
                   onClick={()=>{onClickRoomJoin(room.title, room.sessionId, room.status, room.password)}}
                   />
-                )
+                );
               })}
-                
-              </StRoomListBoxRoomsContainer>
-            </StRoomListBoxRooms>
-
-          </StRoomListBox>
-        </StRoomListCenter>
+            </StRoomListBoxRoomsContainer>
+          </StRoomListBoxRooms>
+        </StRoomListBox>
+      </StRoomListCenter>
     </StRoomListWrap>
   )
   
@@ -204,9 +206,9 @@ const StRoomListBoxInfo=styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-`
-const StRoomListBox=styled.div``
-const StRoomListCategorySlide=styled.div`
+`;
+const StRoomListBox = styled.div``;
+const StRoomListCategorySlide = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -265,6 +267,4 @@ const StRoomListWrap=styled.section`
   background-color: #fff;
 `
 
-
-
-export default RoomList
+export default RoomList;

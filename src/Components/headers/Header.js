@@ -8,7 +8,7 @@ const Header = () => {
   const thumbnail = localStorage.getItem("thumbnail_image_url");
   const navigate = useNavigate();
   const gotoLive = () => {
-    navigate("/Room");
+    navigate("/RoomList");
   };
   const gotoInfo = () => {
     navigate("/Info");
