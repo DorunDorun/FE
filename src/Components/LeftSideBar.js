@@ -30,61 +30,69 @@ const LeftSideBar = ({ width = 280 }) => {
   useEffect(() => {
     window.addEventListener("click", handleClose);
     window.removeEventListener("click", handleClose);
-    // return () => {
-    //     window.removeEventListener("click", handleClose);
-    // };
+    return () => {
+      window.removeEventListener("click", handleClose);
+    };
   }, [handleClose]);
 
   return (
     <Container>
-      <Opnebar
-        ref={side}
-        style={{
-          width: `${width}px`,
-          height: "100%",
-          transform: `translatex(${-xPosition}px)`,
-        }}
-      >
+      <OpenBtn>
         <Button>
           {isOpen ? (
             <OpenBtn>
-              <div onClick={() => toggleMenu()}>프레임</div>
-              <div onClick={() => toggleMenu()}>명언</div>
-              <div onClick={() => toggleMenu()}>오디오</div>
+              <Content onClick={() => toggleMenu()}>프레임</Content>
+              <Content onClick={() => toggleMenu()}>명언</Content>
+              <Content onClick={() => toggleMenu()}>오디오</Content>
+              <Opnebar
+                ref={side}
+                style={{
+                  width: `${width}px`,
+                  height: "100%",
+                  transform: `translatex(${-xPosition}px)`,
+                }}
+              >
+                <Content>색상</Content>
+              </Opnebar>
             </OpenBtn>
           ) : (
             <OpenBtn>
-              <div onClick={() => toggleMenu()}>프레임</div>
-              <div onClick={() => toggleMenu()}>명언</div>
-              <div onClick={() => toggleMenu()}>오디오</div>
+              <Content onClick={() => toggleMenu()}>
+                <span>프레임</span>
+              </Content>
+              <Content onClick={() => toggleMenu()}>
+                <span>명언</span>
+              </Content>
+              <Content onClick={() => toggleMenu()}>
+                <span>오디오</span>
+              </Content>
+              <Opnebar
+                ref={side}
+                style={{
+                  width: `${width}px`,
+                  height: "100%",
+                  transform: `translatex(${-xPosition - 60}px)`,
+                }}
+              />
             </OpenBtn>
           )}
         </Button>
-        <Content>
-          <div onClick={() => toggleMenu()}>프레임</div>
-          <div onClick={() => toggleMenu()}>명언</div>
-          <div onClick={() => toggleMenu()}>오디오</div>
-        </Content>
-        {/* //사이드바 컴포넌트 내부 값이 구현되는 위치 */}
-      </Opnebar>
+        <Opnebar ref={side} style={{}}></Opnebar>
+      </OpenBtn>
     </Container>
   );
 };
 
 export default LeftSideBar;
 
-// const Container = styled.div``;
-
-const Container = styled.div`
-  background-color: #e3ecf1;
-`;
+const Container = styled.div``;
 
 const Opnebar = styled.div`
   background-color: #ffffff;
-  border-right: 1px solid #202020;
+  /* border-right: 1px solid #202020; */
   position: fixed;
   top: 70px;
-  left: 40;
+  left: 60px;
   transition: 0.4s ease;
   color: #202020;
   height: 100%;
@@ -93,21 +101,21 @@ const Opnebar = styled.div`
 
 const Button = styled.button`
   position: relative;
-  left: 280px;
-  top: 0px;
-  width: 40px;
+  left: 0px;
+  top: -617px;
+  width: 60px;
   height: 100vh;
   z-index: 99;
   transition: 0.8s ease;
-  border: 1px solid #202020;
+  /* border: 1px solid #202020; */
   /* border-radius: 40px; */
   overflow: hidden;
 `;
 
 const OpenBtn = styled.div`
-  display: flex;
+  /* display: flex; */
   /* flex-direction: column; */
-  align-items: center;
+  /* align-items: center; */
   width: 100%;
   height: 100%;
 `;
@@ -116,4 +124,6 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 40px;
+  margin-top: 20px;
 `;

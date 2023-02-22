@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { HiOutlineX } from "react-icons/hi";
+<HiOutlineX size="24" color="#fff" />;
 
 const LoginHeader = () => {
   const navigate = useNavigate();
@@ -11,7 +13,11 @@ const LoginHeader = () => {
   return (
     <HearderContainer>
       <Text>로그인</Text>
-      <BackPage onClick={goToBack}>X</BackPage>
+      <BackPage onClick={goToBack}>
+        <div>
+          <HiOutlineX size="20" />
+        </div>
+      </BackPage>
     </HearderContainer>
   );
 };
