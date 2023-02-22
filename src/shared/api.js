@@ -26,7 +26,7 @@ api.interceptors.request.use(
         }
         return config;
       } catch (error) {
-        alert("서버 요청 에러! 다시 시도해주세요!");
+        //alert("서버 요청 에러! 다시 시도해주세요!");
       }
       return config;
     },

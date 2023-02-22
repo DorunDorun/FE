@@ -14,48 +14,39 @@ const RoomItem = ({sessionId, category, title, subTitle, status, password, userC
   const navigate=useNavigate()
   
 
-  //방 입장 데이터
-  const fetchPostRoomJoinPassword = useStoreRoomJoin((state) => state.fetchPostRoomJoinPassword);
-  //방장 상태
-  const roomMasterStatus = useStoreRoomMasterCheck((state) => state.roomMasterStatus);
-
   //password 입력 상태
   const [isPasswordInputHide, setIsPasswordInputHide]=useState(true)
   //password
   const [roomPasswordInput, setRoomPasswordInput]=useState("")
 
+  //click props + 비밀번호 창 컨트롤
   const onClickProps=()=>{
     onClick()
     if(!status){
       setIsPasswordInputHide(status)
     }
-
   }
 
-  //닫기 버튼 클릭
+  //비밀번호 창 닫기 버튼 클릭
   const onClickClosePasswordInput=()=>{
     setIsPasswordInputHide(true)
   }
 
-  //확인 버튼 클릭
+  //비밀번호 창 확인 버튼 클릭
   const onClickSubmitPassword=()=>{
-    console.log("확인 클릭! 비밀번호 : ", roomPasswordInput)
+
     //방 비밀번호 비교
-    if(roomPasswordInput === password){
-      const joinInfo={
-        sessionId:sessionId,
-        password:roomPasswordInput
-      }
-      fetchPostRoomJoinPassword(joinInfo)
-      .then((res)=>{
-        console.log("방 비밀번호 입장 res res ", joinInfo)
-        if(res.status === 200){
-          roomMasterStatus(false)
-            return navigate("/room")
-        }
-      })
+    if(roomPasswordInput === password){ //일치
+
+      localStorage.setItem("title", title)
+      localStorage.setItem("sessionId", sessionId)
+      localStorage.setItem("status", status)
+      localStorage.setItem("password", password)
+      
+      return navigate(`/roomWaiting`)
+
     }else{
-      return alert("비밀번호가 다릅니다!")
+      return alert("입장 비밀번호가 다릅니다!")
     }
   }
 
@@ -69,7 +60,7 @@ const RoomItem = ({sessionId, category, title, subTitle, status, password, userC
             {
             !isPasswordInputHide &&
             <>
-              <input type="text" placeholder="비밀번호를 입력하세요." value={roomPasswordInput} onChange={(e)=>setRoomPasswordInput(e.target.value)}/> 
+              <input type="password" placeholder="비밀번호를 입력하세요." value={roomPasswordInput} onChange={(e)=>setRoomPasswordInput(e.target.value)}/> 
               <ButtonDefault onClick={onClickSubmitPassword}>확인</ButtonDefault>
               <button onClick={onClickClosePasswordInput}>닫기</button>
             </>
@@ -153,7 +144,8 @@ const StRoomItemMainInfo=styled.div`
 const StRoomItem=styled.div`
   border: 1px solid purple;
   border-radius: 10px;
-  flex-basis: 23.7%;
+  flex-basis: 23.3%;
+  min-width: 160px;
 `
 
 

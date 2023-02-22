@@ -7,17 +7,17 @@ import { useNavigate } from 'react-router-dom';
 //컴포넌트, 스타일, 아이콘
 import ButtonDefault from '../Components/ButtonDefault';
 import {GrSort} from 'react-icons/gr';
-import { GoSearch } from 'react-icons/go';
+import { IoIosSearch } from 'react-icons/io';
 import {BsFillGridFill} from 'react-icons/bs';
 import RoomItem from '../Components/RoomItem';
 
+//css
+import { COLOR } from '../Components/style/style';
+
+
+
 //스토어 방 목록
 import useStoreRoomList from '../zustand/storeRoomList';
-
-//스토어 방 입장
-import useStoreRoomJoin from '../zustand/storeRoomJoin';
-//스토어 방장 상태
-import useStoreRoomMasterCheck from '../zustand/stoerRoomMasterCheck';
 
 
 const RoomList = () => {
@@ -31,6 +31,8 @@ const RoomList = () => {
   const hasErrors = useStoreRoomList((state) => state.hasErrors);
   const roomList = useStoreRoomList((state) => state.roomList);
 
+/*
+
   //방 입장 데이터
   const fetchPostRoomJoin = useStoreRoomJoin((state) => state.fetchPostRoomJoin);
   const roomJoinData = useStoreRoomJoin((state) => state.data);
@@ -41,7 +43,11 @@ const RoomList = () => {
   //방장 상태
   const roomMasterStatus = useStoreRoomMasterCheck((state) => state.roomMasterStatus);
 
+  //스토어-새로고침
+  const refreshStatusToggle = useStoreRefreshStatus((state)=>state.refreshStatusToggle)
+  const isRefresh = useStoreRefreshStatus((state)=>state.isRefresh)
 
+*/
 
   //방 목록 무한스크롤 api
   let roomGetPageCount = 1
@@ -62,30 +68,21 @@ const RoomList = () => {
   console.log("roomList : ", roomList)
 
 
-
-  const onClickRoomJoin=(title, status, password, sessionId)=>{
-    //room status가 true면 바로 패치
-    if(status){
-      fetchPostRoomJoin(sessionId)
-      .then((res)=>{
-        console.log("방 입장 res res ", res)
-        if(res.status === 200){
-          roomMasterStatus(false)
-            return navigate("/room")
-        }
-      })
-    }else{//room status가 false면
-      //roomItem에서 컨트롤
+  const onClickRoomJoin=(title, sessionId, status)=>{
+    const info={
+      title:title,
+      sessionId:sessionId,
+      status:status
     }
-    const roomInfo={
-      title : title,
-      status : status,
-      password : password,
-      sessionId : sessionId
+    console.log(" 방 목록 info : ", info)
+    if(status){ //공개 방
+
+      localStorage.setItem("title", title)
+      localStorage.setItem("sessionId", sessionId)
+      localStorage.setItem("status", status)
+      return navigate(`/roomWaiting`)
     }
     
-    console.log("입장 클릭한 방 정보 " , roomInfo)
-
   }
 
   //방 만들기 클릭
@@ -100,19 +97,30 @@ const RoomList = () => {
   if (hasErrors) {
       return <p>cannot read data : 서버 응답 에러</p>;
   }
+  if(roomList.length === 0){
+    return <p>채팅방이 존재하지 않습니다~!</p>
+  }
 
 
   return (
     <StRoomListWrap>
+        <StRoomListSideNav>사이드 메뉴</StRoomListSideNav>
+        
         <StRoomListCenter>
           <StRoomListHeader>
               <StRoomListSearchBox>
                 <StRoomListSearchInput placeholder="관심있는 키워드를 검색해보세요!"/>
                 <StRoomListSearchButton>
-                  <GoSearch/>
+                  <IoIosSearch className="iconSearch"/>
                 </StRoomListSearchButton>
               </StRoomListSearchBox>
-              <StRoomCreateButton onClick={onClickRoomCreate}>라이브룸 만들기</StRoomCreateButton>
+              {/* <StRoomCreateButton >라이브룸 만들기</StRoomCreateButton> */}
+              <ButtonDefault 
+              width="17%" height="40px" 
+              bgColor={COLOR.baseDefault} fontColor="#fff" 
+              hoverBgColor={COLOR.greenLight} hoverFontColor="#000"
+              onClick={onClickRoomCreate}
+              >라이브룸 만들기</ButtonDefault>
           </StRoomListHeader>
 
           <StRoomListCategorySlide>
@@ -148,7 +156,7 @@ const RoomList = () => {
                   status={room.status}
                   userCount={room.cntUser}
                   password={room.password}
-                  onClick={()=>{onClickRoomJoin(room.title, room.status, room.password, room.sessionId)}}
+                  onClick={()=>{onClickRoomJoin(room.title, room.sessionId, room.status, room.password)}}
                   />
                 )
               })}
@@ -160,9 +168,16 @@ const RoomList = () => {
         </StRoomListCenter>
     </StRoomListWrap>
   )
+  
 }
 
 
+
+const StRoomListSideNav=styled.div`
+  max-width: 320px;
+  min-width: 220px;
+  height: 100vh;
+`
 
 const StRoomListBoxRoomsContainer=styled.div`
   display: flex;
@@ -171,6 +186,7 @@ const StRoomListBoxRoomsContainer=styled.div`
   column-gap: 20px;
   flex-wrap: wrap;
   border: 1px solid blue;
+  min-width: 80%;
 `
 const StRoomListBoxRooms=styled.div`
   display: flex;
@@ -179,7 +195,10 @@ const StRoomListBoxRooms=styled.div`
 const StButtonTransparent=styled.button``
 const StRoomListSortSelectBox=styled.select``
 const StRoomListBoxInfoSortBox=styled.div``
-const StRoomListBoxInfoH2=styled.h2``
+const StRoomListBoxInfoH2=styled.h2`
+  font-family: "LottriaChab";
+  font-size: 30px;
+`
 const StRoomListBoxInfo=styled.div`
   display: flex;
   justify-content: space-between;
@@ -191,30 +210,60 @@ const StRoomListCategorySlide=styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
+  column-gap: 10px;
+  margin-bottom: 30px;
 `
 const StRoomCreateButton=styled.button``
-const StRoomListSearchButton=styled.button``
+const StRoomListSearchButton=styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  width: 80px;
+  height: 36px;
+  border-radius: 0 8px 8px 0;
+  border: none;
+  border-left: 1px solid #c1c1c1;
+  background-color: #F3F3F3;
+  cursor: pointer;
+  :hover{
+    background-color: ${COLOR.baseLight};
+    color: #fff;
+  }
+`
 const StRoomListSearchInput=styled.input.attrs(props=>({
   type: props.type || "text"
 }))`
-  width: 300px;
+  width: 600px;
+  height: 38px;
+  border: 1px solid ${COLOR.grayLight};
+  border-radius: 8px;
+  padding: 8px 10px;
 `
-const StRoomListSearchBox=styled.div``
+const StRoomListSearchBox=styled.div`
+  position: relative;
+  margin-right: 15px;
+`
 const StRoomListHeader=styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 32px;
 `
 
 const StRoomListCenter=styled.div`
-  max-width: 1400px;
+  max-width: 1500px;
   min-width: 1200px;
   border: 1px solid green;
-  padding: 20px;
+  padding: 30px;
 `
-const StRoomListWrap=styled.section``
+const StRoomListWrap=styled.section`
+  display: flex;
+  background-color: #fff;
+`
 
 
 

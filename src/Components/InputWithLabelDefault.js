@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 
 function InputWithLabelDefault({autoFocus, inputType, inputId, inputValue, inputPaceholder, 
-  onChange, onBlur, validMessage, width, labelText, className, inputRef, disabled,}) {
+  onChange, onBlur, validMessage, width, height, labelText, className, inputRef, disabled,}) {
   return (
     <>
       { labelText
@@ -19,6 +19,7 @@ function InputWithLabelDefault({autoFocus, inputType, inputId, inputValue, input
       required
       autoFocus={autoFocus||null}
       width={width}
+      height={height}
       className={className||null}
       ref={inputRef}
       disabled={disabled}
@@ -29,9 +30,11 @@ function InputWithLabelDefault({autoFocus, inputType, inputId, inputValue, input
 
 
 const StValidMessageSpan=styled.span`
-  color:red;
+  margin-left: 10px;
+  color: red;
 `
 const StLabelWrap=styled.span`
+  display: inline-block;
   margin-bottom: 10px;
 `
 const StLabelDefault=styled.label`
@@ -43,11 +46,10 @@ const StInputDefault=styled.input.attrs(props=>({
 }))`
   display: block;
   width: ${(props) => props.width || "auto"};
-  height: 15px;
+  height: ${(props) => props.height || "auto"};
   padding: 10px;
   border: 1px solid #d2d2d2;
   border-radius: 5px;
-  margin-bottom: 15px;
 
 `
 

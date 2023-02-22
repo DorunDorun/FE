@@ -14,16 +14,20 @@ const useStoreRoomJoin = create((set) => ({
     try {
       console.log("방 입장 payload:", payload)
       const data = await api.post(
-        `api/rooms/${payload}`
+        `api/rooms/${payload.sessionId}`
+        , 
+        {
+          nickname: payload.nickName
+        }
       );
       set((state) => ({ data: (state.data = data.data), loading: false }));
       set((state) => ({ roomInfo: (state.roomInfo = data.data.data), loading: false }));
-      console.log("방 입장 data ", data)
-      console.log("방 입장 roomInfo ", data.data.data)
+      console.log("방 입장 fetchPostRoomJoin data ", data)
+      console.log("방 입장 fetchPostRoomJoin roomInfo ", data.data.data)
       return data
     } catch (err) {
       set(() => ({ hasErrors: true, loading: false }));
-      console.log('방 목록 불러오기 에러 : ' , err)
+      console.log('방 참여하기 fetchPostRoomJoin 에러 : ' , err)
     }
   },
   fetchPostRoomJoinPassword: async (payload) => {
@@ -31,8 +35,12 @@ const useStoreRoomJoin = create((set) => ({
     try {
       console.log("비번 방 입장 패치 payload : ", payload)
       const data = await api.post(
-        `api/rooms/${payload.sessionId}`,
-        {password:payload.password}
+        `api/rooms/${payload.sessionId}`
+        ,
+        {
+          password: payload.password,
+          nickname: payload.nickName
+        }
       );
       set((state) => ({ data: (state.data = data.data), loading: false }));
       set((state) => ({ roomInfo: (state.roomInfo = data.data.data), loading: false }));
@@ -41,7 +49,7 @@ const useStoreRoomJoin = create((set) => ({
       return data
     } catch (err) {
       set(() => ({ hasErrors: true, loading: false }));
-      console.log('방 목록 불러오기 에러 : ' , err)
+      console.log('방 참여하기 에러 : ' , err)
     }
   },
   
