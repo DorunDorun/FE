@@ -35,10 +35,9 @@ const HearderContainer = styled.div`
   align-items: center;
   background: #ffffff;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-  position: absolute;
   width: 1920px;
+  /* width: 100%; */
   height: 70px;
-  left: 0px;
   border: 1px solid purple;
 `;
 
