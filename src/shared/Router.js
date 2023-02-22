@@ -15,7 +15,9 @@ import Naver from "../pages/login/Naver";
 //방 관련
 import RoomCreate from "../pages/RoomCreate";
 import RoomList from "../pages/RoomList";
+import RoomWaiting from '../pages/RoomWaiting';
 import Room from "../pages/Room";
+
 
 const Router = () => {
   return (
@@ -33,8 +35,10 @@ const Router = () => {
 
         {/* Room 영역*/}
         <Route path="/roomCreate" element={<RoomCreate />} />
-        <Route path="/roomList" element={<RoomList />} />
-        <Route path="/room" element={<Room />} />
+        <Route path="/roomList" element={<RoomList />}/>
+        <Route path="/roomWaiting" element={<RoomWaiting />} />
+        <Route path="/room/:id" element={<Room />} />
+
       </Routes>
     </BrowserRouter>
   );

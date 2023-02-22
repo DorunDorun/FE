@@ -1,8 +1,6 @@
 /*기본*/
-import axios from 'axios';
-import React, { useState, Component, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from "styled-components";
-import { OpenVidu } from 'openvidu-browser';
 import { nanoid } from 'nanoid'
 import { useNavigate } from 'react-router-dom';
 
@@ -12,6 +10,9 @@ import RadioGroup from '../Components/RadioGroup';
 import RadioGroupImage from '../Components/RadioGroupImage';
 import InputWithLabelDefault from '../Components/InputWithLabelDefault'
 
+//css
+import { COLOR } from '../Components/style/style';
+
 //버튼 이미지
 import joinRoomButtonImageList from '../Components/joinRoomButtonImagePath';
 
@@ -19,12 +20,6 @@ import joinRoomButtonImageList from '../Components/joinRoomButtonImagePath';
 import useStoreRoomCreate from '../zustand/storeRoomCreate';
 //스토어 방장 상태
 import useStoreRoomMasterCheck from '../zustand/stoerRoomMasterCheck';
-
-//api
-import { server_url } from '../shared/api';
-
-
-const APPLICATION_SERVER_URL = server_url
 
 
 function RoomCreate () {
@@ -73,21 +68,49 @@ function RoomCreate () {
 
     //메세지 양식
     const [messageForm, setMessageForm]=useState({
-        title:"한글,영어,숫자/ 5~20자 이내",
-        subTitle:"한글,영어,숫자/ 5~20자 이내",
-        password:"비공개 비밀번호 : 영어,숫자/ 5~10자 이내"
+        title:"한글, 영어, 숫자/ 5~20자 이내",
+        subTitle:"한글, 영어, 숫자/ 5~20자 이내",
+        password:"비공개 비밀번호 : 영어, 숫자/ 5~10자 이내"
     })
 
 
     //카테고리 목록
     const categoryList=[
-        {id: nanoid(), categoryName: "공부", categoryValue:"STUDY"},
-        {id: nanoid(), categoryName: "친목", categoryValue:"SOCIAL"},
-        {id: nanoid(), categoryName: "취미", categoryValue:"HOBBY"},
-        {id: nanoid(), categoryName: "운동", categoryValue:"WORKOUT"},
-        {id: nanoid(), categoryName: "직장인", categoryValue:"JOBS"},
-        {id: nanoid(), categoryName: "재테크", categoryValue:"INVESTMENT"},
-        {id: nanoid(), categoryName: "기타", categoryValue:"ETC"},
+        {
+            categoryName: "공부",
+            categoryValue:"STUDY",
+            categoryImage: joinRoomButtonImageList.image1.url,
+        },
+        {
+            categoryName: "친목",
+            categoryValue:"SOCIAL",
+            categoryImage: joinRoomButtonImageList.image2.url,
+        },
+        {
+            categoryName: "취미",
+            categoryValue:"HOBBY",
+            categoryImage: joinRoomButtonImageList.image3.url,
+        },
+        {
+            categoryName: "운동",
+            categoryValue:"WORKOUT",
+            categoryImage: joinRoomButtonImageList.image1.url,
+        },
+        {
+            categoryName: "직장인",
+            categoryValue:"JOBS",
+            categoryImage: joinRoomButtonImageList.image2.url,
+        },
+        {
+            categoryName: "재테크",
+            categoryValue:"INVESTMENT",
+            categoryImage: joinRoomButtonImageList.image3.url,
+        },
+        {
+            categoryName: "기타",
+            categoryValue:"ETC",
+            categoryImage: joinRoomButtonImageList.image1.url,
+        },
     ]
 
     //카테고리 선택
@@ -175,32 +198,6 @@ function RoomCreate () {
     }
 
 
-      /*토큰 영역*/
-
-    //토큰 가져오기
-    const getToken = async () => {
-        const sessionId = await createSession(roomInfo.sessionId);
-        return await createToken(sessionId);
-    }
-
-    //세션 만들기
-    const createSession = async (sessionId) => {
-        const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions', { customSessionId: sessionId }, {
-            headers: { 'Content-Type': 'application/json', },
-        });
-        return response.data; // The sessionId
-    }
-
-    //토큰 만들기
-    const createToken = async (sessionId) => {
-        const response = await axios.post(APPLICATION_SERVER_URL + 'api/sessions/' + sessionId + '/connections', {}, {
-            headers: { 'Content-Type': 'application/json', },
-        });
-        console.log('토큰 : ' , response.data)
-        return response.data; // The token
-    }
-
-
     //방 생성 데이터
     const {data} = useStoreRoomCreate((state) => state.data);
     const loading = useStoreRoomCreate((state) => state.loading);
@@ -244,20 +241,39 @@ function RoomCreate () {
                 password:roomPassword,
                 buttonImage:roomJoinButtonImage,
             }
-    
+            
+            //공개방, 비공개방 전달 정보 다름
             const newRoomCreatObj = roomStatus ? newRoomCreateOpen : newRoomCreatePrivate
             console.log('✨ newRoomCreatObj : ' , newRoomCreatObj)
+
             fetchData(newRoomCreatObj)
             .then((res)=>{
                 console.log("fetchData 후 응답 값 : " , res)
-                const sessionId = res.data.data.sessionId
-                const token = res.data.data.token
-                if(sessionId && token){
-                    console.log(`sessionId : ${sessionId} / token : ${token}`)
-                    roomMasterStatus(true) //방장 상태 true
-                    navigate('/room')
+                const {title, masterName, sessionId, status} = res.data.data
+               
+                if(title && masterName && sessionId){
+                    
+                    if(status){ //공개 방
+                        localStorage.setItem("title", title)
+                        localStorage.setItem("sessionId", sessionId)
+                        localStorage.setItem("status", status)
+
+                    }else{ //비공개 방
+                        localStorage.setItem("title", title)
+                        localStorage.setItem("sessionId", sessionId)
+                        localStorage.setItem("status", status)
+                        localStorage.setItem("password", roomPassword)
+                    }
+                    
                 }
-                
+                return navigate(`/roomWaiting`)
+                /*
+                if(sessionId){
+                    console.log(`sessionId : ${sessionId}`)
+                    roomMasterStatus(true) //방장 상태 true
+                    //navigate(`/room/${sessionId}`)
+                }
+                */
             })
             
         }
@@ -276,139 +292,214 @@ function RoomCreate () {
         
     return (
         <StRoomCreateWrap>
-            <h2> Room Create </h2>
-            <StRoomCreateForm onSubmit={(e)=>{roomCreate(e)}}>
-                {/* 방 제목 */}
-                <StRoomCreateInputDiv>
+            <StRoomCreateContainer>
+                <StRoomCreateTitleBox>
+                    <StRoomCreateTitle className="roomCreateTitle"> 라이브 룸 만들기 </StRoomCreateTitle>
+                </StRoomCreateTitleBox>
+                <StRoomCreateForm onSubmit={(e)=>{roomCreate(e)}}>
+
+                    {/* 공개 여부 */}
+                    <StRoomCreateInputDivFlex>
+                        <StStatusInputBox>
+                            <StInputItem>
+                                <StInputDefault
+                                    id="isOpenRoom"
+                                    type="radio"
+                                    name="roomStatus"
+                                    required
+                                    defaultChecked
+                                    onChange={(e)=>{onChangeRoomStatus(true)}}
+                                />
+                                <StLabel htmlFor="isOpenRoom">공개</StLabel>
+                            </StInputItem>
+                            <StInputItem>
+                                <StInputDefault
+                                    id="isPrivateRoom"
+                                    type="radio"
+                                    name="roomStatus"
+                                    onChange={(e)=>{onChangeRoomStatus(false)}}
+                                />
+                                <StLabel htmlFor="isPrivateRoom">비공개</StLabel>
+
+                                <StPasswordInputBox
+                                    display={isDisabled ? "none" : "block"}
+                                >
+                                    <InputWithLabelDefault
+                                        width="100%"
+                                        height="30px"
+                                        inputType="text"
+                                        inputId="roomPasswordInput"
+                                        inputValue={roomPassword}
+                                        onChange={(e)=>setRoomInfo({...roomInfo, roomPassword:e.target.value})}
+                                        onBlur={onBlurRegExpPassword}
+                                        validMessage={validMessage.password}
+                                        labelText=""
+                                        inputPaceholder={messageForm.password}
+                                        disabled={isDisabled}
+                                    />
+                                </StPasswordInputBox>
+
+
+                            </StInputItem>
+                        </StStatusInputBox>
+                    </StRoomCreateInputDivFlex>
+
+                    {/* 방 제목 */}
+                    <StRoomCreateInputDiv>
+                        <InputWithLabelDefault
+                        width="100%"
+                        height="30px"
+                        inputType="text"
+                        inputId="roomTitleInput"
+                        inputValue={roomTitle}
+                        onChange={(e)=>{setRoomInfo({...roomInfo, roomTitle:e.target.value})}}
+                        onBlur={onBlurRegExpTitle}
+                        validMessage={validMessage.title}
+                        labelText="라이브룸 이름"
+                        inputPaceholder={messageForm.title}
+                    />
+                    </StRoomCreateInputDiv>
+                    {/* 방 내용 */}
+                    <StRoomCreateInputDiv>
                     <InputWithLabelDefault
-                    width="300px"
-                    inputType="text"
-                    inputId="roomTitleInput"
-                    inputValue={roomTitle}
-                    onChange={(e)=>{setRoomInfo({...roomInfo, roomTitle:e.target.value})}}
-                    onBlur={onBlurRegExpTitle}
-                    validMessage={validMessage.title}
-                    labelText="방 제목"
-                    inputPaceholder={messageForm.title}
-                />
-                </StRoomCreateInputDiv>
-                {/* 방 내용 */}
-                <StRoomCreateInputDiv>
-                <InputWithLabelDefault
-                    width="300px"
-                    inputType="text"
-                    inputId="roomSubTitleInput"
-                    inputValue={roomSubTitle}
-                    onChange={(e)=>{setRoomInfo({...roomInfo, roomSubTitle:e.target.value})}}
-                    onBlur={onBlurRegExpSubTitle}
-                    validMessage={validMessage.subTitle}
-                    labelText="방 내용"
-                    inputPaceholder={messageForm.subTitle}
-                />
-                </StRoomCreateInputDiv>
-                {/* 카테고리 */}
-                <StRoomCreateInputDiv>
-                    카테고리 : 
-                    {categoryList.map((category)=>{
-                        return(
-                            <RadioGroup
-                            key={category.id}
-                            categoryName={category.categoryName}
-                            checked={category.categoryValue === roomCategory}
-                            value={category.categoryValue}
-                            onChange={(e)=>{onChangeRadioCategory(e.target.value)}}
-                            />
-                        )
-                    })}
-                </StRoomCreateInputDiv>
-                {/* 공개 여부 */}
-                <StRoomCreateInputDivFlex>
-                    <StSpanDiv>공개여부 :</StSpanDiv>
-                    <StInputBox>
-                        <StInputItem>
-                            <StInputDefault
-                                id="isOpenRoom"
-                                type="radio"
-                                name="roomStatus"
-                                required
-                                defaultChecked
-                                onChange={(e)=>{onChangeRoomStatus(true)}}
-                            />
-                            <StLabel htmlFor="isOpenRoom">공개</StLabel>
-                        </StInputItem>
-                        <StInputItem>
-                            <StInputDefault
-                                id="isPrivateRoom"
-                                type="radio"
-                                name="roomStatus"
-                                onChange={(e)=>{onChangeRoomStatus(false)}}
-                            />
-                            <StLabel htmlFor="isPrivateRoom">비공개</StLabel>
+                        width="100%"
+                        height="30px"
+                        inputType="text"
+                        inputId="roomSubTitleInput"
+                        inputValue={roomSubTitle}
+                        onChange={(e)=>{setRoomInfo({...roomInfo, roomSubTitle:e.target.value})}}
+                        onBlur={onBlurRegExpSubTitle}
+                        validMessage={validMessage.subTitle}
+                        labelText="소개글"
+                        inputPaceholder={messageForm.subTitle}
+                    />
+                    </StRoomCreateInputDiv>
+                    {/* 카테고리 */}
+                    <StRoomCreateInputDiv>
+                        카테고리
+                        <StCategoryBox>
+                        {categoryList.map((category)=>{
+                            return(
+                                <RadioGroup
+                                key={nanoid()}
+                                categoryName={category.categoryName}
+                                checked={category.categoryValue === roomCategory}
+                                value={category.categoryValue}
+                                imageUrl={category.categoryImage}
+                                onChange={(e)=>{onChangeRadioCategory(e.target.value)}}
+                                />
+                            )
+                        })}
+                        </StCategoryBox>
+                    </StRoomCreateInputDiv>
+                    
+                    {/* 버튼 이미지 
+                    <StRoomCreateInputDiv>
+                        입장 버튼 이미지 : 
+                        {joinRoomButtonImages.map((image)=>{
+                            return(
+                                <RadioGroupImage 
+                                key={nanoid()}
+                                imageUrl={image.url}
+                                imageName={image.name}
+                                checked={image.name === roomJoinButtonImage}
+                                onChange={(e)=>{onChangeRoomJoinButtonImage(e.target.value)}}
+                                />
+                            )
+                        })}
+                    </StRoomCreateInputDiv>
+                    */}
+                    <StRoomCreateButtonBox>
+                        <ButtonDefault width="100%" height="40px" bgColor={COLOR.baseLight} fontColor="#fff" hoverBgColor={COLOR.baseDefault}>만들기</ButtonDefault>
+                    </StRoomCreateButtonBox>
 
-                            <InputWithLabelDefault
-                                width="300px"
-                                inputType="text"
-                                inputId="roomPasswordInput"
-                                inputValue={roomPassword}
-                                onChange={(e)=>setRoomInfo({...roomInfo, roomPassword:e.target.value})}
-                                onBlur={onBlurRegExpPassword}
-                                validMessage={validMessage.password}
-                                labelText=""
-                                inputPaceholder={messageForm.password}
-                                disabled={isDisabled}
-                            />
-
-
-                        </StInputItem>
-                    </StInputBox>
-                </StRoomCreateInputDivFlex>
-                {/* 버튼 이미지 */}
-                <StRoomCreateInputDiv>
-                    입장 버튼 이미지 : 
-                    {joinRoomButtonImages.map((image)=>{
-                        return(
-                            <RadioGroupImage 
-                            key={nanoid()}
-                            imageUrl={image.url}
-                            imageName={image.name}
-                            checked={image.name === roomJoinButtonImage}
-                            onChange={(e)=>{onChangeRoomJoinButtonImage(e.target.value)}}
-                            />
-                        )
-                    })}
-                </StRoomCreateInputDiv>
-                
-                <ButtonDefault bgColor="orange" hoverBgColor="purple">방 생성</ButtonDefault>
-
-            </StRoomCreateForm>
+                </StRoomCreateForm>
+            </StRoomCreateContainer>
         </StRoomCreateWrap>
     );
 }
 
-
+const StRoomCreateButtonBox=styled.div`
+    margin-top: 50px;
+`
 const StJoinRoomButtonImage=styled.img``
-const StInputItem=styled.div``
-const StInputBox=styled.div``
+const StInputItem=styled.div`
+    
+    :nth-child(2){
+        flex-grow: 2;
+    }
+`
+const StStatusInputBox=styled.div`
+    display: flex;
+    width: 100%;
+    column-gap: 20px;
+`
 const StSpanDiv=styled.span`
     display: block;
 `
 const StRoomCreateInputDivFlex=styled.div`
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 30px;
 `
 const StInputDefault=styled.input.attrs(props=>({
     type: props.type || "text",
 }))`
 `
+
+const StCategoryBox=styled.div`
+    margin-top: 20px;
+    display: flex;
+    column-gap: 20px;
+    justify-content: center;
+    align-items: center;
+`
+
+const StPasswordInputBox=styled.div`
+    display: ${(props) => props.display || "block"};
+`
+
 const StLabel=styled.label`
+    display: inline-block;
     padding:0 12px 0 4px;
+    margin-bottom: 10px;
 `
 const StRoomCreateInputDiv=styled.div`
-    margin-bottom: 15px;
+    margin-bottom: 30px;
 `
-const StRoomCreateForm=styled.form``
-const StRoomCreateWrap=styled.div``
+const StRoomCreateTitle=styled.h2`
+    font-family: "LottriaChab";
+    font-size: 30px;
+    margin-bottom: 80px;
+`
+const StRoomCreateTitleBox=styled.div`
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+`
+const StRoomCreateForm=styled.form`
+    width: 100%;
+`
+const StRoomCreateContainer=styled.div`
+    width: 60%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #fff;
+    padding: 0 200px;
+`
+const StRoomCreateWrap=styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #F6E8FF;
+    width: 100vw;
+    min-width: 1200px;
+    height: 100vh;
+`
 
 
 

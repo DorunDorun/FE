@@ -2,9 +2,13 @@ import React from 'react'
 import styled from 'styled-components'
 
 
-function ButtonDefault({width, height, bgColor, hoverBgColor, fontColor, hoverFontColor, onClick, children}) {
+function ButtonDefault({width, height, bgColor, hoverBgColor, fontColor, hoverFontColor, onClick, children, borderRadius}) {
   return (
-    <StButtonDefault width={width} height={height} fontColor={fontColor} bgColor={bgColor} hoverBgColor={hoverBgColor} hoverFontColor={hoverFontColor}
+    <StButtonDefault 
+    width={width} height={height} 
+    fontColor={fontColor} bgColor={bgColor} 
+    hoverBgColor={hoverBgColor} hoverFontColor={hoverFontColor}
+    borderRadius={borderRadius}
     onClick={onClick}
     >{children}
     </StButtonDefault>
@@ -15,7 +19,7 @@ const StButtonDefault=styled.button.attrs({
 })`
     width: ${(props)=> props.width || '140px'};
     height: ${(props)=> props.height || '30px'};
-    border-radius: 20px;
+    border-radius: ${(props)=> props.borderRadius || '10px'};
     font-weight: bold;
     font-size: 16px;
     cursor: pointer;

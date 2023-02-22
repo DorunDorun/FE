@@ -11,14 +11,28 @@ import CanvasDrawing from './CanvasDrawing'
 import ButtonDefault from './ButtonDefault';
 import WhiteBoard from './WhiteBoard';
 
-//스토어
+//스토어-방 삭제
 import useStoreRoomDelete from '../zustand/storeRoomDelete';
 
+//스토어-방 정보 불러오기
+import useStoreRoomInfoGet from '../zustand/storeRoomInfoGet';
 
 
-function ChatRoom ({roomTitle, userSessionId, userToken, userNickName, loading, hasErrors}) {
+//스토어-새로고침
+import useStoreRefreshStatus from '../zustand/storeRefreshStatus';
 
-    console.log(`❗❗❗ 방 입장 userNickName : ${userNickName}, userToken : ${userToken}, userSessionId : ${userSessionId}`)
+
+function ChatRoom () {
+    console.log("ChatRoom 시작!")
+    //roomTitle, userSessionId, userToken, userNickName, loading, hasErrors
+    const roomTitle = localStorage.getItem("title")
+    const userSessionId = localStorage.getItem("sessionId")
+    const userNickName = localStorage.getItem("name")
+
+    //방 정보 불러오기
+    const fetchRoomInfoGet = useStoreRoomInfoGet((state)=>state.fetchRoomInfoGet)
+
+    const [userToken, setUserToken]=useState(undefined)
 
     const navigate = useNavigate()
 
@@ -44,6 +58,8 @@ function ChatRoom ({roomTitle, userSessionId, userToken, userNickName, loading, 
     //스토어-방 삭제
     const fetchDeleteRoom = useStoreRoomDelete((state)=>state.fetchDeleteRoom)
 
+    //스토어-새로고침
+    const refreshStatusToggle = useStoreRefreshStatus((state)=>state.refreshStatusToggle)
 
     //캔버스 컨트롤
     const [isCanvas, setIsCanvas]=useState(false)
@@ -52,25 +68,53 @@ function ChatRoom ({roomTitle, userSessionId, userToken, userNickName, loading, 
     //화이트보드
     const[isWhiteBoard, setIsWhiteBoard]=useState(false)
 
+    const [isRefresh, setIsRefresh]=useState(false)
 
-    //브라우저 종료 직전 실행
-    useEffect(()=>{
-        window.addEventListener('beforeunload', onbeforeunload);
-    },[])
 
-    //브라우저 종료 직전 실행
-    const onbeforeunload = (e) => {
-        console.log("종료")
-        leaveSession();
-        
+
+
+    //새로고침 시
+    const refreshSession = (e) => {
+        e.preventDefault();
+        fetchDeleteRoom(userSessionId)
+        setIsRefresh(true)
+        resetSession()
+        navigate("/roomWaiting")
     }
 
-    //방 입장 실행
-    useEffect(()=>{
-        connection()
-        return()=>{   
+
+    //브라우저 새로고침, 종료 시 실행
+    useEffect(() => {
+        window.addEventListener("beforeunload", refreshSession);
+        return()=>{
+            window.removeEventListener("beforeunload", refreshSession);
         }
+    },[]);
+
+    useEffect(()=>{ //방 정보 불러오기
+        console.log("isRefresh isRefresh : ", isRefresh)
+        if(isRefresh===true){
+            navigate("/roomWaiting")
+        }else{
+            fetchRoomInfoGet(userSessionId)
+            .then((res)=>{
+                if(res === undefined){
+                    return navigate("/roomWaiting")
+                }
+                console.log("방 정보 불러옴 !! 🤸‍♂️ res : ", res)
+                const nowUserFilter = res.data.data.chatRoomUserList.filter((user)=> user.nowUser === true)
+                console.log("nowUserFilter[0].enterRoomToken : ", nowUserFilter[0].enterRoomToken)
+                const userTokenData = nowUserFilter[0].enterRoomToken
+                const userNickNameData = nowUserFilter[0].nickname
+                //스트림 연결
+                connection(userTokenData, userNickNameData)
+                
+            })
+        }
+        
+        
     },[])
+
 
     
 
@@ -217,16 +261,18 @@ function ChatRoom ({roomTitle, userSessionId, userToken, userNickName, loading, 
     
 
 
-    //방 입장 인증 필터링
-    if(!userToken || !userSessionId){ 
-        alert("존재하지 않는 방입니다!")
-        return navigate('/roomList') 
-    }
-
+    
     
 
     //연결
-    const connection = () => {
+    function connection (userToken, userNickName) {
+
+        const connectionInfo={
+            userToken : userToken,
+            userNickName : userNickName
+        }
+
+        console.log("connection info : ", connectionInfo)
 
         let OV = new OpenVidu(); //openvidu 객체 생성
         OV.enableProdMode();
@@ -244,7 +290,7 @@ function ChatRoom ({roomTitle, userSessionId, userToken, userNickName, loading, 
 
             const newSubscriber = mySession.subscribe(event.stream, undefined);
 
-            console.log('입장 아이디 : ', event.stream.connection.connectionId)
+            console.log('입장 아이디 : ', event.stream.connection.data)
             console.log('subscribers 확인 처음! subscribers ::: ', subscribers)
 
             const newSubscribers = subscribers
@@ -275,7 +321,7 @@ function ChatRoom ({roomTitle, userSessionId, userToken, userNickName, loading, 
         });
 
         //세션 연결
-        mySession.connect(userToken, {clientData: userNickName})
+        mySession.connect(userToken, {clientName: userNickName})
         .then(async () => {
 
             console.log('✨✨✨ 토큰 확인', userToken)
@@ -291,7 +337,7 @@ function ChatRoom ({roomTitle, userSessionId, userToken, userNickName, loading, 
             }).then((mediaStream) => {
                 var videoTrack = mediaStream.getVideoTracks()[0];
                 let publisher = OV.initPublisher(
-                    userNickName,
+                    undefined,
                     {
                     audioSource: undefined, //audio. undefined = default audio
                     videoSource: videoTrack, //video. undefined = default webcam
@@ -328,15 +374,20 @@ function ChatRoom ({roomTitle, userSessionId, userToken, userNickName, loading, 
             });
         })
         .catch((error) => { //에러일 경우 연결 종료
-            alert(error.message)
-            leaveSession()
-            return navigate('/roomList')
+            //alert(error.message)
+            //leaveSession()
+            leaveSessionWaiting()
+            return navigate('/roomWaiting')
         });
 
     }
 
+
+
+
     //스트림 초기화
     const resetSession=()=>{
+        console.log("❌ resetSession !!")
         const mySession = session
         if(mySession){ //세션 연결 종료
             mySession.disconnect();
@@ -354,8 +405,16 @@ function ChatRoom ({roomTitle, userSessionId, userToken, userNickName, loading, 
         setIsCanvas(false)
         setIsCanvasDefault(true)
         console.log("방 삭제 , 초기화 완료!")
-        navigate('/roomList')
+        
     }
+
+
+    //나가기-대기 페이지
+    const leaveSessionWaiting = () => {
+        fetchDeleteRoom(userSessionId)
+        resetSession()
+        navigate('/roomWaiting')
+}
 
 
     //나가기
@@ -364,28 +423,13 @@ function ChatRoom ({roomTitle, userSessionId, userToken, userNickName, loading, 
         .then((res)=>{ //api 삭제 요청
             if(res.status === 200){
                 resetSession()
+                navigate('/roomList')
             }else{
                 alert("방 삭제 에러!")
             }
         })
     }
     
-    /*
-    const leaveSession = () => {
-        if(subscribers.length === 0){ //방에 남아 있는 사람이 없다면
-            fetchDeleteRoom(userSessionId)
-            .then((res)=>{ //api 삭제 요청
-                if(res.status === 200){
-                    resetSession()
-                }else{
-                    alert("방 삭제 에러!")
-                }
-            })
-        }else{ //방에 남아 있는 사람이 있다면 데이터 초기화
-            resetSession()
-        }
-    }
-    */
 
     //나가기 버튼 클릭
     const onClickLeaveSession=()=>{
@@ -429,12 +473,12 @@ function ChatRoom ({roomTitle, userSessionId, userToken, userNickName, loading, 
         }
     }
 
-    if (loading) {
-        return <p>Loading</p>;
-      }
-    if (hasErrors) {
-        return <p>cannot read data : 서버 응답 에러</p>;
-    }
+    // if (loading) {
+    //     return <p>Loading</p>;
+    //   }
+    // if (hasErrors) {
+    //     return <p>cannot read data : 서버 응답 에러</p>;
+    // }
 
 
 
@@ -466,10 +510,13 @@ function ChatRoom ({roomTitle, userSessionId, userToken, userNickName, loading, 
                         &&
                             subscribers?.map((sub, i) => (
                             <div className="sessionStreamBox">
+                                {console.log("✔✔✔ subscribers : ", sub)}
                                 <div key={sub.id} 
                                 className={subscriberSpeakerConnectionId === sub.stream.connection.connectionId && "isSpeaker"} 
                                 onClick={() => onClickMainVideoStream(sub)}>
-                                    <StStreamNickNamePublisher>{userNickName} 님</StStreamNickNamePublisher>
+                                    <StStreamNickNamePublisher>{JSON.parse (
+                                            sub.stream.connection.data.substring(0,sub.stream.connection.data.indexOf("%"))
+                                        ).clientName} 님</StStreamNickNamePublisher>
                                     <UserVideoComponent streamManager={sub} />
                                     <StStreamControlButtonBox>
                                         <ButtonDefault fontColor="red" onClick={()=>{onClickSubscriberVideoToggle(sub.stream.connection.connectionId)}}>

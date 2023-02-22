@@ -1,8 +1,11 @@
+@import url("./fonts/Fonts.css");
 :root {
   background: #ffe;
   font-size: 16px;
-  font-family: monospace;
+  font-family: Pretendard;
 }
+
+
 
 .d-block{
   visibility: visible;
@@ -204,4 +207,15 @@ textarea {
 }
 .UserVideoComponent{
   overflow: auto;
+}
+
+/*방 만들기*/
+#roomPasswordInput{
+  margin-top: 10px;
+}
+
+/*방 목록*/
+.iconSearch{
+  width: 24px;
+  height: 24px;
 }
