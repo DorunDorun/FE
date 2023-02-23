@@ -225,7 +225,7 @@ const StRoomItemMainInfoCategoryBox=styled.div`
   padding: 15px 6px;
 `
 const StRoomItemMainInfo=styled.div`
-  border-bottom: 1px solid purple;
+  border-bottom: 1px solid ${COLOR.baseDefault};
   border-radius: 10px;
   background-image: url(${(props)=>props.backgroundImage});
   background-position: top;
