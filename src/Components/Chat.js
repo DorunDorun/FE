@@ -252,7 +252,7 @@ const Container = styled.div`
   width: 280px;
   height: 100%;
   */
-  width: 370px;
+  width: 348px;
   height: 100%;
   color: #202020;
 `;
