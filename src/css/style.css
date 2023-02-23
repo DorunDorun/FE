@@ -227,3 +227,9 @@ textarea {
   width: 24px;
   height: 24px;
 }
+
+/*방*/
+.buttonOn{
+  background-color: var(--color-baseDefault) !important;
+  color: #fff !important;
+}
