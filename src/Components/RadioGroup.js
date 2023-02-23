@@ -40,6 +40,7 @@ const StInputDefault=styled.input.attrs(props=>({
   z-index: 0;
   appearance: none;
   border-radius: 50%;
+  cursor: pointer;
   :checked{
     border: 1px solid #8600F0;
   }
@@ -53,6 +54,7 @@ const StLabel=styled.label`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 `
 const StRadioGroupBox=styled.div`
   display: flex;

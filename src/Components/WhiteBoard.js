@@ -10,16 +10,19 @@ const WhiteBoard = ({className}) => {
 
 
 const StWhiteBoard=styled.div `
-    width: calc(100% - 6px);
-    height: 480px;
+    display: ${(props)=>props.display || "none"};
+    width: 100%;
+    height: calc(100% - 186px);
     position: absolute;
-    top: 54px;
+    top: 100px;
     left: 0;
     z-index: 2;
     background-color: #fff;
-    border-radius: 10px;
+    border-radius: 4px;
     border: 1px solid #e2e2e2;
-    display: ${(props)=>props.display || "none"}
+    box-shadow: 0px 3px 6px #00000029;
+    
+    
 `
 
 export default WhiteBoard
