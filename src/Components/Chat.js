@@ -166,10 +166,12 @@ export default Chat;
 const Container = styled.div`
   background-color: #f5f3ff;
   border-left: 1px solid #202020;
-  position: fixed;
+  /* position: fixed;
   top: 70px;
   bottom: 0;
-  right: 0;
+  right: 0; 
+  height: 100%;
+  */
   width: 280px;
   height: 100%;
   color: #202020;
@@ -178,7 +180,7 @@ const Container = styled.div`
 const ChatHistory = styled.div`
   display: flex;
   flex-direction: column-reverse;
-  height: calc(100% - 155px);
+  height: calc(100% - 80px);
   overflow-y: scroll;
   align-self: flex-end;
 

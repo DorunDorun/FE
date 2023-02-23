@@ -12,6 +12,22 @@ import WhiteBoard from "./WhiteBoard";
 import Chat from "./Chat";
 import Header from "./headers/Header";
 
+//아이콘
+import {BsCameraVideo} from 'react-icons/bs';
+import {BsCameraVideoOff} from 'react-icons/bs';
+import {BsMic} from 'react-icons/bs';
+import {BsMicMute} from 'react-icons/bs';
+import {BsPalette} from 'react-icons/bs';
+import {TfiBlackboard} from 'react-icons/tfi';
+import {BsMicFill} from 'react-icons/bs';
+import {BsMicMuteFill} from 'react-icons/bs';
+import {BsFillCameraVideoFill} from 'react-icons/bs';
+import {BsFillCameraVideoOffFill} from 'react-icons/bs';
+
+
+//css
+import { COLOR } from './style/style';
+
 //스토어-방 삭제
 import useStoreRoomDelete from "../zustand/storeRoomDelete";
 
@@ -26,8 +42,9 @@ function ChatRoom() {
   //roomTitle, userSessionId, userToken, userNickName, loading, hasErrors
   const roomTitle = localStorage.getItem("title");
   const userSessionId = localStorage.getItem("sessionId");
+  const userProfileImage = localStorage.getItem("profile")
   const userNickName = localStorage.getItem("name");
-
+  const [newNickName, setNewNickName]=useState(userNickName)
   //방 정보 불러오기
   const fetchRoomInfoGet = useStoreRoomInfoGet(
     (state) => state.fetchRoomInfoGet
@@ -83,13 +100,14 @@ function ChatRoom() {
   };
 
   //브라우저 새로고침, 종료 시 실행
+  /*
   useEffect(() => {
     window.addEventListener("beforeunload", refreshSession);
     return () => {
       window.removeEventListener("beforeunload", refreshSession);
     };
   }, []);
-
+*/
   useEffect(() => {
     //방 정보 불러오기
     console.log("isRefresh isRefresh : ", isRefresh);
@@ -110,6 +128,7 @@ function ChatRoom() {
         );
         const userTokenData = nowUserFilter[0].enterRoomToken;
         const userNickNameData = nowUserFilter[0].nickname;
+        setNewNickName(userNickNameData)
         //스트림 연결
         connection(userTokenData, userNickNameData);
       });
@@ -225,6 +244,12 @@ function ChatRoom() {
     }
   }, [isSubscriberVideo]);
 
+
+  //초대하기
+  const onClickInviteLink=()=>{
+    alert("서비스 준비 중인 기능입니다.")
+  }
+
   //캔버스 컨트롤
   const onClickCanvasToggle = () => {
     setIsCanvasDefault(false);
@@ -235,6 +260,13 @@ function ChatRoom() {
   const onClickWhiteBoardToggle = () => {
     setIsWhiteBoard(!isWhiteBoard);
   };
+
+  //라이브룸 캡쳐
+  const onClickCaptureRoom=()=>{
+    alert("서비스 준비 중인 기능입니다.")
+  }
+
+
 
   //음성감지
   useEffect(() => {
@@ -485,172 +517,321 @@ function ChatRoom() {
     <StWrap>
       <StSessionWrap>
         <Header />
+          <StStreamWrap>
+            <StSideNav>사이드 메뉴</StSideNav>
 
-        <StSessionVideoBox>
-          <StSessionHeader>
-            <StSessionH1>{roomTitle}</StSessionH1>
-          </StSessionHeader>
+            <StSessionVideoBox>
+              <StSessionVideoBoxView>
+              <StSessionHeader>
 
-          <StSessionVidoContainer>
-            {publisher !== undefined && (
-              <div className="sessionStreamBox">
-                <div
-                  className={isPublisherSpeaker && "isSpeaker"}
-                  onClick={() => onClickMainVideoStream(publisher)}
-                >
-                  <StStreamNickNamePublisher>나</StStreamNickNamePublisher>
-                  <UserVideoComponent streamManager={publisher} />
-                  <StStreamControlButtonBox>
-                    <ButtonDefault
-                      width="150px"
-                      fontColor="red"
-                      onClick={onClickPublisherVideoToggle}
+                <StSessionH1Box>
+                  <StSessionH1>{roomTitle}</StSessionH1>
+                </StSessionH1Box>
+
+                <StSessionUserBox>
+                  <ButtonDefault 
+                  height="48px"
+                  padding="0 30px"
+                  borderRadius="24px"
+                  bgColor={COLOR.baseDefault} fontColor="#fff" 
+                  hoverBgColor={COLOR.kakaoDefault} hoverFontColor="#000"
+                  onClick={onClickInviteLink}>초대하기</ButtonDefault>
+                </StSessionUserBox>
+
+              </StSessionHeader>
+
+              <StSessionVidoContainer>
+                {publisher !== undefined && (
+                  <div className="sessionStreamBox">
+                    <div
+                      className={isPublisherSpeaker && "isSpeaker"}
+                      onClick={() => onClickMainVideoStream(publisher)}
                     >
-                      {isPublisherVideo ? "내 비디오 on" : "내 비디오 off"}
-                    </ButtonDefault>
-                    <ButtonDefault
-                      width="150px"
-                      fontColor="red"
-                      onClick={onClickPublisherAudioToggle}
-                    >
-                      {isPublisherAudio ? "내 오디오 on" : "내 오디오 off"}
-                    </ButtonDefault>
-                  </StStreamControlButtonBox>
-                </div>
-              </div>
-            )}
-            {subscribers.length > 0 &&
-              subscribers?.map((sub, i) => (
-                <div className="sessionStreamBox">
-                  {console.log("✔✔✔ subscribers : ", sub)}
-                  <div
-                    key={sub.id}
-                    className={
-                      subscriberSpeakerConnectionId ===
-                        sub.stream.connection.connectionId && "isSpeaker"
-                    }
-                    onClick={() => onClickMainVideoStream(sub)}
-                  >
-                    <StStreamNickNamePublisher>
-                      {
-                        JSON.parse(
-                          sub.stream.connection.data.substring(
-                            0,
-                            sub.stream.connection.data.indexOf("%")
-                          )
-                        ).clientName
-                      }{" "}
-                      님
-                    </StStreamNickNamePublisher>
-                    <UserVideoComponent streamManager={sub} />
-                    <StStreamControlButtonBox>
-                      <ButtonDefault
-                        fontColor="red"
-                        onClick={() => {
-                          onClickSubscriberVideoToggle(
-                            sub.stream.connection.connectionId
-                          );
-                        }}
-                      >
-                        {isSubscriberVideo ? "비디오 on" : "비디오 off"}
-                      </ButtonDefault>
-                      <ButtonDefault
-                        fontColor="red"
-                        onClick={() => {
-                          onClickSubscriberAudioToggle(
-                            sub.stream.connection.connectionId
-                          );
-                        }}
-                      >
-                        {isSubscriberAudio ? "오디오 on" : "오디오 off"}
-                      </ButtonDefault>
-                    </StStreamControlButtonBox>
+                      <StStreamNickNamePublisher>나</StStreamNickNamePublisher>
+                      <UserVideoComponent streamManager={publisher} />
+                      <StStreamControlButtonBox>
+                        <StButtonDeviceOnOff
+                          width="150px"
+                          fontColor="red"
+                          onClick={onClickPublisherVideoToggle}
+                        >
+                          {isPublisherVideo ? <BsCameraVideo/> : <BsCameraVideoOff className="off"/>}
+                        </StButtonDeviceOnOff>
+                        <StButtonDeviceOnOff
+                          width="150px"
+                          fontColor="red"
+                          onClick={onClickPublisherAudioToggle}
+                          
+                        >
+                          {isPublisherAudio ? <BsMic/> : <BsMicMute className="off"/>}
+                        </StButtonDeviceOnOff>
+                      </StStreamControlButtonBox>
+                    </div>
                   </div>
-                </div>
-              ))}
-          </StSessionVidoContainer>
+                )}
+                {subscribers.length > 0 &&
+                  subscribers?.map((sub, i) => (
+                    <div className="sessionStreamBox">
+                      {console.log("✔✔✔ subscribers : ", sub)}
+                      <div
+                        key={sub.id}
+                        className={
+                          subscriberSpeakerConnectionId ===
+                            sub.stream.connection.connectionId && "isSpeaker"
+                        }
+                        onClick={() => onClickMainVideoStream(sub)}
+                      >
+                        <StStreamNickNamePublisher>
+                          {
+                            JSON.parse(
+                              sub.stream.connection.data.substring(
+                                0,
+                                sub.stream.connection.data.indexOf("%")
+                              )
+                            ).clientName
+                          }{" "}
+                          님
+                        </StStreamNickNamePublisher>
+                        <UserVideoComponent streamManager={sub} />
+                        <StStreamControlButtonBox>
+                          <StButtonDeviceOnOff
+                            fontColor="red"
+                            onClick={() => {
+                              onClickSubscriberVideoToggle(
+                                sub.stream.connection.connectionId
+                              );
+                            }}
+                          >
+                            {isSubscriberVideo ? <BsCameraVideo/> : <BsCameraVideoOff className="off"/>}
+                          </StButtonDeviceOnOff>
+                          <StButtonDeviceOnOff
+                            fontColor="red"
+                            onClick={() => {
+                              onClickSubscriberAudioToggle(
+                                sub.stream.connection.connectionId
+                              );
+                            }}
+                          >
+                            {isSubscriberAudio ? <BsMic/> : <BsMicMute className="off"/>}
+                          </StButtonDeviceOnOff>
+                        </StStreamControlButtonBox>
+                      </div>
+                    </div>
+                  ))}
+              </StSessionVidoContainer>
 
-          {mainStreamManager !== undefined && (
-            <StSessionMainVideo>
-              <UserVideoComponent streamManager={mainStreamManager} />
-            </StSessionMainVideo>
-          )}
+              {mainStreamManager !== undefined && (
+                <StSessionMainVideo>
+                  <UserVideoComponent streamManager={mainStreamManager} />
+                </StSessionMainVideo>
+              )}
+              </StSessionVideoBoxView>
 
-          <StMyStreamControlBox>
-            <ButtonDefault
-              width="150px"
-              fontColor="red"
-              onClick={onClickPublisherVideoToggle}
-            >
-              {isPublisherVideo ? "내 비디오 on" : "내 비디오 off"}
-            </ButtonDefault>
-            <ButtonDefault
-              width="150px"
-              fontColor="red"
-              onClick={onClickPublisherAudioToggle}
-            >
-              {isPublisherAudio ? "내 오디오 on" : "내 오디오 off"}
-            </ButtonDefault>
-            <ButtonDefault
-              fontColor="yellow"
-              hoverBgColor="#FFFFEE"
-              hoverFontColor="#000"
-              onClick={onClickCanvasToggle}
-            >
-              Canvas
-            </ButtonDefault>
-            <ButtonDefault
-              onClick={onClickWhiteBoardToggle}
-              bgColor="#fff"
-              fontColor="#000"
-              hoverBgColor="yellow"
-              hoverFontColor="#000"
-            >
-              화이트보드
-            </ButtonDefault>
-            <ButtonDefault
-              bgColor="red"
-              color="#fff"
-              hoverBgColor="yellow"
-              hoverFontColor="#000"
-              onClick={onClickLeaveSession}
-            >
-              나가기
-            </ButtonDefault>
-          </StMyStreamControlBox>
+              <StMyStreamControlBox>
+                <StMyStreamControlBoxLeft>
+                  <StMyStreamNickNameBox>
+                      {userProfileImage && <StMyProfileImage src={userProfileImage}/>}
+                      <StMyProfileNickName>
+                        {newNickName}
+                      </StMyProfileNickName>
+                  </StMyStreamNickNameBox>
+                  <StButtonMyDeviceOnOff
+                    width="150px"
+                    fontColor="red"
+                    onClick={onClickPublisherVideoToggle}
+                  >
+                    {isPublisherVideo ?  <BsFillCameraVideoFill/> : <BsFillCameraVideoOffFill className="off"/>}
+                  </StButtonMyDeviceOnOff>
+                  <StButtonMyDeviceOnOff
+                    width="150px"
+                    fontColor="red"
+                    onClick={onClickPublisherAudioToggle}
+                  >
+                    {isPublisherAudio ? <BsMicFill/> : <BsMicMuteFill className="off"/>}
+                  </StButtonMyDeviceOnOff>
+                  <StMyDeviceButton
+                    onClick={onClickCanvasToggle}
+                  >
+                    <BsPalette/>
+                  </StMyDeviceButton>
+                  <StMyDeviceButton
+                    onClick={onClickWhiteBoardToggle}
+                  >
+                    <TfiBlackboard/>
+                  </StMyDeviceButton>
+                </StMyStreamControlBoxLeft>
+                <StMyStreamControlBoxRight>
+                  <ButtonDefault
+                    width="auto"
+                    height="48px"
+                    padding="0 20px"
+                    fontSize="18px"
+                    fontColor="#fff"
+                    bgColor={COLOR.baseLight}
+                    hoverBgColor={COLOR.baseDefault}
+                    hoverFontColor="#fff"
+                    borderRadius="8px"
+                    boxShadow="0px 3px 4px #8600F01A"
+                    onClick={onClickCaptureRoom}
+                  >
+                    라이브룸 촬영
+                  </ButtonDefault>
 
-          <CanvasDrawing
-            className={isCanvas ? "d-block" : "d-none"}
-            defaultClass={isCanvasDefault ? "defaultNone" : ""}
-          />
+                  <ButtonDefault
+                    width="auto"
+                    height="48px"
+                    padding="0 20px"
+                    bgColor="#fff"
+                    fontSize="18px"
+                    fontColor={COLOR.redPoint}
+                    hoverBgColor={COLOR.redPoint}
+                    hoverFontColor="#fff"
+                    borderRadius="8px"
+                    boxShadow="0px 3px 4px #8600F01A"
+                    onClick={onClickLeaveSession}
+                  >
+                    나가기
+                  </ButtonDefault>
+                </StMyStreamControlBoxRight>
+              </StMyStreamControlBox>
 
-          <WhiteBoard className={isWhiteBoard ? "block" : "none"} />
-        </StSessionVideoBox>
+              <CanvasDrawing
+                className={isCanvas ? "d-block" : "d-none"}
+                defaultClass={isCanvasDefault ? "defaultNone" : ""}
+              />
 
-        <Chat props={userSessionId} />
+              <WhiteBoard className={isWhiteBoard ? "block" : "none"} />
+              
+            </StSessionVideoBox>
+            
+            <Chat props={userSessionId} />
+          </StStreamWrap>
+        
+
+        <StFooter></StFooter>
       </StSessionWrap>
     </StWrap>
   );
 }
 
-const StMyStreamControlBox = styled.div`
+
+
+const StMyProfileNickName=styled.span``
+const StMyProfileImage=styled.img`
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+`
+const StMyStreamNickNameBox=styled.span`
+  max-width: 400px;
+  min-width: 140px;
+  height: 48px;
   display: flex;
   justify-content: center;
   align-items: center;
-  column-gap: 10px;
-  background-color: #000;
+  column-gap: 16px;
+  padding: 5px 10px;
+  background-color: ${COLOR.boxGrayBold};
+  color: #fff;
+  font-weight: bold;
+  box-shadow: 0px 3px 4px #0000001a;
+  border-radius: 8px;
+`
+const StMyStreamControlBoxRight=styled.div`
+  display: flex;
+  align-items: center;
+  column-gap: 15px;
+`
+const StMyStreamControlBoxLeft=styled.div`
+  display: flex;
+  column-gap: 20px;
+`
+const StMyDeviceButton=styled.button`
+  width: 48px;
+  height: 48px;
+  border: 1px solid transparent;
+  background-color: ${COLOR.grayLight2};
+  border-radius: 50%;
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 3px 3px 6px #00000029;
+  cursor: pointer;
+  :hover{
+    background-color: ${COLOR.baseDefault};
+    color: #fff;
+  }
+`
+const StButtonMyDeviceOnOff=styled.button`
+  border: none;
+  background-color: transparent;
+  color: #fff;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  :hover{
+    color: ${COLOR.baseDefault};
+  }
+`
+const StButtonDeviceOnOff=styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: transparent;
+  color: ${COLOR.baseLight};;
+  font-size: 22px;
+  cursor: pointer;
+  :hover{
+    color: ${COLOR.baseDefault};
+  }
+`
+const StSideNav=styled.nav`
+  min-width: 300px;
+  background-color: #fff;
+  border-right: 1px solid ${COLOR.grayLight}
+`
+const StStreamWrap=styled.div`
+  display: flex;
+  height: calc(100vh - 120px);
+`
+const StFooter=styled.footer`
   height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${COLOR.grayLight};
+`
+const StMyStreamControlBox = styled.div`
+  width: 100%;
+  height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  column-gap: 10px;
+  background-color: ${COLOR.boxGrayLight};
+  padding: 0 60px;
 `;
 const StStreamControlButtonBox = styled.div`
   position: absolute;
   bottom: 5px;
-  right: 5px;
+  right: 10px;
   z-index: 1;
   display: flex;
   flex-direction: row;
   column-gap: 10px;
 `;
 const StStreamNickNamePublisher = styled.span`
+  display: inline-block;
+  max-width: 92%;
+  min-width: 46px;
+  max-height: 41px;
+  line-height: 1.1;
+  overflow: hidden;  
   position: absolute;
   top: 10px;
   left: 10px;
@@ -666,16 +847,23 @@ const StSessionVidoContainer = styled.div`
   align-items: flex-start;
   flex-wrap: wrap;
   width: 100%;
-  height: 400px;
+  height: 500px;
   column-gap: 20px;
-  margin-bottom: 160px;
   row-gap: 20px;
+  margin-top: 70px;
 `;
+
+const StSessionVideoBoxView=styled.div`
+  padding: 30px 60px;
+`
 const StSessionVideoBox = styled.div`
-  width: 1200px;
+  min-width: 1000px;
   margin: 0 auto;
-  padding: 10px;
   position: relative;
+  background-color: ${COLOR.pinkLight};
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 const StSessionMainVideo = styled.div`
@@ -683,20 +871,35 @@ const StSessionMainVideo = styled.div`
 `;
 
 const StSessionH1 = styled.h1`
-  padding: 10px 16px;
-  background-color: #000;
-  color: #fff;
-  border-radius: 4px;
-  display: inline-block;
+  color: #000;
+  font-size: 26px;
+  font-weight: bold;
+  display: inline;
 `;
+const StSessionUserBox=styled.div``
+const StSessionH1Box=styled.div`
+  display: flex;
+  align-items: center;
+`
 const StSessionHeader = styled.div`
-  margin-bottom: 20px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid ${COLOR.baseDefault};
+  display: flex;
+  justify-content: space-between;
 `;
 
 const StSessionWrap = styled.div`
   width: 100%;
   margin: 0 auto;
 `;
-const StWrap = styled.div``;
+const StWrap = styled.div`
+  overflow: hidden;
+  background-color: #fff;
+  ::-webkit-scrollbar { /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
+      display: none;
+    }
+    -ms-overflow-style: none; /* 인터넷 익스플로러 */
+    scrollbar-width: none; /* 파이어폭스 */
+`;
 
 export default ChatRoom;

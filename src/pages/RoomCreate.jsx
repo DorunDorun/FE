@@ -334,7 +334,7 @@ function RoomCreate() {
                 <StPasswordInputBox display={isDisabled ? "none" : "block"}>
                   <InputWithLabelDefault
                     width="100%"
-                    height="30px"
+                    height="44px"
                     inputType="text"
                     inputId="roomPasswordInput"
                     inputValue={roomPassword}
@@ -356,7 +356,7 @@ function RoomCreate() {
           <StRoomCreateInputDiv>
             <InputWithLabelDefault
               width="100%"
-              height="30px"
+              height="44px"
               inputType="text"
               inputId="roomTitleInput"
               inputValue={roomTitle}
@@ -373,7 +373,7 @@ function RoomCreate() {
           <StRoomCreateInputDiv>
             <InputWithLabelDefault
               width="100%"
-              height="30px"
+              height="44px"
               inputType="text"
               inputId="roomSubTitleInput"
               inputValue={roomSubTitle}

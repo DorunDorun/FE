@@ -10,6 +10,10 @@ import {GrSort} from 'react-icons/gr';
 import { IoIosSearch } from 'react-icons/io';
 import {BsFillGridFill} from 'react-icons/bs';
 import RoomItem from '../Components/RoomItem';
+import Wait from '../Components/Wait';
+
+//이미지
+import { roomListBack } from '../Components/ImagesGlobal';
 
 //css
 import { COLOR } from '../Components/style/style';
@@ -30,25 +34,10 @@ const RoomList = () => {
   const hasErrors = useStoreRoomList((state) => state.hasErrors);
   const roomList = useStoreRoomList((state) => state.roomList);
 
-/*
-
-  //방 입장 데이터
-  const fetchPostRoomJoin = useStoreRoomJoin(
-    (state) => state.fetchPostRoomJoin
-  );
-  const roomJoinData = useStoreRoomJoin((state) => state.data);
-  const roomInfo = useStoreRoomJoin((state) => state.roomInfo);
-
-  const storeRoomPassword = useStoreRoomJoin((state) => state.roomPassword);
-
-  //방장 상태
-  const roomMasterStatus = useStoreRoomMasterCheck((state) => state.roomMasterStatus);
-
-  //스토어-새로고침
-  const refreshStatusToggle = useStoreRefreshStatus((state)=>state.refreshStatusToggle)
-  const isRefresh = useStoreRefreshStatus((state)=>state.isRefresh)
-
-*/
+  //메세지
+  const message={
+    welcome:"두런두런에 오신걸 환영합니다!"
+  }
 
   //방 목록 무한스크롤 api
   let roomGetPageCount = 1;
@@ -66,6 +55,13 @@ const RoomList = () => {
   console.log("data : ", data);
   console.log("roomList : ", roomList);
 
+  const onClickSearch=()=>{
+    alert("서비스 준비 중인 기능입니다.")
+  }
+
+  const onClickCategorySearch=()=>{
+    alert("서비스 준비 중인 기능입니다.")
+  }
 
   const onClickRoomJoin=(title, sessionId, status)=>{
     const info={
@@ -89,11 +85,11 @@ const RoomList = () => {
     navigate("/roomCreate");
   };
 
-  /*
+  
   if (loading) {
     return <Wait />;
   }
-  */
+  
   if (hasErrors) {
     return <p>cannot read data : 서버 응답 에러</p>;
   }
@@ -106,33 +102,35 @@ const RoomList = () => {
         <StRoomListSideNav>사이드 메뉴</StRoomListSideNav>
         
         <StRoomListCenter>
-          <StRoomListHeader>
-              <StRoomListSearchBox>
-                <StRoomListSearchInput placeholder="관심있는 키워드를 검색해보세요!"/>
-                <StRoomListSearchButton>
-                  <IoIosSearch className="iconSearch"/>
-                </StRoomListSearchButton>
-              </StRoomListSearchBox>
-              {/* <StRoomCreateButton >라이브룸 만들기</StRoomCreateButton> */}
-              <ButtonDefault 
-              width="17%" height="40px" 
-              bgColor={COLOR.baseDefault} fontColor="#fff" 
-              hoverBgColor={COLOR.greenLight} hoverFontColor="#000"
-              onClick={onClickRoomCreate}
-              >라이브룸 만들기</ButtonDefault>
-          </StRoomListHeader>
+          <StRoomListTopContainer>
+            <StRoomListHeader>
+                <StRoomListSearchBox>
+                  <StRoomListSearchInput placeholder="관심있는 키워드를 검색해보세요!"/>
+                  <StRoomListSearchButton onClick={onClickSearch}>
+                    <IoIosSearch className="iconSearch"/>
+                  </StRoomListSearchButton>
+                </StRoomListSearchBox>
+                {/* <StRoomCreateButton >라이브룸 만들기</StRoomCreateButton> */}
+                <ButtonDefault 
+                width="17%" height="40px" 
+                bgColor={COLOR.baseDefault} fontColor="#fff" 
+                hoverBgColor={COLOR.greenLight} hoverFontColor="#000"
+                onClick={onClickRoomCreate}
+                >라이브룸 만들기</ButtonDefault>
+            </StRoomListHeader>
 
-        <StRoomListCategorySlide>
-          <ButtonDefault>카테고리1</ButtonDefault>
-          <ButtonDefault>카테고리2</ButtonDefault>
-          <ButtonDefault>카테고리3</ButtonDefault>
-        </StRoomListCategorySlide>
+          <StRoomListCategorySlide>
+            <ButtonDefault onClick={onClickCategorySearch} padding="10px 0" height="40px" lineHeight="20px" borderRadius="20px" hoverBgColor={COLOR.baseLight} hoverFontColor="#fff">카테고리1</ButtonDefault>
+            <ButtonDefault onClick={onClickCategorySearch} padding="10px 0" height="40px" lineHeight="20px" borderRadius="20px" hoverBgColor={COLOR.baseLight} hoverFontColor="#fff">카테고리2</ButtonDefault>                                      
+            <ButtonDefault onClick={onClickCategorySearch} padding="10px 0" height="40px" lineHeight="20px" borderRadius="20px" hoverBgColor={COLOR.baseLight} hoverFontColor="#fff">카테고리3</ButtonDefault>
+
+          </StRoomListCategorySlide>
+        </StRoomListTopContainer>
 
         <StRoomListBox>
           <StRoomListBoxInfo>
-            <StRoomListBoxInfoH2>
-              두런두런에 오신걸 환영합니다!
-            </StRoomListBoxInfoH2>
+            <StRoomListBoxInfoH2>{message.welcome}</StRoomListBoxInfoH2>
+            {/*
             <StRoomListBoxInfoSortBox>
               <StRoomListSortSelectBox>
                 <option>생성일</option>
@@ -144,11 +142,13 @@ const RoomList = () => {
                 <GrSort />
               </StButtonTransparent>
             </StRoomListBoxInfoSortBox>
+            */}
           </StRoomListBoxInfo>
 
           <StRoomListBoxRooms>
             <StRoomListBoxRoomsContainer>
               {/* category, title, subtitle, privateStatus, peopleCount */}
+              {roomList.length === 0 && <StNoRooms>"두런두런의 첫 방을 만들어 보세요!"</StNoRooms>}
               {roomList?.map((room) => {
                 return (
                   <RoomItem
@@ -160,6 +160,7 @@ const RoomList = () => {
                   status={room.status}
                   userCount={room.cntUser}
                   password={room.password}
+                  backgroundImage={roomListBack.study.url}
                   onClick={()=>{onClickRoomJoin(room.title, room.sessionId, room.status, room.password)}}
                   />
                 );
@@ -174,38 +175,42 @@ const RoomList = () => {
 }
 
 
+const StNoRooms=styled.p`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
 const StRoomListSideNav=styled.div`
-  max-width: 320px;
-  min-width: 220px;
+  width: 300px;
   height: 100vh;
 `
 
 const StRoomListBoxRoomsContainer=styled.div`
-  display: flex;
-  justify-content: flex-start;
-  row-gap: 20px;
-  column-gap: 20px;
-  flex-wrap: wrap;
-  border: 1px solid blue;
-  min-width: 80%;
+    overflow: hidden;
+    height: 71vh;
+    overflow-y: auto;
+    text-align: left;
+    ::-webkit-scrollbar { /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
+      display: none;
+    }
+    -ms-overflow-style: none; /* 인터넷 익스플로러 */
+    scrollbar-width: none; /* 파이어폭스 */
 `
 const StRoomListBoxRooms=styled.div`
-  display: flex;
-  justify-content: center;
+  text-align: center;
 `
-const StButtonTransparent=styled.button``
-const StRoomListSortSelectBox=styled.select``
-const StRoomListBoxInfoSortBox=styled.div``
+
 const StRoomListBoxInfoH2=styled.h2`
   font-family: "LottriaChab";
   font-size: 30px;
+  padding-left: 10px;
 `
 const StRoomListBoxInfo=styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 `;
 const StRoomListBox = styled.div``;
 const StRoomListCategorySlide = styled.div`
@@ -213,7 +218,7 @@ const StRoomListCategorySlide = styled.div`
   justify-content: center;
   align-items: center;
   column-gap: 10px;
-  margin-bottom: 30px;
+  margin-bottom: 36px;
 `
 const StRoomCreateButton=styled.button``
 const StRoomListSearchButton=styled.button`
@@ -256,15 +261,24 @@ const StRoomListHeader=styled.div`
   margin-bottom: 32px;
 `
 
+const StRoomListTopContainer=styled.div`
+
+`
+
+
 const StRoomListCenter=styled.div`
-  max-width: 1500px;
-  min-width: 1200px;
-  border: 1px solid green;
-  padding: 30px;
+  width: 100%;
+  display: block;
+  border-left: 1px solid ${COLOR.grayLight2};
+  padding: 36px 85px 36px 36px;
+  margin: 0;
+  font-size: 0;
 `
 const StRoomListWrap=styled.section`
   display: flex;
+  justify-content: center;
   background-color: #fff;
+  min-width: 1200px;
 `
 
 export default RoomList;
