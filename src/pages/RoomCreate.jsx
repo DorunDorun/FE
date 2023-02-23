@@ -10,6 +10,9 @@ import RadioGroup from "../Components/RadioGroup";
 import RadioGroupImage from "../Components/RadioGroupImage";
 import InputWithLabelDefault from "../Components/InputWithLabelDefault";
 
+//유효성 검사
+import { regExpTitle, regExpSubTitle, regExpPassword } from '../Components/apis/RegExp';
+
 //css
 import { COLOR } from "../Components/style/style";
 
@@ -150,9 +153,21 @@ function RoomCreate() {
   }, [roomJoinButtonImage]);
 
   /*유효성 검사*/
+
+  //유효성 검사 방 제목
+  const onBlurRegExpTitle = (e) => {
+    if (!regExpTitle(e.target.value)) {
+      setIsRegExp({ ...isRegExp, title: false });
+      return setValidMessage({ ...validMessage, title: messageForm.title });
+    } else {
+      setIsRegExp({ ...isRegExp, title: true });
+      return setValidMessage({ ...validMessage, title: "" });
+    }
+  };
+  /*
   const onBlurRegExpTitle = (e) => {
     //유효성 검사 방 제목
-    const regExpTitle = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|" "|]{5,20}$/;
+    const regExpTitle = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|" "|~!@#$%^&*()_+|<>?:{}|]{5,20}$/;
     let { value } = e.target;
     if (!regExpTitle.test(value.trim())) {
       setIsRegExp({ ...isRegExp, title: false });
@@ -164,10 +179,27 @@ function RoomCreate() {
       return setValidMessage({ ...validMessage, title: "" });
     }
   };
+*/
 
+//유효성 검사 방 내용
+const onBlurRegExpSubTitle = (e) => {
+  if (!regExpSubTitle(e.target.value)) {
+    setIsRegExp({ ...isRegExp, subTitle: false });
+    return setValidMessage({
+      ...validMessage,
+      subTitle: messageForm.subTitle,
+    });
+  } else {
+    setIsRegExp({ ...isRegExp, subTitle: true });
+    return setValidMessage({ ...validMessage, subTitle: "" });
+  }
+};
+
+
+  /*
   const onBlurRegExpSubTitle = (e) => {
     //유효성 검사 방 내용
-    const regExpSubTitle = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|" "|]{5,20}$/;
+    const regExpSubTitle = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|" "|~!@#$%^&*()_+|<>?:{}|]{5,20}$/;
     let { value } = e.target;
     if (!regExpSubTitle.test(value.trim())) {
       setIsRegExp({ ...isRegExp, subTitle: false });
@@ -182,8 +214,24 @@ function RoomCreate() {
       return setValidMessage({ ...validMessage, subTitle: "" });
     }
   };
-
+*/
+  
   //유효성 검사 비밀번호
+  const onBlurRegExpPassword = (e) => {
+    if (!regExpPassword.test(e.target.value)) {
+      setIsRegExp({ ...isRegExp, password: false });
+      return setValidMessage({
+        ...validMessage,
+        password: messageForm.password,
+      });
+    } else {
+      setIsRegExp({ ...isRegExp, password: true });
+      return setValidMessage({ ...validMessage, password: "" });
+    }
+  };
+  
+  
+  /*
   const onBlurRegExpPassword = (e) => {
     console.log("비밀번호 체크 isDisabled 2 : ", isDisabled);
     const regExpPassword = /^[a-z|A-Z|0-9|" "|]{5,10}$/;
@@ -199,7 +247,7 @@ function RoomCreate() {
       return setValidMessage({ ...validMessage, password: "" });
     }
   };
-
+*/
   //방 생성 데이터
   const { data } = useStoreRoomCreate((state) => state.data);
   const loading = useStoreRoomCreate((state) => state.loading);
