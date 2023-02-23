@@ -11,7 +11,6 @@ import ButtonDefault from "./ButtonDefault";
 import WhiteBoard from "./WhiteBoard";
 import Chat from "./Chat";
 import Header from "./headers/Header";
-import SubscriberVideoItem from './SubscriberVideoItem';
 
 //아이콘
 import {BsCameraVideo} from 'react-icons/bs';
@@ -574,28 +573,58 @@ function ChatRoom() {
                   </div>
                 )}
                 {subscribers.length > 0 &&
-                  subscribers?.map((sub) => {
-                      return(
-                        <SubscriberVideoItem
-                        key={sub.id}
-                        sub={sub}
-                        
-                        subscriberSpeakerConnectionId={subscriberSpeakerConnectionId}                        
-                        subStreamConnectionConnectionId={sub.stream.connection.connectionId}
-                        onClickMainVideo={()=>{onClickMainVideoStream(sub)}}
-                        onClickSubscriberVideoToggle={()=>{onClickSubscriberVideoToggle(sub.stream.connection.connectionId)}}
-                        onClickSubscriberAudioToggle={()=>{onClickSubscriberAudioToggle(sub.stream.connection.connectionId)}}
-                        userNickName={JSON.parse(
-                          sub.stream.connection.data.substring(
-                            0,
-                            sub.stream.connection.data.indexOf("%")
-                          )
-                        ).clientName}
-                        
-                      />
-                    )
-                  })
-                }
+                  subscribers?.map((sub, i) => (
+                    <StSubscribersSessionStreamBox key={sub.id} className="sessionStreamBox">
+                      {console.log("✔✔✔ subscribers : ", sub)}
+                      <StSubscribersSessionStreamInnerBox
+                        className={
+                          subscriberSpeakerConnectionId ===
+                            sub.stream.connection.connectionId && "isSpeaker"
+                        }
+                        onClick={() => onClickMainVideoStream(sub)}
+                      >
+                        <StStreamNickNamePublisher>
+                          {
+                            JSON.parse(
+                              sub.stream.connection.data.substring(
+                                0,
+                                sub.stream.connection.data.indexOf("%")
+                              )
+                            ).clientName
+                          }{" "}
+                          님
+                        </StStreamNickNamePublisher>
+                        <UserVideoComponent streamManager={sub} />
+                        <StStreamControlButtonBox>
+                          <StButtonDeviceOnOff
+                            fontColor="red"
+                            onClick={() => {
+                              onClickSubscriberVideoToggle(
+                                sub.stream.connection.connectionId
+                              );
+                            }}
+                          >
+                            {console.log("💥💥sub.stream.connection.stream.videoActive : ", sub.stream.connection.stream.videoActive)}
+                            {/*sub.stream.connection.stream.videoActive ? <BsCameraVideo/> : <BsCameraVideoOff className="off"/>*/}
+                            {isSubscriberVideo ? <BsCameraVideo/> : <BsCameraVideoOff className="off"/>}
+                          </StButtonDeviceOnOff>
+                          <StButtonDeviceOnOff
+                            fontColor="red"
+                            onClick={() => {
+                              onClickSubscriberAudioToggle(
+                                sub.stream.connection.connectionId
+                              );
+                            }}
+                          >
+                            {console.log("💥💥💥 sub.stream.connection. : ", sub.stream.connection)}
+                            {console.log("💥💥 sub.stream.connection.stream.audioActive : ", sub.stream.connection.stream.audioActive)}
+                            {/*sub.stream.connection.stream.audioActive ? <BsMic/> : <BsMicMute className="off"/>*/}
+                            {isSubscriberAudio ? <BsMic/> : <BsMicMute className="off"/>}
+                          </StButtonDeviceOnOff>
+                        </StStreamControlButtonBox>
+                      </StSubscribersSessionStreamInnerBox>
+                    </StSubscribersSessionStreamBox>
+                  ))}
               </StSessionVidoContainer>
 
               {mainStreamManager !== undefined && (
