@@ -39,7 +39,7 @@ const SubscriberVideoItem = ({
 
 
   return (
-    <StSubscribersSessionStreamBox className="sessionStreamBox">
+    <div className="sessionStreamBox">
         {console.log("✔✔✔ subscribers : ", sub)}
         <StSubscribersSessionStreamInnerBox
         className={
@@ -69,7 +69,7 @@ const SubscriberVideoItem = ({
             </StButtonDeviceOnOff>
         </StStreamControlButtonBox>
         </StSubscribersSessionStreamInnerBox>
-    </StSubscribersSessionStreamBox>
+    </div>
   )
 }
 
@@ -120,15 +120,11 @@ const StStreamNickNamePublisher = styled.span`
 
 const StSubscribersSessionStreamInnerBox=styled.div`
   height: 100%;
+  min-height: 140px;
   border-radius: 5px;
   position: relative;
   border: 3px solid transparent;
-`
-const StSubscribersSessionStreamBox=styled.div`
-  flex-basis: 32%;
-  min-height: 203px;
-  overflow: hidden;
-  position: relative;
+  box-sizing: border-box;
 `
 
 
