@@ -5,7 +5,7 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import styled from "styled-components";
 import { AiOutlinePlusSquare } from "react-icons/ai";
-import pako from "pako";
+//import pako from "pako";
 
 // 스토어
 import useStoreRoomCreate from "../zustand/storeRoomCreate";
