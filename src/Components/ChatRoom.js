@@ -94,11 +94,12 @@ function ChatRoom() {
 
   //새로고침 시
   const refreshSession = (e) => {
-    //e.preventDefault();
+    e.preventDefault();
     fetchDeleteRoom(userSessionId);
     //setIsRefresh(true);
     resetSession();
     navigate("/roomWaiting");
+    e.returnValue=""
   };
 
   //브라우저 새로고침, 종료 시 실행
@@ -545,9 +546,10 @@ function ChatRoom() {
               </StSessionHeader>
 
               <StSessionVidoContainer>
+                <StSessionVidoContainerInner>
                 {publisher !== undefined && (
                   <div className="sessionStreamBox">
-                    <div
+                    <StSubscribersSessionStreamInnerBox
                       className={isPublisherSpeaker && "isSpeaker"}
                       onClick={() => onClickMainVideoStream(publisher)}
                     >
@@ -570,7 +572,7 @@ function ChatRoom() {
                           {isPublisherAudio ? <BsMic/> : <BsMicMute className="off"/>}
                         </StButtonDeviceOnOff>
                       </StStreamControlButtonBox>
-                    </div>
+                    </StSubscribersSessionStreamInnerBox>
                   </div>
                 )}
                 {subscribers.length > 0 &&
@@ -579,7 +581,6 @@ function ChatRoom() {
                         <SubscriberVideoItem
                         key={sub.id}
                         sub={sub}
-                        
                         subscriberSpeakerConnectionId={subscriberSpeakerConnectionId}                        
                         subStreamConnectionConnectionId={sub.stream.connection.connectionId}
                         onClickMainVideo={()=>{onClickMainVideoStream(sub)}}
@@ -591,11 +592,11 @@ function ChatRoom() {
                             sub.stream.connection.data.indexOf("%")
                           )
                         ).clientName}
-                        
                       />
                     )
                   })
                 }
+                </StSessionVidoContainerInner>
               </StSessionVidoContainer>
 
               {mainStreamManager !== undefined && (
@@ -698,19 +699,6 @@ function ChatRoom() {
   );
 }
 
-
-const StSubscribersSessionStreamInnerBox=styled.div`
-  height: 100%;
-  border-radius: 5px;
-  position: relative;
-  border: 3px solid transparent;
-`
-const StSubscribersSessionStreamBox=styled.div`
-  flex-basis: 32%;
-  min-height: 203px;
-  overflow: hidden;
-  position: relative;
-`
 const StMyProfileNickName=styled.span``
 const StMyProfileImage=styled.img`
   width: 30px;
@@ -800,6 +788,16 @@ const StFooter=styled.footer`
   align-items: center;
   background-color: ${COLOR.grayLight};
 `
+
+const StSubscribersSessionStreamInnerBox=styled.div`
+  height: 100%;
+  min-height: 140px;
+  border-radius: 5px;
+  position: relative;
+  border: 3px solid transparent;
+  box-sizing: border-box;
+`
+
 const StMyStreamControlBox = styled.div`
   width: 100%;
   height: 80px;
@@ -836,23 +834,31 @@ const StStreamNickNamePublisher = styled.span`
   border-radius: 14px;
   background-color: rgba(0, 0, 0, 0.5);
 `;
+
+const StSessionVidoContainerInner=styled.div`
+  text-align: left;
+`
+
 const StSessionVidoContainer = styled.div`
+/*
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
   flex-wrap: wrap;
-  width: 100%;
-  height: 500px;
   column-gap: 20px;
   row-gap: 20px;
+*/
+  width: 100%;
+  height: 500px;
   margin-top: 70px;
+  text-align: center;
 `;
 
 const StSessionVideoBoxView=styled.div`
   padding: 30px 60px;
 `
 const StSessionVideoBox = styled.div`
-  min-width: 1000px;
+  min-width: 900px;
   margin: 0 auto;
   position: relative;
   background-color: ${COLOR.pinkLight};

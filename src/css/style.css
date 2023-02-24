@@ -201,18 +201,6 @@ textarea {
 .isSpeaker{
 	border-color: var(--color-baseDefault) !important;
 }
-.sessionStreamBox{
-  flex-basis: 32%;
-  min-height: 203px;
-  overflow: hidden;
-  position: relative;
-}
-.sessionStreamBox > div{
-  height: 100%;
-  border-radius: 5px;
-  position: relative;
-  border: 3px solid transparent;
-}
 .UserVideoComponent{
   overflow: auto;
 }
@@ -232,4 +220,17 @@ textarea {
 .buttonOn{
   background-color: var(--color-baseDefault) !important;
   color: #fff !important;
+}
+.sessionStreamBox{
+  width: calc(100% / 3 - 14px);
+  overflow: hidden;
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+  min-height: 140px;
+}
+
+.sessionStreamBox:nth-child(2), .sessionStreamBox:nth-child(5){
+  margin-left: 20px;
+  margin-right: 20px;
 }
