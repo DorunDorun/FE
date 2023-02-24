@@ -43,7 +43,7 @@ api.interceptors.request.use(
     },
   
     function (error) {
-      alert("서버 응답 에러! 다시 시도해주세요!");
+      //alert("서버 응답 에러! 다시 시도해주세요!");
       return Promise.reject(error);
     }
   );
