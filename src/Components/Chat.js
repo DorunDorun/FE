@@ -5,6 +5,7 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import styled from "styled-components";
 import { AiOutlinePlusSquare } from "react-icons/ai";
+import pako from "pako";
 
 // 스토어
 import useStoreRoomCreate from "../zustand/storeRoomCreate";
@@ -45,10 +46,12 @@ const Chat = ({ props }) => {
 
   //  data에 뭐가 찍힐까요?
   console.log(data);
-  // 채팅 엔터키/shif+enter 막기
+
+  // 채팅 엔터키 전송
   const handleEnterPress = (e) => {
-    if (e.keyCode === 13 && e.shiftKey == false) {
-      window.scrollTo(0, 0);
+    if (e.keyCode === 13) {
+      e.preventDefault(); // 기본 엔터키 동작 막기
+      sendChat(); // 데이터 전송하는 함수 호출
     }
   };
 
@@ -95,7 +98,6 @@ const Chat = ({ props }) => {
     }
   };
 
-  // 채팅 전송
   const sendChat = () => {
     const msg = chatRef.current.value;
     const img = imgRef.current.files[0];
@@ -105,28 +107,29 @@ const Chat = ({ props }) => {
     }
     if (img) {
       // 이미지 파일이 있는 경우
-      const reader = new FileReader(); // FileReader 객체 생성
+      const reader = new FileReader();
       reader.onload = (event) => {
-        // 파일 로드가 완료되면 실행되는 함수
-        const imgData = new Uint8Array(event.target.result); // 파일의 바이트 코드 추출
-        const imgDataStr = btoa(String.fromCharCode.apply(null, imgData)); // 바이트 코드를 base64 문자열로 변환
+        const imgDataUrl = reader.result;
+        const imgDataStr = `data:image/jpeg;base64,${imgDataUrl.split(",")[1]}`;
         client.send(
-          `/pub/chat/room`,
+          "/pub/chat/room",
           {},
           JSON.stringify({
             sessionId: sessionId,
             socialUid: id,
             nickname: name,
             message: msg,
-            imgByteCode: imgDataStr, // 이미지 바이트 코드 전송
+            imgByteCode: imgDataStr, // 압축하지 않고 그대로 사용
           })
         );
+        // 이미지 미리보기 초기화
+        setImage(null);
       };
-      reader.readAsArrayBuffer(img); // 파일 읽기
+      reader.readAsDataURL(img);
     } else {
       // 메시지만 있는 경우
       client.send(
-        `/pub/chat/room`,
+        "/pub/chat/room",
         {},
         JSON.stringify({
           sessionId: sessionId,
@@ -183,6 +186,9 @@ const Chat = ({ props }) => {
   // );
   // console.log(1234, chatlog);
 
+  // const chatlog = todos.map(
+  //   (chating) => console.log(1234, chatlog)
+
   return (
     <Container>
       <ChatHistory>
@@ -194,25 +200,32 @@ const Chat = ({ props }) => {
             .map((chating) =>
               chating.receive.nickname === name ? (
                 <SendMessage
-                  key={chating.receive.messageId}
-                  messageLength={chating.receive.message.length}
+                  key={chating.receive.messageId || chating.receive.fileId}
                 >
                   <SendSet>
-                    {/* <img src={profile} / */}
                     <p>{chating.receive.nickname}</p>
                   </SendSet>
                   <SendBox>
-                    <span>{chating.receive.message}</span>
+                    {chating.receive.imgUrl && (
+                      <img src={chating.receive.imgUrl} />
+                    )}
+                    {chating.receive.message && (
+                      <span>{chating.receive.message}</span>
+                    )}
                   </SendBox>
                 </SendMessage>
               ) : (
                 <ReceivedMessage>
                   <Set>
-                    {/* <img src={profile} /> */}
                     <p>{chating.receive.nickname}</p>
                   </Set>
                   <Box>
-                    <span>{chating.receive.message}</span>
+                    {chating.receive.imgUrl && (
+                      <img src={chating.receive.imgUrl} />
+                    )}
+                    {chating.receive.message && (
+                      <span>{chating.receive.message}</span>
+                    )}
                   </Box>
                 </ReceivedMessage>
               )
@@ -221,7 +234,7 @@ const Chat = ({ props }) => {
       <Wirte>
         <Select>
           <label htmlFor="ex_file">
-            <AiOutlinePlusSquare size="25px" />
+            <AiOutlinePlusSquare size="38px" />
           </label>
           <input
             type="file"
@@ -245,13 +258,6 @@ export default Chat;
 const Container = styled.div`
   background-color: #ffffff;
   border-left: 1px solid #202020;
-  /* position: fixed;
-  top: 70px;
-  bottom: 0;
-  right: 0; 
-  width: 280px;
-  height: 100%;
-  */
   width: 348px;
   height: 100%;
   color: #202020;
@@ -266,6 +272,7 @@ const ChatHistory = styled.div`
   img {
     width: auto;
     height: auto;
+    object-fit: cover;
   }
 `;
 
@@ -273,26 +280,17 @@ const SendMessage = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  ${({ messageLength }) =>
-    messageLength > 10 &&
-    `
-    height: auto;
-    padding: 10px;
-    white-space: pre-wrap;
-  `}
+  justify-content: center;
+  align-items: flex-end;
 `;
 
 const ReceivedMessage = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  ${({ messageLength }) =>
-    messageLength > 10 &&
-    `
-    height: auto;
-    padding: 10px;
-    white-space: pre-wrap;
-  `}
+  word-break: break-all;
+  justify-content: center;
+  align-items: flex-start;
 `;
 
 const SendSet = styled.div`
@@ -301,11 +299,6 @@ const SendSet = styled.div`
   justify-content: flex-end;
   align-self: flex-end;
   align-items: center;
-  img {
-    width: 36px;
-    height: 36px;
-    border-radius: 20px;
-  }
 `;
 
 const Set = styled.div`
@@ -313,11 +306,6 @@ const Set = styled.div`
   flex-direction: column-reverse;
   justify-content: center;
   align-items: flex-start;
-  img {
-    width: 36px;
-    height: 36px;
-    border-radius: 20px;
-  }
 `;
 
 const SendBox = styled.div`
@@ -327,13 +315,21 @@ const SendBox = styled.div`
   background: #8600f0 0% 0% no-repeat padding-box;
   border-radius: 8px;
   opacity: 1;
-  margin-left: 50px;
+  margin-left: 70px;
+  img {
+    /* Layout Properties */
+    width: 188px;
+    height: 105px;
+    object-fit: scale-down;
+  }
   span {
     font: 14px/22px Pretendard;
     letter-spacing: 0px;
     color: #ffffff;
     opacity: 1;
     padding: 5px;
+    word-wrap: break-word;
+    word-break: break-all;
   }
 `;
 
@@ -343,12 +339,20 @@ const Box = styled.div`
   background: #000000 0% 0% no-repeat padding-box;
   border-radius: 8px;
   opacity: 1;
+  img {
+    /* Layout Properties */
+    width: 188px;
+    height: 105px;
+    object-fit: scale-down;
+  }
   span {
     font: 14px/22px Pretendard;
     letter-spacing: 0px;
     color: #ffffff;
     opacity: 1;
     padding: 5px;
+    word-wrap: break-word;
+    word-break: break-all;
   }
 `;
 
@@ -363,10 +367,9 @@ const Select = styled.div`
   margin-left: 3px;
   margin-right: 2px;
   label {
-    display: inline-block;
-    font-size: inherit;
-    line-height: normal;
-    vertical-align: middle;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
   }
   input[type="file"] {
@@ -385,10 +388,13 @@ const Input = styled.input`
   border-radius: 10px;
   background-color: #fff;
   color: #000;
+  padding: 10px;
 `;
 
 const Click = styled.button`
   display: flex;
+  padding: auto;
+  width: 50px;
   background-color: #8600f0;
   color: #fff;
   border: none;
