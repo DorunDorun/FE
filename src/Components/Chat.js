@@ -70,20 +70,11 @@ const Chat = () => {
         console.log(e);
       }
     }
+    return () => {
+      // 소켓 연결 종료
+      client.disconnect();
+    };
   }, []);
-
-  // 웹소켓 connect-subscribe 부분
-
-  const stompDisConnect = () => {
-    try {
-      client.debug = null;
-      client.disconnect(() => {
-        client.unsubscribe("sub-0");
-      }, headers);
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   const sendChat = () => {
     const msg = chatRef.current.value;
