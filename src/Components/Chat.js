@@ -54,16 +54,12 @@ const Chat = ({ props }) => {
 
   // 소켓 연결
   const stompConnect = () => {
-    alert("실행중입니다1");
     try {
-      alert("실행중입니다2");
       client.connect(headers, () => {
-        alert("실행중입니다3");
         // 채팅방 구독
         client.subscribe(
           `/sub/chat/room/${sessionId}`,
           (res) => {
-            alert("실행중입니다4");
             const receive = JSON.parse(res.body);
             fetchData(receive);
             // fetchdata로 보낼것들
