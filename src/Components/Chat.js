@@ -12,8 +12,9 @@ import { api } from "../shared/api";
 import { sendMessage } from "../zustand/storeSendMessage";
 import Wait from "./Wait";
 
-const Chat = ({ props }) => {
-  const sessionId = props;
+const Chat = () => {
+  // const sessionId = props;
+  const sessionId = localStorage.getItem("sessionId");
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
   const id = localStorage.getItem("id");
