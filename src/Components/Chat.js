@@ -80,6 +80,8 @@ const Chat = ({ props }) => {
       if (e.headers && e.headers.message) {
         console.log(`CORS 에러: ${e.headers.message}`);
         // 적절한 오류 처리를 해주어야 합니다.
+      } else {
+        console.log(`CORS 에러 발생: ${e}`);
       }
     }
   };
