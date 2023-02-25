@@ -26,6 +26,9 @@ const Chat = () => {
   const chatRef = useRef("");
   const imgRef = useRef("");
 
+  const sock = new SockJS("https://dorundorun.shop/ws-stomp");
+  const client = Stomp.over(sock);
+
   const headers = {
     Authorization: accessToken,
     Refresh: refreshToken,
@@ -47,35 +50,26 @@ const Chat = () => {
 
   // 화상방정보 가져오기
   useEffect(() => {
-    const sock = new SockJS("https://dorundorun.shop/ws-stomp");
-    const client = Stomp.over(sock);
-
     // 소켓 연결
-    const stompConnect = () => {
-      if (sessionId) {
-        try {
-          client.connect(headers, () => {
-            // 채팅방 구독
-            client.subscribe(
-              `/sub/chat/room/${sessionId}`,
-              (res) => {
-                const receive = JSON.parse(res.body);
-                fetchData(receive);
-                // fetchdata로 보낼것들
-              },
-              headers
-            );
-          });
-          // 소켓이 닫히면 다시 연결
-          client.onclose = () => {
-            console.log("소켓이 끊어졌습니다. 다시 연결합니다.");
-            setTimeout(() => stompConnect(), 5000);
-          };
-        } catch (e) {
-          console.log(e);
-        }
+
+    if (sessionId) {
+      try {
+        client.connect(headers, () => {
+          // 채팅방 구독
+          client.subscribe(
+            `/sub/chat/room/${sessionId}`,
+            (res) => {
+              const receive = JSON.parse(res.body);
+              fetchData(receive);
+              // fetchdata로 보낼것들
+            },
+            headers
+          );
+        });
+      } catch (e) {
+        console.log(e);
       }
-    };
+    }
   }, []);
   //웹소켓 connect-subscribe 부분
 
