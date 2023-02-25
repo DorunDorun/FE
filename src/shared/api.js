@@ -19,12 +19,15 @@ api.interceptors.request.use(
     function (config) {
       const accessToken = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
-      try {
+      try { //토큰 체크
         if (accessToken && refreshToken) {
           config.headers.authorization = accessToken;
           config.headers.refresh = refreshToken;
+          return config;
+        }else{
+          alert("로그인이 필요한 페이지입니다.")
+          return window.location.href="/login"
         }
-        return config;
       } catch (error) {
         //alert("서버 요청 에러! 다시 시도해주세요!");
       }
