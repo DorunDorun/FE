@@ -50,34 +50,33 @@ const Chat = () => {
     const sock = new SockJS("https://dorundorun.shop/ws-stomp");
     const client = Stomp.over(sock);
 
-    stompConnect(client);
+    // 소켓 연결
+    const stompConnect = () => {
+      if (sessionId) {
+        try {
+          client.connect(headers, () => {
+            // 채팅방 구독
+            client.subscribe(
+              `/sub/chat/room/${sessionId}`,
+              (res) => {
+                const receive = JSON.parse(res.body);
+                fetchData(receive);
+                // fetchdata로 보낼것들
+              },
+              headers
+            );
+          });
+          // 소켓이 닫히면 다시 연결
+          client.onclose = () => {
+            console.log("소켓이 끊어졌습니다. 다시 연결합니다.");
+            setTimeout(() => stompConnect(), 5000);
+          };
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    };
   }, []);
-
-  // 소켓 연결
-  const stompConnect = (client) => {
-    try {
-      client.connect(headers, () => {
-        // 채팅방 구독
-        client.subscribe(
-          `/sub/chat/room/${sessionId}`,
-          (res) => {
-            const receive = JSON.parse(res.body);
-            fetchData(receive);
-            // fetchdata로 보낼것들
-          },
-          headers
-        );
-      });
-      // 소켓이 닫히면 다시 연결
-      client.onclose = () => {
-        console.log("소켓이 끊어졌습니다. 다시 연결합니다.");
-        setTimeout(() => stompConnect(), 5000);
-      };
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   //웹소켓 connect-subscribe 부분
 
   const stompDisConnect = () => {
