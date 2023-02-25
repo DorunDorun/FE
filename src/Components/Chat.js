@@ -25,10 +25,10 @@ const Chat = () => {
 
   const chatRef = useRef("");
   const imgRef = useRef("");
-
+  alert("실행중1");
   const sock = new SockJS("https://dorundorun.shop/ws-stomp");
   const client = Stomp.over(sock);
-
+  alert("실행중2");
   const headers = {
     Authorization: accessToken,
     Refresh: refreshToken,
@@ -87,20 +87,7 @@ const Chat = () => {
     }
   };
 
-  let lastSentTime = 0;
   const sendChat = () => {
-    const now = Date.now();
-    const timeDiff = now - lastSentTime;
-    if (timeDiff < 1000) {
-      // 마지막 메시지 전송 후 1초 이내에 메시지를 보내면 도배로 간주
-      console.log(now);
-      console.log(timeDiff);
-      alert("도배 방지: 메시지를 너무 빠르게 보내지 마세요.");
-      console.log("도배 방지: 메시지를 너무 빠르게 보내지 마세요.");
-      console.error("도배 방지: 메시지를 너무 빠르게 보내지 마세요.");
-      return;
-    }
-
     const msg = chatRef.current.value;
     const img = imgRef.current.files[0];
     if (msg === "" && !img) {
@@ -144,12 +131,6 @@ const Chat = () => {
 
     chatRef.current.value = null;
     imgRef.current.value = null;
-    lastSentTime = now;
-
-    // return문 수정
-    if (true) {
-      return;
-    }
   };
 
   const [image, setImage] = useState();
