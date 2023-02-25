@@ -26,9 +26,6 @@ const Chat = () => {
   const chatRef = useRef("");
   const imgRef = useRef("");
 
-  let sock;
-  let client;
-
   const headers = {
     Authorization: accessToken,
     Refresh: refreshToken,
@@ -50,14 +47,14 @@ const Chat = () => {
 
   // 화상방정보 가져오기
   useEffect(() => {
-    sock = new SockJS("https://dorundorun.shop/ws-stomp");
-    client = Stomp.over(sock);
+    const sock = new SockJS("https://dorundorun.shop/ws-stomp");
+    const client = Stomp.over(sock);
 
-    stompConnect();
+    stompConnect(client);
   }, []);
 
   // 소켓 연결
-  const stompConnect = () => {
+  const stompConnect = (client) => {
     try {
       client.connect(headers, () => {
         // 채팅방 구독
