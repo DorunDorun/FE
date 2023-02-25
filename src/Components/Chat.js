@@ -26,10 +26,8 @@ const Chat = () => {
   const chatRef = useRef("");
   const imgRef = useRef("");
 
-  const clientRef = useRef(null);
-
-  // const sock = new SockJS("https://dorundorun.shop/ws-stomp");
-  // const client = Stomp.over(sock);
+  const sock = new SockJS("https://dorundorun.shop/ws-stomp");
+  const client = Stomp.over(sock);
 
   const headers = {
     Authorization: accessToken,
@@ -52,12 +50,10 @@ const Chat = () => {
 
   // 화상방정보 가져오기
   useEffect(() => {
-    const sock = new SockJS("https://dorundorun.shop/ws-stomp");
-    const client = Stomp.over(sock);
-    client.debug = () => {};
     // 소켓 연결
     if (sessionId) {
       try {
+        client.debug = () => {};
         client.connect(headers, () => {
           // 채팅방 구독
           client.subscribe(
@@ -74,21 +70,20 @@ const Chat = () => {
         console.log(e);
       }
     }
-    clientRef.current = client;
-  }, [sessionId]);
+  }, []);
 
   // 웹소켓 connect-subscribe 부분
 
-  // const stompDisConnect = () => {
-  //   try {
-  //     client.debug = null;
-  //     client.disconnect(() => {
-  //       client.unsubscribe("sub-0");
-  //     }, headers);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+  const stompDisConnect = () => {
+    try {
+      client.debug = null;
+      client.disconnect(() => {
+        client.unsubscribe("sub-0");
+      }, headers);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const sendChat = () => {
     const msg = chatRef.current.value;
@@ -103,7 +98,7 @@ const Chat = () => {
       reader.onload = (event) => {
         const imgDataUrl = reader.result;
         const imgDataStr = `data:image/jpeg;base64,${imgDataUrl.split(",")[1]}`;
-        clientRef.send(
+        client.send(
           `/pub/chat/room`,
           {},
           JSON.stringify({
@@ -120,7 +115,7 @@ const Chat = () => {
       reader.readAsDataURL(img);
     } else {
       // 메시지만 있는 경우
-      clientRef.send(
+      client.send(
         `/pub/chat/room`,
         {},
         JSON.stringify({
@@ -134,14 +129,6 @@ const Chat = () => {
 
     chatRef.current.value = null;
     imgRef.current.value = null;
-
-    clientRef.current.send(
-      `/pub/chat/message/${sessionId}`,
-      JSON.stringify({
-        // ...
-      }),
-      headers
-    );
   };
 
   const [image, setImage] = useState();
