@@ -722,7 +722,7 @@ function ChatRoom() {
             <WhiteBoard className={isWhiteBoard ? "block" : "none"} />
           </StSessionVideoBox>
 
-          {/* <Chat props={userSessionId} /> */}
+          <Chat />
         </StStreamWrap>
 
         <StFooter></StFooter>
