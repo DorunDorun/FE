@@ -89,6 +89,11 @@ const Chat = ({ props }) => {
       }, headers);
     } catch (e) {
       console.log(e);
+      // CORS 에러 처리
+      if (e.headers && e.headers.message) {
+        console.log(`CORS 에러: ${e.headers.message}`);
+        // 적절한 오류 처리를 해주어야 합니다.
+      }
     }
   };
 
