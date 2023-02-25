@@ -5,7 +5,6 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import styled from "styled-components";
 import { AiOutlinePlusSquare } from "react-icons/ai";
-import pako from "pako";
 
 // 스토어
 import useStoreRoomCreate from "../zustand/storeRoomCreate";
@@ -175,7 +174,7 @@ const Chat = ({ props }) => {
     return <p>cannot read data : 서버 응답 에러</p>;
   }
 
-  console.log("주스탠드 타고와", msg);
+  // console.log("주스탠드 타고와", msg);
 
   // const chatlog = msg.map(
   //   (chating) => console.log(1234, chating.receive.message)
@@ -321,6 +320,7 @@ const SendBox = styled.div`
     width: 188px;
     height: 105px;
     object-fit: scale-down;
+    background-color: #fff;
   }
   span {
     font: 14px/22px Pretendard;
@@ -344,6 +344,7 @@ const Box = styled.div`
     width: 188px;
     height: 105px;
     object-fit: scale-down;
+    background-color: #fff;
   }
   span {
     font: 14px/22px Pretendard;

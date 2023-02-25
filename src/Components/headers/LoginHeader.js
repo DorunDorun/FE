@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { HiOutlineX } from "react-icons/hi";
-<HiOutlineX size="24" color="#fff" />;
 
 const LoginHeader = () => {
   const navigate = useNavigate();
@@ -15,7 +14,7 @@ const LoginHeader = () => {
       <Text>로그인</Text>
       <BackPage onClick={goToBack}>
         <div>
-          <HiOutlineX size="20" />
+          <HiOutlineX size="29" />
         </div>
       </BackPage>
     </HearderContainer>
@@ -28,12 +27,11 @@ const HearderContainer = styled.div`
   display: flex;
   align-items: center;
   background: #ffffff;
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
   position: absolute;
   width: 1920px;
   height: 70px;
   left: 0px;
-  border: 1px solid purple;
+  box-shadow: 0px 2px 8px #0000000f;
 `;
 
 const Text = styled.div`

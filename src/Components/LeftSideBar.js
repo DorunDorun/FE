@@ -1,129 +1,79 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useState, useRef } from "react";
 import styled from "styled-components";
 
-const LeftSideBar = ({ width = 280 }) => {
+const LeftSideBar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [xPosition, setX] = useState(width);
-  const side = useRef();
+  const [btnWidth, setBtnWidth] = useState(0);
+  const [btnX, setBtnX] = useState(0);
+  const buttonRef = useRef(null);
 
-  // button 클릭 시 토글
-  const toggleMenu = () => {
-    if (xPosition > 0) {
-      setX(0);
-      setIsOpen(true);
-    } else {
-      setX(width);
-      setIsOpen(false);
-    }
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
   };
 
-  // 사이드바 외부 클릭시 닫히는 함수
-  const handleClose = async (e) => {
-    let sideArea = side.current;
-    let sideCildren = side.current.contains(e.target);
-    if (isOpen && (!sideArea || !sideCildren)) {
-      setX(width);
-      setIsOpen(false);
-    }
+  const handleResize = () => {
+    setBtnWidth(buttonRef.current.offsetWidth);
+    setBtnX(buttonRef.current.offsetLeft);
   };
-
-  useEffect(() => {
-    window.addEventListener("click", handleClose);
-    window.removeEventListener("click", handleClose);
-    return () => {
-      window.removeEventListener("click", handleClose);
-    };
-  }, [handleClose]);
 
   return (
     <Container>
-      <OpenBtn>
-        <Button>
-          {isOpen ? (
-            <OpenBtn>
-              <Content onClick={() => toggleMenu()}>프레임</Content>
-              <Content onClick={() => toggleMenu()}>명언</Content>
-              <Content onClick={() => toggleMenu()}>오디오</Content>
-              <Opnebar
-                ref={side}
-                style={{
-                  width: `${width}px`,
-                  height: "100%",
-                  transform: `translatex(${-xPosition}px)`,
-                }}
-              >
-                <Content>색상</Content>
-              </Opnebar>
-            </OpenBtn>
-          ) : (
-            <OpenBtn>
-              <Content onClick={() => toggleMenu()}>
-                <span>프레임</span>
-              </Content>
-              <Content onClick={() => toggleMenu()}>
-                <span>명언</span>
-              </Content>
-              <Content onClick={() => toggleMenu()}>
-                <span>오디오</span>
-              </Content>
-              <Opnebar
-                ref={side}
-                style={{
-                  width: `${width}px`,
-                  height: "100%",
-                  transform: `translatex(${-xPosition - 60}px)`,
-                }}
-              />
-            </OpenBtn>
-          )}
+      <Btns>
+        <Button ref={buttonRef} onClick={toggleSidebar}>
+          프레임
         </Button>
-        <Opnebar ref={side} style={{}}></Opnebar>
-      </OpenBtn>
+        <Button ref={buttonRef} onClick={toggleSidebar}>
+          명언
+        </Button>
+        <Button ref={buttonRef} onClick={toggleSidebar}>
+          오디오
+        </Button>
+      </Btns>
+
+      <Openbar isOpen={isOpen} btnWidth={btnWidth}>
+        Sidebar
+      </Openbar>
     </Container>
   );
 };
 
 export default LeftSideBar;
 
-const Container = styled.div``;
+const Container = styled.div`
+  position: relative;
+`;
 
-const Opnebar = styled.div`
-  background-color: #ffffff;
-  /* border-right: 1px solid #202020; */
-  position: fixed;
-  top: 70px;
-  left: 60px;
-  transition: 0.4s ease;
-  color: #202020;
-  height: 100%;
-  z-index: 99;
+const Btns = styled.div`
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-right: 1px solid gray;
+  width: 70px;
+  height: 839px;
+  align-items: flex-start;
 `;
 
 const Button = styled.button`
-  position: relative;
-  left: 0px;
-  top: -617px;
-  width: 60px;
-  height: 100vh;
-  z-index: 99;
-  transition: 0.8s ease;
-  /* border: 1px solid #202020; */
-  /* border-radius: 40px; */
-  overflow: hidden;
-`;
-
-const OpenBtn = styled.div`
-  /* display: flex; */
-  /* flex-direction: column; */
-  /* align-items: center; */
-  width: 100%;
-  height: 100%;
-`;
-
-const Content = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 40px;
-  margin-top: 20px;
+  justify-content: center;
+  background-color: #fff;
+  border-right: 1px solid gray;
+  border-top: none;
+  border-bottom: none;
+  border-left: none;
+  margin-top: 30px;
+  width: 70px;
+  z-index: 1;
+`;
+
+const Openbar = styled.div`
+  position: absolute;
+  top: 0;
+  left: 70px;
+  width: 228.5px;
+  height: 839px;
+  background-color: #fff;
+  transform: translateX(${(props) => (props.isOpen ? "0" : "-100%")});
+  transition: transform 0.2s ease-in-out;
+  margin-left: ${(props) => (props.isOpen ? "0" : props.btnWidth + "px")};
 `;
