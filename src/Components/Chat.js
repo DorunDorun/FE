@@ -51,10 +51,13 @@ const Chat = () => {
   // 화상방정보 가져오기
   useEffect(() => {
     // 소켓 연결
-
+    console.log(sessionId);
     if (sessionId) {
+      console.log(sessionId);
       try {
+        client.debug = () => {};
         client.connect(headers, () => {
+          console.log(sessionId);
           // 채팅방 구독
           client.subscribe(
             `/sub/chat/room/${sessionId}`,
