@@ -25,10 +25,12 @@ const Chat = () => {
 
   const chatRef = useRef("");
   const imgRef = useRef("");
-  // alert("실행중1");
-  const sock = new SockJS("https://dorundorun.shop/ws-stomp");
-  let client = Stomp.over(sock);
-  // alert("실행중2");
+
+  const clientRef = useRef(null);
+
+  // const sock = new SockJS("https://dorundorun.shop/ws-stomp");
+  // const client = Stomp.over(sock);
+
   const headers = {
     Authorization: accessToken,
     Refresh: refreshToken,
@@ -50,11 +52,12 @@ const Chat = () => {
 
   // 화상방정보 가져오기
   useEffect(() => {
+    const sock = new SockJS("https://dorundorun.shop/ws-stomp");
+    const client = Stomp.over(sock);
+    client.debug = () => {};
     // 소켓 연결
-
     if (sessionId) {
       try {
-        client.debug = () => {};
         client.connect(headers, () => {
           // 채팅방 구독
           client.subscribe(
@@ -71,8 +74,10 @@ const Chat = () => {
         console.log(e);
       }
     }
-  }, []);
-  //웹소켓 connect-subscribe 부분
+    clientRef.current = client;
+  }, [sessionId]);
+
+  // 웹소켓 connect-subscribe 부분
 
   // const stompDisConnect = () => {
   //   try {
@@ -98,7 +103,7 @@ const Chat = () => {
       reader.onload = (event) => {
         const imgDataUrl = reader.result;
         const imgDataStr = `data:image/jpeg;base64,${imgDataUrl.split(",")[1]}`;
-        client.send(
+        clientRef.send(
           `/pub/chat/room`,
           {},
           JSON.stringify({
@@ -115,7 +120,7 @@ const Chat = () => {
       reader.readAsDataURL(img);
     } else {
       // 메시지만 있는 경우
-      client.send(
+      clientRef.send(
         `/pub/chat/room`,
         {},
         JSON.stringify({
@@ -129,6 +134,14 @@ const Chat = () => {
 
     chatRef.current.value = null;
     imgRef.current.value = null;
+
+    clientRef.current.send(
+      `/pub/chat/message/${sessionId}`,
+      JSON.stringify({
+        // ...
+      }),
+      headers
+    );
   };
 
   const [image, setImage] = useState();
