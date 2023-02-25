@@ -33,18 +33,11 @@ const Chat = ({ props }) => {
     Refresh: refreshToken,
   };
 
-  // 스토어
-
-  const data = useStoreRoomCreate((state) => state.data);
-
   //소켓
   const msg = sendMessage((state) => state.data);
   const loading = sendMessage((state) => state.loading);
   const hasErrors = sendMessage((state) => state.hasErrors);
   const fetchData = sendMessage((state) => state.fetch);
-
-  //  data에 뭐가 찍힐까요?
-  console.log(data);
 
   // 채팅 엔터키 전송
   const handleEnterPress = (e) => {
@@ -58,27 +51,29 @@ const Chat = ({ props }) => {
   useEffect(() => {
     stompConnect();
   }, []);
-  console.log(headers);
+
   // 소켓 연결
   const stompConnect = () => {
     if (sessionId) {
     }
     try {
       client.connect(headers, () => {
-        console.log("connect", sessionId);
         // 채팅방 구독
         client.subscribe(
           `/sub/chat/room/${sessionId}`,
           (res) => {
-            console.log(res.body);
             const receive = JSON.parse(res.body);
-            console.log(receive);
             fetchData(receive);
             // fetchdata로 보낼것들
           },
           headers
         );
       });
+      // 소켓이 닫히면 다시 연결
+      client.onclose = () => {
+        console.log("소켓이 끊어졌습니다. 다시 연결합니다.");
+        stompConnect();
+      };
     } catch (e) {
       console.log(e);
     }
