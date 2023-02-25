@@ -99,7 +99,16 @@ const Chat = ({ props }) => {
     }
   };
 
+  let lastSentTime = 0;
   const sendChat = () => {
+    const now = Date.now();
+    const timeDiff = now - lastSentTime;
+    if (timeDiff < 1000) {
+      // 마지막 메시지 전송 후 1초 이내에 메시지를 보내면 도배로 간주
+      console.log("도배 방지: 메시지를 너무 빠르게 보내지 마세요.");
+      return;
+    }
+
     const msg = chatRef.current.value;
     const img = imgRef.current.files[0];
     if (msg === "" && !img) {
@@ -143,6 +152,7 @@ const Chat = ({ props }) => {
 
     chatRef.current.value = null;
     imgRef.current.value = null;
+    lastSentTime = now;
   };
 
   const [image, setImage] = useState();
