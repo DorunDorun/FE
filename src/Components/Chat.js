@@ -72,7 +72,7 @@ const Chat = ({ props }) => {
       // 소켓이 닫히면 다시 연결
       client.onclose = () => {
         console.log("소켓이 끊어졌습니다. 다시 연결합니다.");
-        stompConnect();
+        setTimeout(() => stompConnect(), 5000);
       };
     } catch (e) {
       console.log(e);
