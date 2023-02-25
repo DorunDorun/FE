@@ -25,10 +25,10 @@ const Chat = () => {
 
   const chatRef = useRef("");
   const imgRef = useRef("");
-  alert("실행중1");
+  // alert("실행중1");
   const sock = new SockJS("https://dorundorun.shop/ws-stomp");
-  const client = Stomp.over(sock);
-  alert("실행중2");
+  let client = Stomp.over(sock);
+  // alert("실행중2");
   const headers = {
     Authorization: accessToken,
     Refresh: refreshToken,
@@ -50,8 +50,6 @@ const Chat = () => {
 
   // 화상방정보 가져오기
   useEffect(() => {
-    const sock = new SockJS("https://dorundorun.shop/ws-stomp");
-    const client = Stomp.over(sock);
     // 소켓 연결
 
     if (sessionId) {
@@ -76,16 +74,16 @@ const Chat = () => {
   }, []);
   //웹소켓 connect-subscribe 부분
 
-  const stompDisConnect = () => {
-    try {
-      client.debug = null;
-      client.disconnect(() => {
-        client.unsubscribe("sub-0");
-      }, headers);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  // const stompDisConnect = () => {
+  //   try {
+  //     client.debug = null;
+  //     client.disconnect(() => {
+  //       client.unsubscribe("sub-0");
+  //     }, headers);
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
   const sendChat = () => {
     const msg = chatRef.current.value;
