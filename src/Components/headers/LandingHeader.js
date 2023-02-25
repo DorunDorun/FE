@@ -32,9 +32,11 @@ const LandingHeader = () => {
       <Logo>
         D<span>oo</span>Run
       </Logo>
-      <Room onClick={gotoRoom}>라이브룸</Room>
-      <Info onClick={gotoInfo}>만든 사람들</Info>
-      <Notice onClick={gotoNotice}>공지사항</Notice>
+      <Room onClick={gotoRoom}> 개설된 라이브룸</Room>
+      <Info onClick={gotoInfo}>종료된 라이브룸</Info>
+      <History onClick={gotoNotice}>참가 히스토리</History>
+      <Mypage onClick={gotoNotice}>마이페이지</Mypage>
+      <Notice onClick={gotoNotice}>서비스소개</Notice>
       <Login onClick={gotoLogin}>로그인</Login>
     </HearderContainer>
   );
@@ -51,7 +53,6 @@ const HearderContainer = styled.div`
   width: 1920px;
   height: 70px;
   left: 0px;
-  border: 1px solid purple;
 `;
 
 const Logo = styled.div`
@@ -77,14 +78,14 @@ const Room = styled.div`
   justify-content: center;
   align-items: center;
   position: absolute;
-  left: 200px;
-  width: 70px;
+  left: 196px;
+  width: 130px;
   height: 24px;
   /* UI Properties */
   text-align: left;
-  font: 20px/24px Pretendard;
+  font: bold 20px/24px Pretendard;
   letter-spacing: 0px;
-  color: #a5a5a5;
+  color: #6f6f6f;
   opacity: 1;
 `;
 
@@ -95,32 +96,67 @@ const Info = styled.div`
   justify-content: center;
   align-items: center;
   position: absolute;
-  left: 300px;
-  width: 100px;
+  left: 356px;
+  width: 130px;
   height: 24px;
   /* UI Properties */
   text-align: left;
-  font: 20px/24px Pretendard;
+  font: bold 20px/24px Pretendard;
   letter-spacing: 0px;
-  color: #a5a5a5;
+  color: #6f6f6f;
   opacity: 1;
 `;
 
-const Notice = styled.div`
+const History = styled.div`
   /* Layout Properties */
 
   display: flex;
   justify-content: center;
   align-items: center;
   position: absolute;
-  left: 430px;
-  width: 70px;
+  left: 516px;
+  width: 110px;
   height: 24px;
   /* UI Properties */
   text-align: left;
-  font: 20px/24px Pretendard;
+  font: bold 20px/24px Pretendard;
   letter-spacing: 0px;
-  color: #a5a5a5;
+  color: #6f6f6f;
+  opacity: 1;
+`;
+
+const Mypage = styled.div`
+  /* Layout Properties */
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 1463px;
+  width: 110px;
+  height: 24px;
+  /* UI Properties */
+  text-align: left;
+  font: bold 20px/24px Pretendard;
+  letter-spacing: 0px;
+  color: #6f6f6f;
+  opacity: 1;
+`;
+
+const Notice = styled.div`
+  /* Layout Properties */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 1603px;
+  width: 110px;
+  height: 24px;
+  /* UI Properties */
+  text-align: left;
+  font: bold 20px/24px Pretendard;
+  letter-spacing: 0px;
+  color: #6f6f6f;
   opacity: 1;
 `;
 
@@ -129,11 +165,17 @@ const Login = styled.button`
   justify-content: center;
   align-items: center;
   position: absolute;
-  width: 83px;
-  height: 35px;
+  width: 115px;
+  height: 40px;
   left: 1748px;
-  background-color: #8600f0;
-  color: #ffffff;
+  /* UI Properties */
+  background: #a74bef 0% 0% no-repeat padding-box;
+  border-radius: 16px;
+  opacity: 1;
   border: none;
-  border-radius: 10px;
+  text-align: center;
+  font: normal 20px/24px Pretendard;
+  letter-spacing: 0px;
+  color: #ffffff;
+  opacity: 1;
 `;
