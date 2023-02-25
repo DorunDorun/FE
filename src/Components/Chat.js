@@ -26,8 +26,8 @@ const Chat = () => {
   const chatRef = useRef("");
   const imgRef = useRef("");
 
-  const sock = new SockJS("https://dorundorun.shop/ws-stomp");
-  const client = Stomp.over(sock);
+  let sock;
+  let client;
 
   const headers = {
     Authorization: accessToken,
@@ -50,6 +50,9 @@ const Chat = () => {
 
   // 화상방정보 가져오기
   useEffect(() => {
+    sock = new SockJS("https://dorundorun.shop/ws-stomp");
+    client = Stomp.over(sock);
+
     stompConnect();
   }, []);
 
@@ -75,13 +78,6 @@ const Chat = () => {
       };
     } catch (e) {
       console.log(e);
-      // CORS 에러 처리
-      if (e.headers && e.headers.message) {
-        console.log(`CORS 에러: ${e.headers.message}`);
-        // 적절한 오류 처리를 해주어야 합니다.
-      } else {
-        console.log(`CORS 에러 발생: ${e}`);
-      }
     }
   };
 
