@@ -156,6 +156,9 @@ const Chat = ({ props }) => {
     chatRef.current.value = null;
     imgRef.current.value = null;
     lastSentTime = now;
+
+    // return문 추가
+    return;
   };
 
   const [image, setImage] = useState();
