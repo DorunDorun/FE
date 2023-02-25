@@ -111,7 +111,7 @@ const Chat = () => {
         const imgDataUrl = reader.result;
         const imgDataStr = `data:image/jpeg;base64,${imgDataUrl.split(",")[1]}`;
         client.send(
-          "/pub/chat/room",
+          `/pub/chat/room`,
           {},
           JSON.stringify({
             sessionId: sessionId,
@@ -128,7 +128,7 @@ const Chat = () => {
     } else {
       // 메시지만 있는 경우
       client.send(
-        "/pub/chat/room",
+        `/pub/chat/room`,
         {},
         JSON.stringify({
           sessionId: sessionId,
