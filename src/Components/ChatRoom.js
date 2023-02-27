@@ -38,22 +38,20 @@ import useStoreRoomInfoGet from "../zustand/storeRoomInfoGet";
 //스토어-새로고침
 import useStoreRefreshStatus from "../zustand/storeRefreshStatus";
 
-
 function ChatRoom() {
-
-  useEffect(()=>{
+  useEffect(() => {
     console.log("ChatRoom 시작!");
-    const accessToken = localStorage.getItem("accessToken")
-    if(!accessToken) return navigate("/login")
-  },[])
-  
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) return navigate("/login");
+  }, []);
+
   //roomTitle, userSessionId, userToken, userNickName, loading, hasErrors
   const roomTitle = localStorage.getItem("title");
   const userSessionId = localStorage.getItem("sessionId");
 
   //링크 접속(초대링크) 상황을 위한 session id local 저장
-  const sessionIdPath = window.location.pathname.substring(6)
-  localStorage.setItem("sessionId", sessionIdPath) 
+  const sessionIdPath = window.location.pathname.substring(6);
+  localStorage.setItem("sessionId", sessionIdPath);
 
   const userProfileImage = localStorage.getItem("profile");
   const userNickName = localStorage.getItem("name");
@@ -62,7 +60,6 @@ function ChatRoom() {
   const fetchRoomInfoGet = useStoreRoomInfoGet(
     (state) => state.fetchRoomInfoGet
   );
-
 
   const navigate = useNavigate();
 
@@ -83,19 +80,19 @@ function ChatRoom() {
   const [isPublisherSpeaker, setIsPublisherSpeaker] = useState(false); //음성 감지 상태 - 게시자
 
   //사용자 디바이스
-  const userDevice={
-    videoId : localStorage.getItem("videoId"),
-    videoActive : localStorage.getItem("videoActive"),
-    audioId : localStorage.getItem("audioId"),
-    audioActive : localStorage.getItem("audioActive")
-  }
+  const userDevice = {
+    videoId: localStorage.getItem("videoId"),
+    videoActive: localStorage.getItem("videoActive"),
+    audioId: localStorage.getItem("audioId"),
+    audioActive: localStorage.getItem("audioActive"),
+  };
 
   //const [isSubscriberSpeaker, setIsSubscriberSpeaker]=useState(false) //음성 감지 상태 - 참여자
-  const [subscriberSpeakerConnectionId, setSubscriberSpeakerConnectionId] = useState(undefined)
+  const [subscriberSpeakerConnectionId, setSubscriberSpeakerConnectionId] =
+    useState(undefined);
 
   //스토어-방 삭제
   const fetchDeleteRoom = useStoreRoomDelete((state) => state.fetchDeleteRoom);
-
 
   //캔버스 컨트롤
   const [isCanvas, setIsCanvas] = useState(false);
@@ -103,7 +100,6 @@ function ChatRoom() {
 
   //화이트보드
   const [isWhiteBoard, setIsWhiteBoard] = useState(false);
-
 
   //새로고침 시
   const refreshSession = (e) => {
@@ -312,10 +308,10 @@ function ChatRoom() {
 
   //연결
   function connection(userToken, userNickName) {
-    if(!userToken || !userNickName) {
-      return navigate("/roomWaiting")
+    if (!userToken || !userNickName) {
+      return navigate("/roomWaiting");
     }
-    
+
     const connectionInfo = {
       userToken: userToken,
       userNickName: userNickName,
@@ -372,22 +368,22 @@ function ChatRoom() {
     mySession
       .connect(userToken, { clientName: userNickName })
       .then(async () => {
-
         console.log("✨✨✨ 토큰 확인", userToken);
         console.log("✨✨✨✨✨ 유저 : ", userNickName);
 
-        OV.getUserMedia({ //디바이스 연결
+        OV.getUserMedia({
+          //디바이스 연결
           audioSource: false,
           videoSource: undefined,
           resolution: "1280x720",
           frameRate: 10,
         }).then((mediaStream) => {
-
           const videoTrack = mediaStream.getVideoTracks()[0];
 
-          if(!videoTrack){ //디바이스가 없다면 대기 페이지로 이동
-            alert("디바이스 선택은 필수입니다!")
-            return navigate("/roomWating")
+          if (!videoTrack) {
+            //디바이스가 없다면 대기 페이지로 이동
+            alert("디바이스 선택은 필수입니다!");
+            return navigate("/roomWating");
           }
 
           let publisher = OV.initPublisher(undefined, {
@@ -737,8 +733,7 @@ function ChatRoom() {
             <WhiteBoard className={isWhiteBoard ? "block" : "none"} />
           </StSessionVideoBox>
 
-          <Chat/>
-          
+          <Chat props="sessionId" />
         </StStreamWrap>
 
         <StFooter></StFooter>
