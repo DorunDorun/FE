@@ -20,6 +20,9 @@ import RoomWaiting from "../pages/RoomWaiting";
 import Room from "../pages/Room";
 
 const Router = () => {
+
+  
+
   return (
     <BrowserRouter>
       <Routes>

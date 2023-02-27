@@ -7,7 +7,9 @@
   --color-baseLight: #CB8AFE;
 }
 
-
+#root{
+  background-color: #fff;
+}
 
 .d-block{
   visibility: visible;

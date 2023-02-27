@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
@@ -13,7 +13,13 @@ import useStoreRoomJoin from '../zustand/storeRoomJoin'
 const RoomWaiting = () => {
 
   const navigate = useNavigate()
-  const nickNameRef = useRef()
+
+
+  useEffect(()=>{
+    getUserMedia()
+  },[])
+
+
 
   //유효성 검사 메세지
   const [validMessageNickName, setValidMessageNickName]=useState("")
@@ -32,8 +38,21 @@ const RoomWaiting = () => {
   const statusString = localStorage.getItem("status")
   const status = statusString === "true"
 
+  //디바이스 상태
+  const [selectDevice, setSelectDevice]=useState(false)
+
+  const nickNameRef = useRef()
+  const videoRef = useRef()
+
+
   //닉네임
   const [nickName, setNickName]=useState(nickNameBefroe)
+
+
+  useEffect(()=>{
+    setSelectDevice((currentValue) => currentValue)
+  },[selectDevice])
+
 
   //방 정보가 없다면 이전 페이지로 이동
   if(!title && !nickNameBefroe && !sessionId && !status){
@@ -41,11 +60,41 @@ const RoomWaiting = () => {
     return navigate(-1)
   }
 
-  //비디오, 오디오 id 저장 필요
 
-  //방 입장
+  
+  
+  //비디오, 오디오 불러오기
+  const getUserMedia= async ()=>{
+    const CONSTRAINTS = { video: true, audio: true };
+    await navigator.mediaDevices.getUserMedia(CONSTRAINTS)
+    .then((media)=>{
+      const video = media.getVideoTracks()[0]
+      const audio = media.getAudioTracks()[0]
+      if(!video || !audio){
+        alert("카메라와 마이크 선택은 필수입니다!")
+        return false
+      }
+      setSelectDevice(true) //디바이스 선택 상태 값
+      if(videoRef.current !== null){
+        videoRef.current.srcObject = media;
+      }
+    });
+    
+  } 
+  
+
+  
+
+
+  //방 입장 api
   const onSubmitJoinRoom=(e)=>{
     e.preventDefault()
+    console.log("selectDevice : ", selectDevice)
+    if(!selectDevice) { //디바이스 선택 상태 값
+      alert("디바이스를 선택해주세요!")
+      return false
+    }
+    
     console.log("regExpNickName(nickName) : ", regExpNickName(nickName))
 
     if(!regExpNickName(nickName)){ //유효성 실패
@@ -101,7 +150,7 @@ const RoomWaiting = () => {
             <StRoomWaitingTitle>{title}</StRoomWaitingTitle>
             <StRoomWaitingUse>라이브룸에서 사용할 비디오와 프로필을 설정해주세요.</StRoomWaitingUse>
             <StRoomWaitingSettingBox>
-              <StRoomWaitingVideo></StRoomWaitingVideo>
+              <StRoomWaitingVideo autoPlay ref={videoRef}></StRoomWaitingVideo>
               <StRoomWaitingInputBox onSubmit={onSubmitJoinRoom}>
                 <StRoomWaitingInput 
                   value={nickName} 
@@ -130,7 +179,7 @@ const StValidMessage=styled.span`
 `
 const StRoomWaitingVideo=styled.video`
   background-color: #000;
-  min-width: 500px;
+  width: 600px;
 `
 const StRoomWaitingInput=styled.input.attrs({
   type:"text"
