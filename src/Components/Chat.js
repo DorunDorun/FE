@@ -26,10 +26,8 @@ const Chat = ({ props }) => {
   const chatRef = useRef("");
   const imgRef = useRef("");
 
-  alert("이미 실행된 코드입니다");
   const sock = new SockJS("https://dorundorun.shop/ws-stomp");
   const client = Stomp.over(sock);
-  alert("실행중인 코드입니다.");
 
   const headers = {
     Authorization: accessToken,
