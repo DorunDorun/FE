@@ -20,6 +20,9 @@ import Room from "../pages/Room";
 
 
 const Router = () => {
+
+  
+
   return (
     <BrowserRouter>
       <Routes>
@@ -35,7 +38,7 @@ const Router = () => {
 
         {/* Room 영역*/}
         <Route path="/roomCreate" element={<RoomCreate />} />
-        <Route path="/roomList" element={<RoomList />}/>
+        <Route path="/roomList" element={<RoomList />} />
         <Route path="/roomWaiting" element={<RoomWaiting />} />
         <Route path="/room/:id" element={<Room />} />
 

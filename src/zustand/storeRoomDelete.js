@@ -18,7 +18,7 @@ const useStoreRoomDelete = create((set) => ({
       return data
     } catch (err) {
       set(() => ({ hasErrors: true, loading: false }));
-      alert("방 삭제 error")
+      //alert("방 삭제 error")
     }
   },
 }));

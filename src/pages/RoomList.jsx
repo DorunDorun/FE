@@ -278,7 +278,7 @@ const StRoomListWrap=styled.section`
   display: flex;
   justify-content: center;
   background-color: #fff;
-  min-width: 1200px;
+  width: 1800px;
 `
 
 export default RoomList;
