@@ -49,7 +49,7 @@ const Chat = ({ props }) => {
   };
 
   // 화상방정보 가져오기
-  useEffect(async () => {
+  useEffect(() => {
     if (!sessionId) {
       return;
     }
@@ -58,7 +58,7 @@ const Chat = ({ props }) => {
       // 소켓 연결 여부도 확인
       try {
         client.debug = () => {};
-        await client.connect(headers, () => {
+        client.connect(headers, () => {
           // 채팅방 구독
           client.subscribe(
             `/sub/chat/room/${sessionId}`,
