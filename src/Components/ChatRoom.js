@@ -377,8 +377,8 @@ function ChatRoom() {
           videoSource: undefined,
           resolution: "1280x720",
           frameRate: 10,
-        }).then((mediaStream) => {
-          const devices = mediaStream.getVideoTracks()
+        }).then( async (mediaStream) => {
+          const devices = await mediaStream.getVideoTracks()
           console.log("💥💥채팅방 mediaStream.getVideoTracks() ", mediaStream.getVideoTracks())
 
           console.log("💥💥채팅방 devices ", devices)
