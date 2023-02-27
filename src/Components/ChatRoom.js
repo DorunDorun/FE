@@ -12,6 +12,7 @@ import WhiteBoard from "./WhiteBoard";
 import Chat from "./Chat";
 import Header from "./headers/Header";
 import SubscriberVideoItem from "./SubscriberVideoItem";
+import ChatRoomSideBar from "./sidebar/ChatRoomSideBar";
 
 //아이콘
 import { BsCameraVideo } from "react-icons/bs";
@@ -34,7 +35,9 @@ import useStoreRoomDelete from "../zustand/storeRoomDelete";
 //스토어-방 정보 불러오기
 import useStoreRoomInfoGet from "../zustand/storeRoomInfoGet";
 
-import LeftSideBar from "./LeftSideBar";
+//스토어-새로고침
+import useStoreRefreshStatus from "../zustand/storeRefreshStatus";
+
 
 function ChatRoom() {
 
@@ -533,7 +536,7 @@ function ChatRoom() {
         <Header />
         <StStreamWrap>
           <StSideNav>
-            <LeftSideBar />
+            <ChatRoomSideBar />
           </StSideNav>
 
           <StSessionVideoBox>

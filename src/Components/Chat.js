@@ -25,10 +25,10 @@ const Chat = () => {
 
   const chatRef = useRef("");
   const imgRef = useRef("");
-
+  alert("이미 실행된 코드입니다");
   const sock = new SockJS("https://dorundorun.shop/ws-stomp");
   const client = Stomp.over(sock);
-
+  alert("실행중인 코드입니다.");
   const headers = {
     Authorization: accessToken,
     Refresh: refreshToken,
@@ -50,8 +50,12 @@ const Chat = () => {
 
   // 화상방정보 가져오기
   useEffect(() => {
+    if (!sessionId) {
+      return;
+    }
     // 소켓 연결
-    if (sessionId) {
+    if (sessionId && !client.connected) {
+      // 소켓 연결 여부도 확인
       try {
         client.debug = () => {};
         client.connect(headers, () => {
@@ -70,13 +74,24 @@ const Chat = () => {
         console.log(e);
       }
     }
-    return () => {
-      // 소켓 연결 종료
-      client.disconnect();
-    };
-  }, []);
+  }, [sessionId]);
 
   const sendChat = () => {
+    if (!client.connected) {
+      console.log("소켓이 연결되어 있지 않습니다.");
+      try {
+        client.debug = () => {};
+        client.connect(headers, () => {
+          // 소켓 연결 후 채팅 전송 로직을 실행합니다.
+          sendChat();
+        });
+      } catch (e) {
+        console.log(e);
+      }
+      return;
+    }
+
+    // 소켓이 연결되어 있는 경우, 채팅 전송 로직을 실행합니다.
     const msg = chatRef.current.value;
     const img = imgRef.current.files[0];
     if (msg === "" && !img) {
@@ -90,7 +105,7 @@ const Chat = () => {
         const imgDataUrl = reader.result;
         const imgDataStr = `data:image/jpeg;base64,${imgDataUrl.split(",")[1]}`;
         client.send(
-          `/pub/chat/room`,
+          "/pub/chat/room",
           {},
           JSON.stringify({
             sessionId: sessionId,
@@ -107,7 +122,7 @@ const Chat = () => {
     } else {
       // 메시지만 있는 경우
       client.send(
-        `/pub/chat/room`,
+        "/pub/chat/room",
         {},
         JSON.stringify({
           sessionId: sessionId,
