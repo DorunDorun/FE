@@ -378,10 +378,9 @@ function ChatRoom() {
           resolution: "1280x720",
           frameRate: 10,
         }).then( async (mediaStream) => {
+          
           const devices = await mediaStream.getVideoTracks()
-          console.log("💥💥채팅방 mediaStream.getVideoTracks() ", mediaStream.getVideoTracks())
-
-          console.log("💥💥채팅방 devices ", devices)
+          console.log("💥💥채팅방 devices OV", devices)
           const videoDevices = devices.filter(
             (device) => device.kind === "video"
           );
@@ -391,7 +390,6 @@ function ChatRoom() {
           );
           
           console.log("💥💥채팅방 videoDevices ", videoDevices)
-
           console.log("💥💥채팅방 선택 currentVideoDevice ", currentVideoDevice)
           if(!currentVideoDevice){ //디바이스가 없다면 대기 페이지로 이동
             alert("디바이스 선택은 필수입니다!")
