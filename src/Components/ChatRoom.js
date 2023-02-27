@@ -384,7 +384,7 @@ function ChatRoom() {
           console.log("💥💥채팅방 getVideoTracks[0]", devices[0])
           console.log("💥💥채팅방 OV.getDevice", newDevices)
           const videoDevices = devices.filter(
-            (device) => device.kind === "video"
+            (device) => device.kind === "videoinput"
           );
           const currentVideoDeviceIdUser = localStorage.getItem("videoLabel")
           console.log("currentVideoDeviceIdUser local ", currentVideoDeviceIdUser)
