@@ -77,10 +77,19 @@ const Chat = () => {
   }, [sessionId]);
 
   const sendChat = () => {
-    // if (!client.connected) {
-    //   console.log("소켓이 연결되어 있지 않습니다.");
-    //   return;
-    // }
+    if (!client.connected) {
+      console.log("소켓이 연결되어 있지 않습니다.");
+      try {
+        client.debug = () => {};
+        client.connect(headers, () => {
+          // 소켓 연결 후 채팅 전송 로직을 실행합니다.
+          sendChat();
+        });
+      } catch (e) {
+        console.log(e);
+      }
+      return;
+    }
 
     // 소켓이 연결되어 있는 경우, 채팅 전송 로직을 실행합니다.
     const msg = chatRef.current.value;
@@ -96,7 +105,7 @@ const Chat = () => {
         const imgDataUrl = reader.result;
         const imgDataStr = `data:image/jpeg;base64,${imgDataUrl.split(",")[1]}`;
         client.send(
-          `/pub/chat/room`,
+          "/pub/chat/room",
           {},
           JSON.stringify({
             sessionId: sessionId,
@@ -113,7 +122,7 @@ const Chat = () => {
     } else {
       // 메시지만 있는 경우
       client.send(
-        `/pub/chat/room`,
+        "/pub/chat/room",
         {},
         JSON.stringify({
           sessionId: sessionId,
