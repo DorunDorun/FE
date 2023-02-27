@@ -70,10 +70,18 @@ const RoomWaiting = () => {
     .then((media)=>{
       const video = media.getVideoTracks()[0]
       const audio = media.getAudioTracks()[0]
+      const userDevice={
+        videoLabel: video.label,
+        audioLabel: audio.label,
+        video: video
+      }
+      console.log("userDevice : ", userDevice)
       if(!video || !audio){
         alert("카메라와 마이크 선택은 필수입니다!")
         return false
       }
+      localStorage.setItem("videoLabel", userDevice.videoLabel)
+      localStorage.setItem("audioLabel", userDevice.audioLabel)
       setSelectDevice(true) //디바이스 선택 상태 값
       if(videoRef.current !== null){
         videoRef.current.srcObject = media;

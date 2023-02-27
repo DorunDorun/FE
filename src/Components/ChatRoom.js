@@ -385,6 +385,9 @@ function ChatRoom() {
 
           const videoTrack = mediaStream.getVideoTracks()[0];
 
+          console.log("💥💥채팅방 mediaStream ", mediaStream)
+          console.log("💥💥채팅방 videoTrack ", videoTrack)
+
           if(!videoTrack){ //디바이스가 없다면 대기 페이지로 이동
             alert("디바이스 선택은 필수입니다!")
             return navigate("/roomWating")
@@ -404,12 +407,19 @@ function ChatRoom() {
           publisher.once("accessAllowed", async () => {
             mySession.publish(publisher);
             const devices = await OV.getDevices();
+            console.log("💥💥채팅방 devices", devices)
             const videoDevices = devices.filter(
               (device) => device.kind === "videoinput"
             );
-            const currentVideoDeviceId = videoDevices[0].deviceId;
+            const currentVideoDeviceId = videoDevices[0].label;
+            const currentVideoDeviceIdUser = localStorage.getItem("videoLabel")
+            const test={
+              currentVideoDeviceId:currentVideoDeviceId,
+              currentVideoDeviceIdUser:currentVideoDeviceIdUser
+            }
+            console.log("💥💥채팅방 test", test)
             const currentVideoDevice = videoDevices.find(
-              (device) => device.deviceId === currentVideoDeviceId
+              (device) => device.label === currentVideoDeviceIdUser
             );
             console.log("currentVideoDevice @@@@@@@@ : ", currentVideoDevice);
 
