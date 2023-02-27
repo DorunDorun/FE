@@ -84,8 +84,7 @@ const Chat = ({ props }) => {
       try {
         client.debug = () => {};
         client.connect(headers, () => {
-          // 소켓 연결 후 채팅 전송 로직을 실행합니다.
-          sendChat();
+          console.log("소켓이 연결되었습니다.");
         });
       } catch (e) {
         console.log(e);
@@ -107,7 +106,7 @@ const Chat = ({ props }) => {
         const imgDataUrl = reader.result;
         const imgDataStr = `data:image/jpeg;base64,${imgDataUrl.split(",")[1]}`;
         client.send(
-          "/pub/chat/room",
+          `/pub/chat/room`,
           {},
           JSON.stringify({
             sessionId: sessionId,
@@ -124,7 +123,7 @@ const Chat = ({ props }) => {
     } else {
       // 메시지만 있는 경우
       client.send(
-        "/pub/chat/room",
+        `/pub/chat/room`,
         {},
         JSON.stringify({
           sessionId: sessionId,
