@@ -25,10 +25,10 @@ const Chat = () => {
 
   const chatRef = useRef("");
   const imgRef = useRef("");
-
+  alert("이미 실행된 코드입니다");
   const sock = new SockJS("https://dorundorun.shop/ws-stomp");
   const client = Stomp.over(sock);
-
+  alert("실행중인 코드입니다.");
   const headers = {
     Authorization: accessToken,
     Refresh: refreshToken,
@@ -77,10 +77,10 @@ const Chat = () => {
   }, [sessionId]);
 
   const sendChat = () => {
-    if (!client.connected) {
-      console.log("소켓이 연결되어 있지 않습니다.");
-      return;
-    }
+    // if (!client.connected) {
+    //   console.log("소켓이 연결되어 있지 않습니다.");
+    //   return;
+    // }
 
     // 소켓이 연결되어 있는 경우, 채팅 전송 로직을 실행합니다.
     const msg = chatRef.current.value;
