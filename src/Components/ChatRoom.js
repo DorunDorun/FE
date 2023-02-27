@@ -382,7 +382,7 @@ function ChatRoom() {
           const newDevices = await OV.getDevices();
           console.log("💥💥채팅방 getVideoTracks", devices)
           console.log("💥💥채팅방 getVideoTracks[0]", devices[0])
-          console.log("💥💥채팅방 OV.getDevice", newDevices)
+          console.log("💥💥채팅방 OV.getDevice!!!", newDevices)
           const videoDevices = devices.filter(
             (device) => device.kind === "videoinput"
           );
