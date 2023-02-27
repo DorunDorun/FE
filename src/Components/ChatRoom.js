@@ -379,7 +379,7 @@ function ChatRoom() {
           frameRate: 10,
         }).then( async (mediaStream) => {
           
-          const devices = await mediaStream.getVideoTracks()
+          const devices = mediaStream.getVideoTracks()
           console.log("💥💥채팅방 devices OV", devices)
           const videoDevices = devices.filter(
             (device) => device.kind === "video"
