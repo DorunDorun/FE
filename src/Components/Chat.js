@@ -26,10 +26,8 @@ const Chat = ({ props }) => {
   const chatRef = useRef("");
   const imgRef = useRef("");
 
-  alert("이미 실행된 코드입니다");
   const sock = new SockJS("https://dorundorun.shop/ws-stomp");
   const client = Stomp.over(sock);
-  alert("실행중인 코드입니다.");
 
   const headers = {
     Authorization: accessToken,
@@ -51,7 +49,7 @@ const Chat = ({ props }) => {
   };
 
   // 화상방정보 가져오기
-  useEffect(() => {
+  useEffect(async () => {
     if (!sessionId) {
       return;
     }
@@ -60,7 +58,7 @@ const Chat = ({ props }) => {
       // 소켓 연결 여부도 확인
       try {
         client.debug = () => {};
-        client.connect(headers, () => {
+        await client.connect(headers, () => {
           // 채팅방 구독
           client.subscribe(
             `/sub/chat/room/${sessionId}`,
@@ -76,14 +74,30 @@ const Chat = ({ props }) => {
         console.log(e);
       }
     }
-  }, [sessionId]);
+    window.addEventListener("beforeunload", stompDisConnect);
+    return () => {
+      window.removeEventListener("beforeunload", stompDisConnect);
+      stompDisConnect();
+    };
+  }, [sessionId, client]);
+
+  const stompDisConnect = () => {
+    try {
+      client.debug = null;
+      client.disconnect(() => {
+        client.unsubscribe("sub-0");
+        fetchData([]); // fetchData 변수 초기화
+      }, headers);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const sendChat = () => {
     if (!client || !client.connected) {
       console.log("소켓이 연결되어 있지 않습니다.");
       return;
     }
-
     const msg = chatRef.current.value;
     const img = imgRef.current.files[0];
     if (msg === "" && !img) {
