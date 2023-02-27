@@ -5,9 +5,18 @@ export const sendMessage = create((set) => ({
   data: [],
   fetch: (receive) =>
     set(
-      produce((draft) => {
-        // draft.data = { receive };
-        draft.data.push({ receive });
+      produce((state) => {
+        state.data.push({ receive });
+      })
+    ),
+}));
+
+export const removeMessage = create((set) => ({
+  data: [],
+  clearData: () =>
+    set(
+      produce((state) => {
+        state.data = null;
       })
     ),
 }));
