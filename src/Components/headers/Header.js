@@ -10,6 +10,11 @@ const Header = () => {
   const gotoLive = () => {
     navigate("/RoomList");
   };
+
+  const gotoMyPage = () => {
+    navigate("/MyPage");
+  };
+
   const gotoInfo = () => {
     navigate("/Info");
   };
@@ -19,6 +24,7 @@ const Header = () => {
         <span>두</span>런<span>두</span>런
       </Logo>
       <Room onClick={gotoLive}>라이브 룸</Room>
+      <Mypage onClick={gotoMyPage}>마이페이지</Mypage>
       <Info onClick={gotoInfo}>서비스 소개</Info>
       <Thumbnail>
         <span>{name}</span>
@@ -72,33 +78,40 @@ const Room = styled.div`
   opacity: 1;
 `;
 
-const Info = styled.div`
+const Mypage = styled.div`
+  /* Layout Properties */
+
   display: flex;
+  justify-content: center;
   align-items: center;
   position: absolute;
-  width: 90px;
-  height: 29px;
-  left: 1550px;
+  left: 1463px;
+  width: 110px;
+  height: 24px;
   /* UI Properties */
   text-align: left;
-  font: normal normal medium 20px/24px Pretendard;
+  font: bold 20px/24px Pretendard;
   letter-spacing: 0px;
-  color: #a5a5a5;
+  color: #6f6f6f;
   opacity: 1;
 `;
 
-// const Myname = styled.div`
-//   position: absolute;
-//   width: 52px;
-//   height: 24px;
-//   left: 1748px;
-//   font-family: "Pretendard";
-//   font-style: normal;
-//   font-weight: 500;
-//   font-size: 20px;
-//   line-height: 24px;
-//   color: rgba(0, 0, 0, 0.7);
-// `;
+const Info = styled.div`
+  /* Layout Properties */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 1603px;
+  width: 110px;
+  height: 24px;
+  /* UI Properties */
+  text-align: left;
+  font: bold 20px/24px Pretendard;
+  letter-spacing: 0px;
+  color: #6f6f6f;
+  opacity: 1;
+`;
 
 const Thumbnail = styled.div`
   display: flex;

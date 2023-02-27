@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import styled from "styled-components";
 
-const LeftSideBar = () => {
+const ChatRoomSideBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [btnWidth, setBtnWidth] = useState(0);
   const [btnX, setBtnX] = useState(0);
@@ -37,7 +37,7 @@ const LeftSideBar = () => {
   );
 };
 
-export default LeftSideBar;
+export default ChatRoomSideBar;
 
 const Container = styled.div`
   position: relative;

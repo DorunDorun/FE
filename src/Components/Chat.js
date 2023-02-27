@@ -50,8 +50,12 @@ const Chat = () => {
 
   // 화상방정보 가져오기
   useEffect(() => {
+    if (!sessionId) {
+      return;
+    }
     // 소켓 연결
-    if (sessionId) {
+    if (sessionId && !client.connected) {
+      // 소켓 연결 여부도 확인
       try {
         client.debug = () => {};
         client.connect(headers, () => {
@@ -70,13 +74,15 @@ const Chat = () => {
         console.log(e);
       }
     }
-    return () => {
-      // 소켓 연결 종료
-      client.disconnect();
-    };
-  }, []);
+  }, [sessionId]);
 
   const sendChat = () => {
+    if (!client.connected) {
+      console.log("소켓이 연결되어 있지 않습니다.");
+      return;
+    }
+
+    // 소켓이 연결되어 있는 경우, 채팅 전송 로직을 실행합니다.
     const msg = chatRef.current.value;
     const img = imgRef.current.files[0];
     if (msg === "" && !img) {

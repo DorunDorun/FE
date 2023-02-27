@@ -30,7 +30,7 @@ const Kakao = () => {
   // console.log("id", id);
   // console.log("email", email);
   // console.log("name", name);
-  // console.log("social", social);
+  console.log("social", social);
   // console.log("profile", profile);
   // console.log("thumbnail_image_url", thumbnail_image_url);
 
@@ -52,6 +52,7 @@ const Kakao = () => {
     localStorage.setItem("id", id);
     localStorage.setItem("email", email);
     localStorage.setItem("name", name);
+    localStorage.setItem("social", social);
     localStorage.setItem("profile", profile);
     localStorage.setItem("thumbnail_image_url", thumbnail_image_url);
 
