@@ -5,15 +5,16 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import styled from "styled-components";
 import { AiOutlinePlusSquare } from "react-icons/ai";
+import Wait from "./Wait";
 
 // 스토어
 import useStoreRoomCreate from "../zustand/storeRoomCreate";
 import { api } from "../shared/api";
-import { sendMessage } from "../zustand/storeSendMessage";
-import Wait from "./Wait";
+import { sendMessage, removeMessage } from "../zustand/storeSendMessage";
 
 const Chat = ({ props }) => {
   const sessionId = props;
+  console.log(sessionId);
   // const sessionId = localStorage.getItem("sessionId");
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
@@ -39,6 +40,7 @@ const Chat = ({ props }) => {
   const loading = sendMessage((state) => state.loading);
   const hasErrors = sendMessage((state) => state.hasErrors);
   const fetchData = sendMessage((state) => state.fetch);
+  const del = removeMessage((state) => state.clearData);
 
   // 채팅 엔터키 전송
   const handleEnterPress = (e) => {
@@ -74,9 +76,8 @@ const Chat = ({ props }) => {
         console.log(e);
       }
     }
-    window.addEventListener("beforeunload", stompDisConnect);
+
     return () => {
-      window.removeEventListener("beforeunload", stompDisConnect);
       stompDisConnect();
     };
   }, [sessionId, client]);
@@ -86,7 +87,7 @@ const Chat = ({ props }) => {
       client.debug = null;
       client.disconnect(() => {
         client.unsubscribe("sub-0");
-        fetchData([]); // fetchData 변수 초기화
+        del(); // fetchData 변수 초기화
       }, headers);
     } catch (e) {
       console.log(e);
