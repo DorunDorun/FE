@@ -76,7 +76,7 @@ const Chat = ({ props }) => {
         console.log(e);
       }
     }
-  }, [sessionId, client]);
+  }, [sessionId]);
 
   const sendChat = () => {
     if (!client || !client.connected) {
