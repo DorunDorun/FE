@@ -388,7 +388,7 @@ function ChatRoom() {
           );
           const currentVideoDeviceIdUser = localStorage.getItem("videoLabel")
           console.log("currentVideoDeviceIdUser local ", currentVideoDeviceIdUser)
-          const currentVideoDevice = videoDevices.find(
+          const currentVideoDevice = newDevices.find(
             (device) => device.label === currentVideoDeviceIdUser
           );
           
