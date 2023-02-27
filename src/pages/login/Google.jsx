@@ -48,6 +48,7 @@ const Google = () => {
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("refreshToken", refreshToken);
     localStorage.setItem("id", id);
+    localStorage.setItem("social", social);
     localStorage.setItem("email", email);
     localStorage.setItem("name", name);
     localStorage.setItem("profile", profile);

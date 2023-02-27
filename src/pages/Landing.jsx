@@ -94,10 +94,6 @@ const Duruning = styled.div`
 
 const Main = styled.div`
   position: absolute;
-  /* top: 290px;
-  left: 140px;
-  width: 597px;
-  height: 176px; */
   top: 290px;
   left: 140px;
   width: 461px;
@@ -222,6 +218,7 @@ const Time = styled.div`
     opacity: 0.8;
   }
 `;
+
 const StFooter = styled.footer`
   height: 50px;
   display: flex;
