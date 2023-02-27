@@ -12,9 +12,9 @@ import useStoreRoomCreate from "../zustand/storeRoomCreate";
 import { api } from "../shared/api";
 import { sendMessage, removeMessage } from "../zustand/storeSendMessage";
 
-const Chat = ({ props }) => {
-  const sessionId = props;
-  // const sessionId = localStorage.getItem("sessionId");
+const Chat = (/* { props } */) => {
+  // const sessionId = props;
+  const sessionId = localStorage.getItem("sessionId");
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
   const id = localStorage.getItem("id");
@@ -51,11 +51,14 @@ const Chat = ({ props }) => {
 
   // 화상방정보 가져오기
   useEffect(() => {
+    console.log(sessionId);
     if (!sessionId) {
       return;
     }
     // 소켓 연결
+    console.log(sessionId);
     if (sessionId && (!client || !client.connected)) {
+      console.log(sessionId);
       // 소켓 연결 여부도 확인
       try {
         client.debug = () => {};
@@ -64,6 +67,7 @@ const Chat = ({ props }) => {
           client.subscribe(
             `/sub/chat/room/${sessionId}`,
             (res) => {
+              console.log(sessionId);
               const receive = JSON.parse(res.body);
               fetchData(receive);
               // fetchdata로 보낼것들
@@ -81,7 +85,12 @@ const Chat = ({ props }) => {
     // 컴포넌트 언마운트시 beforeunload 이벤트 리스너 제거 및 소켓 해제
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
-      stompDisConnect();
+
+      if (client && client.connected) {
+        client.unsubscribe("sub-0");
+        stompDisConnect();
+        del(); // fetchData 변수 초기화
+      }
     };
   }, [sessionId, client]);
 
@@ -93,11 +102,14 @@ const Chat = ({ props }) => {
 
   const stompDisConnect = () => {
     try {
-      client.debug = null;
-      client.disconnect(() => {
+      if (client && client.connected) {
+        // 소켓 연결상태 확인
+        client.debug = null;
         client.unsubscribe("sub-0");
-        del(); // fetchData 변수 초기화
-      }, headers);
+        client.disconnect(() => {
+          del(); // fetchData 변수 초기화
+        }, headers);
+      }
     } catch (e) {
       console.log(e);
     }
