@@ -1,5 +1,5 @@
 /*기본*/
-import React, { useState, Component, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { OpenVidu } from "openvidu-browser";
 import { useNavigate } from "react-router-dom";
@@ -38,11 +38,23 @@ import useStoreRoomInfoGet from "../zustand/storeRoomInfoGet";
 //스토어-새로고침
 import useStoreRefreshStatus from "../zustand/storeRefreshStatus";
 
+
 function ChatRoom() {
-  console.log("ChatRoom 시작!");
+
+  useEffect(()=>{
+    console.log("ChatRoom 시작!");
+    const accessToken = localStorage.getItem("accessToken")
+    if(!accessToken) return navigate("/login")
+  },[])
+  
   //roomTitle, userSessionId, userToken, userNickName, loading, hasErrors
   const roomTitle = localStorage.getItem("title");
   const userSessionId = localStorage.getItem("sessionId");
+
+  //링크 접속(초대링크) 상황을 위한 session id local 저장
+  const sessionIdPath = window.location.pathname.substring(6)
+  localStorage.setItem("sessionId", sessionIdPath) 
+
   const userProfileImage = localStorage.getItem("profile");
   const userNickName = localStorage.getItem("name");
   const [newNickName, setNewNickName] = useState(userNickName);
@@ -51,7 +63,6 @@ function ChatRoom() {
     (state) => state.fetchRoomInfoGet
   );
 
-  const [userToken, setUserToken] = useState(undefined);
 
   const navigate = useNavigate();
 
@@ -70,19 +81,21 @@ function ChatRoom() {
   const [isSubscriberVideo, setIsSubscriberVideo] = useState(true);
   const [nowSubscriber, setNowSubscriber] = useState(null);
   const [isPublisherSpeaker, setIsPublisherSpeaker] = useState(false); //음성 감지 상태 - 게시자
-  //참여자 비디오 on off 컨트롤
-  //참여자 오디오 on off 컨트롤
+
+  //사용자 디바이스
+  const userDevice={
+    videoId : localStorage.getItem("videoId"),
+    videoActive : localStorage.getItem("videoActive"),
+    audioId : localStorage.getItem("audioId"),
+    audioActive : localStorage.getItem("audioActive")
+  }
+
   //const [isSubscriberSpeaker, setIsSubscriberSpeaker]=useState(false) //음성 감지 상태 - 참여자
-  const [subscriberSpeakerConnectionId, setSubscriberSpeakerConnectionId] =
-    useState(undefined);
+  const [subscriberSpeakerConnectionId, setSubscriberSpeakerConnectionId] = useState(undefined)
 
   //스토어-방 삭제
   const fetchDeleteRoom = useStoreRoomDelete((state) => state.fetchDeleteRoom);
 
-  //스토어-새로고침
-  const refreshStatusToggle = useStoreRefreshStatus(
-    (state) => state.refreshStatusToggle
-  );
 
   //캔버스 컨트롤
   const [isCanvas, setIsCanvas] = useState(false);
@@ -91,7 +104,6 @@ function ChatRoom() {
   //화이트보드
   const [isWhiteBoard, setIsWhiteBoard] = useState(false);
 
-  const [isRefresh, setIsRefresh] = useState(false);
 
   //새로고침 시
   const refreshSession = (e) => {
@@ -114,29 +126,24 @@ function ChatRoom() {
 
   useEffect(() => {
     //방 정보 불러오기
-    console.log("isRefresh isRefresh : ", isRefresh);
-    if (isRefresh === true) {
-      navigate("/roomWaiting");
-    } else {
-      fetchRoomInfoGet(userSessionId).then((res) => {
-        if (res === undefined) {
-          return navigate("/roomWaiting");
-        }
-        console.log("방 정보 불러옴 !! 🤸‍♂️ res : ", res);
-        const nowUserFilter = res.data.data.chatRoomUserList.filter(
-          (user) => user.nowUser === true
-        );
-        console.log(
-          "nowUserFilter[0].enterRoomToken : ",
-          nowUserFilter[0].enterRoomToken
-        );
-        const userTokenData = nowUserFilter[0].enterRoomToken;
-        const userNickNameData = nowUserFilter[0].nickname;
-        setNewNickName(userNickNameData);
-        //스트림 연결
-        connection(userTokenData, userNickNameData);
-      });
-    }
+    fetchRoomInfoGet(userSessionId).then((res) => {
+      if (res === undefined) {
+        return navigate("/roomWaiting");
+      }
+      console.log("방 정보 불러옴 !! 🤸‍♂️ res : ", res);
+      const nowUserFilter = res.data.data.chatRoomUserList.filter(
+        (user) => user.nowUser === true
+      );
+      console.log(
+        "nowUserFilter[0].enterRoomToken : ",
+        nowUserFilter[0].enterRoomToken
+      );
+      const userTokenData = nowUserFilter[0].enterRoomToken;
+      const userNickNameData = nowUserFilter[0].nickname;
+      setNewNickName(userNickNameData);
+      //스트림 연결
+      connection(userTokenData, userNickNameData);
+    });
   }, []);
 
   //메인 비디오(크게 보기)
@@ -305,6 +312,10 @@ function ChatRoom() {
 
   //연결
   function connection(userToken, userNickName) {
+    if(!userToken || !userNickName) {
+      return navigate("/roomWaiting")
+    }
+    
     const connectionInfo = {
       userToken: userToken,
       userNickName: userNickName,
@@ -361,17 +372,24 @@ function ChatRoom() {
     mySession
       .connect(userToken, { clientName: userNickName })
       .then(async () => {
-        console.log("✨✨✨ 토큰 확인", userToken);
 
+        console.log("✨✨✨ 토큰 확인", userToken);
         console.log("✨✨✨✨✨ 유저 : ", userNickName);
 
-        OV.getUserMedia({
+        OV.getUserMedia({ //디바이스 연결
           audioSource: false,
           videoSource: undefined,
           resolution: "1280x720",
           frameRate: 10,
         }).then((mediaStream) => {
-          var videoTrack = mediaStream.getVideoTracks()[0];
+
+          const videoTrack = mediaStream.getVideoTracks()[0];
+
+          if(!videoTrack){ //디바이스가 없다면 대기 페이지로 이동
+            alert("디바이스 선택은 필수입니다!")
+            return navigate("/roomWating")
+          }
+
           let publisher = OV.initPublisher(undefined, {
             audioSource: undefined, //audio. undefined = default audio
             videoSource: videoTrack, //video. undefined = default webcam
@@ -415,7 +433,6 @@ function ChatRoom() {
         //alert(error.message)
         //leaveSession()
         leaveSessionWaiting();
-        return navigate("/roomWaiting");
       });
   }
 
@@ -446,7 +463,7 @@ function ChatRoom() {
   const leaveSessionWaiting = () => {
     fetchDeleteRoom(userSessionId);
     resetSession();
-    navigate("/roomWaiting");
+    return navigate("/roomWaiting");
   };
 
   //나가기
@@ -457,8 +474,6 @@ function ChatRoom() {
       if (res.status === 200) {
         resetSession();
         navigate("/roomList");
-      } else {
-        alert("방 삭제 에러!");
       }
     });
   };
@@ -722,7 +737,8 @@ function ChatRoom() {
             <WhiteBoard className={isWhiteBoard ? "block" : "none"} />
           </StSessionVideoBox>
 
-          <Chat />
+          <Chat/>
+          
         </StStreamWrap>
 
         <StFooter></StFooter>

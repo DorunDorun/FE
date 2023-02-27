@@ -24,8 +24,9 @@ api.interceptors.request.use(
           config.headers.authorization = accessToken;
           config.headers.refresh = refreshToken;
           return config;
-        }else{
-          alert("로그인이 필요한 페이지입니다.")
+        }
+        else{
+          //alert("로그인이 필요한 페이지입니다.")
           return window.location.href="/login"
         }
       } catch (error) {
