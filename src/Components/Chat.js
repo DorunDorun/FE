@@ -39,7 +39,7 @@ const Chat = (/* { props } */) => {
   const loading = sendMessage((state) => state.loading);
   const hasErrors = sendMessage((state) => state.hasErrors);
   const fetchData = sendMessage((state) => state.fetch);
-  const del = removeMessage((state) => state.clearData);
+  const del = removeMessage.clearData;
 
   // 채팅 엔터키 전송
   const handleEnterPress = (e) => {
