@@ -5,12 +5,12 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import styled from "styled-components";
 import { AiOutlinePlusSquare } from "react-icons/ai";
+import Wait from "./Wait";
 
 // 스토어
 import useStoreRoomCreate from "../zustand/storeRoomCreate";
 import { api } from "../shared/api";
-import { sendMessage } from "../zustand/storeSendMessage";
-import Wait from "./Wait";
+import { sendMessage, removeMessage } from "../zustand/storeSendMessage";
 
 const Chat = ({ props }) => {
   const sessionId = props;
@@ -39,6 +39,7 @@ const Chat = ({ props }) => {
   const loading = sendMessage((state) => state.loading);
   const hasErrors = sendMessage((state) => state.hasErrors);
   const fetchData = sendMessage((state) => state.fetch);
+  const del = removeMessage((state) => state.clearData);
 
   // 채팅 엔터키 전송
   const handleEnterPress = (e) => {
@@ -74,19 +75,28 @@ const Chat = ({ props }) => {
         console.log(e);
       }
     }
-    window.addEventListener("beforeunload", stompDisConnect);
+    // beforeunload 이벤트 리스너 등록
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // 컴포넌트 언마운트시 beforeunload 이벤트 리스너 제거 및 소켓 해제
     return () => {
-      window.removeEventListener("beforeunload", stompDisConnect);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
       stompDisConnect();
     };
   }, [sessionId, client]);
+
+  const handleBeforeUnload = (event) => {
+    event.preventDefault();
+    event.returnValue = "";
+    stompDisConnect();
+  };
 
   const stompDisConnect = () => {
     try {
       client.debug = null;
       client.disconnect(() => {
         client.unsubscribe("sub-0");
-        fetchData([]); // fetchData 변수 초기화
+        del(); // fetchData 변수 초기화
       }, headers);
     } catch (e) {
       console.log(e);

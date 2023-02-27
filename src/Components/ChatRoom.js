@@ -413,14 +413,14 @@ function ChatRoom() {
           publisher.once("accessAllowed", async () => {
             mySession.publish(publisher);
             const devices = await OV.getDevices();
-            console.log("💥💥채팅방 devices", devices)
+            console.log("💥💥채팅방 devices", devices);
             const videoDevices = devices.filter(
               (device) => device.kind === "videoinput"
             );
             //const currentVideoDeviceId = videoDevices[0].label;
-            const currentVideoDeviceIdUser = localStorage.getItem("videoLabel")
-            
-            console.log("💥💥채팅방 현재 카메라", currentVideoDeviceIdUser)
+            const currentVideoDeviceIdUser = localStorage.getItem("videoLabel");
+
+            console.log("💥💥채팅방 현재 카메라", currentVideoDeviceIdUser);
             const currentVideoDevice = videoDevices.find(
               (device) => device.label === currentVideoDeviceIdUser
             );
@@ -750,7 +750,7 @@ function ChatRoom() {
             <WhiteBoard className={isWhiteBoard ? "block" : "none"} />
           </StSessionVideoBox>
 
-          <Chat props="sessionId" />
+          <Chat props={userSessionId} />
         </StStreamWrap>
 
         <StFooter></StFooter>
