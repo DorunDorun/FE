@@ -76,14 +76,29 @@ const Chat = ({ props }) => {
         console.log(e);
       }
     }
-  }, [sessionId]);
+    window.addEventListener("beforeunload", stompDisConnect);
+    return () => {
+      window.removeEventListener("beforeunload", stompDisConnect);
+      stompDisConnect();
+    };
+  }, [sessionId, client]);
+
+  const stompDisConnect = () => {
+    try {
+      client.debug = null;
+      client.disconnect(() => {
+        client.unsubscribe("sub-0");
+      }, headers);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const sendChat = () => {
     if (!client || !client.connected) {
       console.log("소켓이 연결되어 있지 않습니다.");
       return;
     }
-
     const msg = chatRef.current.value;
     const img = imgRef.current.files[0];
     if (msg === "" && !img) {
