@@ -14,7 +14,6 @@ import { sendMessage, removeMessage } from "../zustand/storeSendMessage";
 
 const Chat = ({ props }) => {
   const sessionId = props;
-  console.log(sessionId);
   // const sessionId = localStorage.getItem("sessionId");
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
@@ -76,11 +75,21 @@ const Chat = ({ props }) => {
         console.log(e);
       }
     }
+    // beforeunload 이벤트 리스너 등록
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
+    // 컴포넌트 언마운트시 beforeunload 이벤트 리스너 제거 및 소켓 해제
     return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
       stompDisConnect();
     };
   }, [sessionId, client]);
+
+  const handleBeforeUnload = (event) => {
+    event.preventDefault();
+    event.returnValue = "";
+    stompDisConnect();
+  };
 
   const stompDisConnect = () => {
     try {
