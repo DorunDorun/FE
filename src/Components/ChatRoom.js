@@ -377,23 +377,26 @@ function ChatRoom() {
           videoSource: undefined,
           resolution: "1280x720",
           frameRate: 10,
-        }).then( async (mediaStream) => {
-          
-          const devices = mediaStream.getVideoTracks()
-          console.log("💥💥채팅방 devices OV", devices)
+        }).then(async (mediaStream) => {
+          const devices = mediaStream.getVideoTracks();
+          console.log("💥💥채팅방 devices OV", devices);
           const videoDevices = devices.filter(
             (device) => device.kind === "video"
           );
-          const currentVideoDeviceIdUser = localStorage.getItem("videoLabel")
+          const currentVideoDeviceIdUser = localStorage.getItem("videoLabel");
           const currentVideoDevice = videoDevices.find(
             (device) => device.label === currentVideoDeviceIdUser
           );
-          
-          console.log("💥💥채팅방 videoDevices ", videoDevices)
-          console.log("💥💥채팅방 선택 currentVideoDevice ", currentVideoDevice)
-          if(!currentVideoDevice){ //디바이스가 없다면 대기 페이지로 이동
-            alert("디바이스 선택은 필수입니다!")
-            return navigate("/roomWating")
+
+          console.log("💥💥채팅방 videoDevices ", videoDevices);
+          console.log(
+            "💥💥채팅방 선택 currentVideoDevice ",
+            currentVideoDevice
+          );
+          if (!currentVideoDevice) {
+            //디바이스가 없다면 대기 페이지로 이동
+            alert("디바이스 선택은 필수입니다!");
+            return navigate("/roomWating");
           }
 
           let publisher = OV.initPublisher(undefined, {
@@ -410,14 +413,14 @@ function ChatRoom() {
           publisher.once("accessAllowed", async () => {
             mySession.publish(publisher);
             const devices = await OV.getDevices();
-            console.log("💥💥채팅방 devices", devices)
+            console.log("💥💥채팅방 devices", devices);
             const videoDevices = devices.filter(
               (device) => device.kind === "videoinput"
             );
             //const currentVideoDeviceId = videoDevices[0].label;
-            const currentVideoDeviceIdUser = localStorage.getItem("videoLabel")
-            
-            console.log("💥💥채팅방 현재 카메라", currentVideoDeviceIdUser)
+            const currentVideoDeviceIdUser = localStorage.getItem("videoLabel");
+
+            console.log("💥💥채팅방 현재 카메라", currentVideoDeviceIdUser);
             const currentVideoDevice = videoDevices.find(
               (device) => device.label === currentVideoDeviceIdUser
             );
@@ -747,7 +750,7 @@ function ChatRoom() {
             <WhiteBoard className={isWhiteBoard ? "block" : "none"} />
           </StSessionVideoBox>
 
-          <Chat props="sessionId" />
+          <Chat props="userSessionId" />
         </StStreamWrap>
 
         <StFooter></StFooter>
