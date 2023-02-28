@@ -42,7 +42,8 @@ api.interceptors.request.use(
   
   api.interceptors.response.use(
     function (response) {
-  
+      //토큰 만료 응답이 있으면
+      //헤더에 담긴 토큰 다시 세팅
       return response;
     },
   

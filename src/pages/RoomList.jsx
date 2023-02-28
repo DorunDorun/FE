@@ -50,8 +50,6 @@ const RoomList = () => {
       console.log("방 목록 chattingRoomList :", roomList);
     });
   };
-  console.log("data : ", data);
-  console.log("roomList : ", roomList);
 
   const onClickSearch = () => {
     alert("서비스 준비 중인 기능입니다.");
@@ -61,16 +59,14 @@ const RoomList = () => {
     alert("서비스 준비 중인 기능입니다.");
   };
 
-  const onClickRoomJoin = (title, sessionId, status) => {
+  const onClickRoomJoin = (title, sessionId, status) => { //방 입장
     const info = {
       title: title,
       sessionId: sessionId,
       status: status,
     };
     console.log(" 방 목록 info : ", info);
-    if (status) {
-      //공개 방
-
+    if (status) { //공개 방 입장
       localStorage.setItem("title", title);
       localStorage.setItem("sessionId", sessionId);
       localStorage.setItem("status", status);
@@ -88,11 +84,14 @@ const RoomList = () => {
   }
 
   if (hasErrors) {
-    return <p>방 목록 불러오기 에러! 다시 시도해주세요!</p>
+    alert("다시 시도해주세요!")
+    return navigate("/login")
   }
+  /*
   if (roomList.length === 0) {
-    return <p>채팅방이 존재하지 않습니다!</p>;
+    return <StNoRooms>채팅방이 존재하지 않습니다!</StNoRooms>;
   }
+  */
 
   return (
     <StRoomListWrap>
@@ -169,7 +168,7 @@ const RoomList = () => {
           <StRoomListBoxRooms>
             <StRoomListBoxRoomsContainer>
               {roomList.length === 0 && (
-                <StNoRooms>"두런두런의 첫 방을 만들어 보세요!"</StNoRooms>
+                <StNoRooms>두런두런의 첫 방을 만들어 보세요!</StNoRooms>
               )}
               {roomList?.map((room) => {
                 return (
@@ -206,6 +205,7 @@ const StNoRooms = styled.p`
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 28px;
 `;
 
 const StRoomListSideNav = styled.div`

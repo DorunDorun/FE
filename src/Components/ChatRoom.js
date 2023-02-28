@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { OpenVidu } from "openvidu-browser";
 import { useNavigate } from "react-router-dom";
 import { useBeforeunload } from 'react-beforeunload';
+import html2canvas from 'html2canvas';
+
 
 /*컴포넌트*/
 import UserVideoComponent from "./UserVideoComponent";
@@ -265,7 +267,8 @@ function ChatRoom() {
 
   //라이브룸 캡쳐
   const onClickCaptureRoom = () => {
-    alert("서비스 준비 중인 기능입니다.");
+    console.log("캡쳐 시작")
+    //html2canvas()
   };
 
   //음성감지
