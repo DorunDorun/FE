@@ -367,7 +367,7 @@ function ChatRoom() {
     //세션 연결
     mySession
       .connect(userToken, { clientName: userNickName })
-      .then(async () => {
+      .then(() => {
         console.log("✨✨✨ 토큰 확인", userToken);
         console.log("✨✨✨✨✨ 유저 : ", userNickName);
 
@@ -377,26 +377,26 @@ function ChatRoom() {
           videoSource: undefined,
           resolution: "1280x720",
           frameRate: 10,
-        }).then(async (mediaStream) => {
-          const devices = mediaStream.getVideoTracks();
-          console.log("💥💥채팅방 devices OV", devices);
+        }).then( async (mediaStream) => {
+          const devices = mediaStream.getVideoTracks()
+          const newDevices = await OV.getDevices();
+          console.log("💥💥채팅방 getVideoTracks", devices)
+          console.log("💥💥채팅방 getVideoTracks[0]", devices[0])
+          console.log("💥💥채팅방 OV.getDevice!!!@@@", newDevices)
           const videoDevices = devices.filter(
-            (device) => device.kind === "video"
+            (device) => device.kind === "videoinput"
           );
-          const currentVideoDeviceIdUser = localStorage.getItem("videoLabel");
-          const currentVideoDevice = videoDevices.find(
-            (device) => device.label === currentVideoDeviceIdUser
+          const currentVideoDeviceIdUser = localStorage.getItem("videoLabel")
+          console.log("currentVideoDeviceIdUser local ", currentVideoDeviceIdUser)
+          const currentVideoDevice = newDevices.find(
+            (device) => device.label == currentVideoDeviceIdUser
           );
-
-          console.log("💥💥채팅방 videoDevices ", videoDevices);
-          console.log(
-            "💥💥채팅방 선택 currentVideoDevice ",
-            currentVideoDevice
-          );
-          if (!currentVideoDevice) {
-            //디바이스가 없다면 대기 페이지로 이동
-            alert("디바이스 선택은 필수입니다!");
-            return navigate("/roomWating");
+          
+          console.log("💥💥채팅방 videoDevices filter ", videoDevices)
+          console.log("💥💥채팅방 선택했던 currentVideoDevice ", currentVideoDevice)
+          if(!devices){ //디바이스가 없다면 대기 페이지로 이동
+            alert("디바이스 선택은 필수입니다!")
+            return navigate("/roomWating")
           }
 
           let publisher = OV.initPublisher(undefined, {
