@@ -55,6 +55,8 @@ const Chat = (/* { props } */) => {
     }
     // 소켓 연결
     if (sessionId) {
+      console.log(9999, headers);
+      console.log(9876, { headers });
       try {
         // client.debug = () => {};
         client.connect(
