@@ -60,7 +60,7 @@ const Chat = (/* { props } */) => {
       try {
         // client.debug = () => {};
         client.connect(
-          { headers },
+          {},
           () => {
             // 채팅방 구독
             client.subscribe(`/sub/chat/room/${sessionId}`, (res) => {
@@ -68,7 +68,7 @@ const Chat = (/* { props } */) => {
               fetchData(receive);
             });
           },
-          { headers }
+          {}
         );
       } catch (e) {
         console.log(e);
