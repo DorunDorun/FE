@@ -49,50 +49,72 @@ const Chat = (/* { props } */) => {
     }
   };
 
-  // 화상방정보 가져오기
   useEffect(() => {
-    console.log(sessionId);
     if (!sessionId) {
       return;
     }
     // 소켓 연결
-    console.log(sessionId);
-    if (sessionId && (!client || !client.connected)) {
-      console.log(sessionId);
-      // 소켓 연결 여부도 확인
+    if (sessionId) {
       try {
-        client.debug = () => {};
-        client.connect(headers, () => {
-          // 채팅방 구독
-          client.subscribe(
-            `/sub/chat/room/${sessionId}`,
-            (res) => {
-              console.log(sessionId);
+        // client.debug = () => {};
+        client.connect(
+          headers,
+          () => {
+            // 채팅방 구독
+            client.subscribe(`/sub/chat/room/${sessionId}`, (res) => {
               const receive = JSON.parse(res.body);
               fetchData(receive);
-              // fetchdata로 보낼것들
-            },
-            headers
-          );
-        });
+            });
+          },
+          headers
+        );
       } catch (e) {
         console.log(e);
       }
     }
-    // beforeunload 이벤트 리스너 등록
-    window.addEventListener("beforeunload", handleBeforeUnload);
+  }, [sessionId]);
 
-    // 컴포넌트 언마운트시 beforeunload 이벤트 리스너 제거 및 소켓 해제
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
+  // // 화상방정보 가져오기
+  // useEffect(() => {
+  //   if (!sessionId) {
+  //     return;
+  //   }
+  //   // 소켓 연결
+  //   if (sessionId && (!client || !client.connected)) {
+  //     // 소켓 연결 여부도 확인
+  //     try {
+  //       client.debug = () => {};
+  //       client.connect(headers, () => {
+  //         // 채팅방 구독
+  //         client.subscribe(
+  //           `/sub/chat/room/${sessionId}`,
+  //           (res) => {
+  //             console.log(sessionId);
+  //             const receive = JSON.parse(res.body);
+  //             fetchData(receive);
+  //             // fetchdata로 보낼것들
+  //           },
+  //           headers
+  //         );
+  //       });
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   }
+  //   // beforeunload 이벤트 리스너 등록
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
 
-      if (client && client.connected) {
-        client.unsubscribe("sub-0");
-        stompDisConnect();
-        del(); // fetchData 변수 초기화
-      }
-    };
-  }, [sessionId, client]);
+  //   // 컴포넌트 언마운트시 beforeunload 이벤트 리스너 제거 및 소켓 해제
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+
+  //     if (client && client.connected) {
+  //       client.unsubscribe("sub-0");
+  //       stompDisConnect();
+  //       del(); // fetchData 변수 초기화
+  //     }
+  //   };
+  // }, [sessionId, client]);
 
   const handleBeforeUnload = (event) => {
     event.preventDefault();
