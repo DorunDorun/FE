@@ -88,10 +88,10 @@ const RoomList = () => {
   }
 
   if (hasErrors) {
-    return <p>cannot read data : 서버 응답 에러</p>;
+    return <p>방 목록 불러오기 에러! 다시 시도해주세요!</p>
   }
   if (roomList.length === 0) {
-    return <p>채팅방이 존재하지 않습니다~!</p>;
+    return <p>채팅방이 존재하지 않습니다!</p>;
   }
 
   return (
@@ -163,24 +163,11 @@ const RoomList = () => {
         <StRoomListBox>
           <StRoomListBoxInfo>
             <StRoomListBoxInfoH2>{message.welcome}</StRoomListBoxInfoH2>
-            {/*
-            <StRoomListBoxInfoSortBox>
-              <StRoomListSortSelectBox>
-                <option>생성일</option>
-              </StRoomListSortSelectBox>
-              <StButtonTransparent>
-                <BsFillGridFill />
-              </StButtonTransparent>
-              <StButtonTransparent>
-                <GrSort />
-              </StButtonTransparent>
-            </StRoomListBoxInfoSortBox>
-            */}
+        
           </StRoomListBoxInfo>
 
           <StRoomListBoxRooms>
             <StRoomListBoxRoomsContainer>
-              {/* category, title, subtitle, privateStatus, peopleCount */}
               {roomList.length === 0 && (
                 <StNoRooms>"두런두런의 첫 방을 만들어 보세요!"</StNoRooms>
               )}
