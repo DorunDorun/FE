@@ -2,6 +2,7 @@ import React, {useRef} from "react";
 import CanvasDraw from "react-canvas-draw";
 import { GithubPicker } from "react-color";
 import { TwitterPicker } from "react-color";
+import styled, { StyledComponent } from 'styled-components';
 
 
 import "../css/style.css";
@@ -92,7 +93,9 @@ function CanvasDrawing({className, defaultClass}) {
 
   return (
     <div className={"canvasWrap " + classNameProps + " " + defaultClassProps}>
-      <CanvasDraw {...props} />
+      
+        <CanvasDraw {...props} />
+      
       <div className="button-container">
         <div ref={paletteRef} className="picker-container">
           <button
@@ -154,6 +157,9 @@ function CanvasDrawing({className, defaultClass}) {
     </div>
   );
 }
+
+const StCanvasBox=styled.div``
+
 
 
 export default CanvasDrawing;
