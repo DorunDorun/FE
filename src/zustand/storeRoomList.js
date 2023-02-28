@@ -21,7 +21,7 @@ const useStoreRoomList = create((set) => ({
       
     } catch (err) {
       set(() => ({ hasErrors: true, loading: false }));
-      console.log('방 목록 불러오기 에러 : ' , err.response.data)
+      console.log('방 목록 불러오기 에러 : ' , err)
     }
   },
 }));

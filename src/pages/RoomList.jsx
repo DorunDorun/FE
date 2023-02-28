@@ -88,10 +88,10 @@ const RoomList = () => {
   }
 
   if (hasErrors) {
-    return navigate("/roomList")
+    return <p>방 목록 불러오기 에러! 다시 시도해주세요!</p>
   }
   if (roomList.length === 0) {
-    return <p>채팅방이 존재하지 않습니다~!</p>;
+    return <p>채팅방이 존재하지 않습니다!</p>;
   }
 
   return (
