@@ -6,6 +6,12 @@ import { useNavigate } from 'react-router-dom'
 import ButtonDefault from '../Components/ButtonDefault'
 import { regExpNickName } from '../Components/apis/RegExp'
 
+//아이콘
+import { BsMicFill } from "react-icons/bs";
+import { BsMicMuteFill } from "react-icons/bs";
+import { BsFillCameraVideoFill } from "react-icons/bs";
+import { BsFillCameraVideoOffFill } from "react-icons/bs";
+
 
 //스토어-방 입장
 import useStoreRoomJoin from '../zustand/storeRoomJoin'
@@ -41,6 +47,11 @@ const RoomWaiting = () => {
   //디바이스 상태
   const [selectDevice, setSelectDevice]=useState(false)
 
+  //비디오, 오디오 상태
+  const [isPublisherVideo, setIsPublisherVideo]=useState(true)
+  const [isPublisherAudio, setIsPublisherAudio]=useState(true)
+
+
   const nickNameRef = useRef()
   const videoRef = useRef()
 
@@ -60,12 +71,12 @@ const RoomWaiting = () => {
     return navigate(-1)
   }
 
-
   
+
   
   //비디오, 오디오 불러오기
   const getUserMedia= async ()=>{
-    const CONSTRAINTS = { video: true, audio: true };
+    const CONSTRAINTS = { video: isPublisherVideo, audio: isPublisherAudio };
     await navigator.mediaDevices.getUserMedia(CONSTRAINTS)
     .then((media)=>{
       const video = media.getVideoTracks()[0]
@@ -82,6 +93,8 @@ const RoomWaiting = () => {
       }
       localStorage.setItem("videoLabel", userDevice.videoLabel)
       localStorage.setItem("audioLabel", userDevice.audioLabel)
+      localStorage.setItem("videoEnabled", true)
+      localStorage.setItem("audioEnabled", true)
       setSelectDevice(true) //디바이스 선택 상태 값
       if(videoRef.current !== null){
         videoRef.current.srcObject = media;
@@ -91,7 +104,34 @@ const RoomWaiting = () => {
   } 
   
 
+  const onClickPublisherVideoToggle=()=>{
+    setIsPublisherVideo(!isPublisherVideo)
+    const videoEnabled = videoRef.current.srcObject.getVideoTracks()[0].enabled
+    if(videoEnabled){
+      videoRef.current.srcObject.getVideoTracks()[0].enabled = false
+      localStorage.setItem("videoEnabled", videoRef.current.srcObject.getVideoTracks()[0].enabled)
+    }else{
+      videoRef.current.srcObject.getVideoTracks()[0].enabled = true
+      localStorage.setItem("videoEnabled", videoRef.current.srcObject.getVideoTracks()[0].enabled)
+    }
+  }
+
+  const onClickPublisherAudioToggle=()=>{
+    setIsPublisherAudio(!isPublisherAudio)
+    const audioEnabled = videoRef.current.srcObject.getAudioTracks()[0].enabled
+    if(audioEnabled){
+      videoRef.current.srcObject.getAudioTracks()[0].enabled = false
+      localStorage.setItem("audioEnabled", videoRef.current.srcObject.getAudioTracks()[0].enabled)
+    }else{
+      videoRef.current.srcObject.getAudioTracks()[0].enabled = true
+      localStorage.setItem("audioEnabled", videoRef.current.srcObject.getAudioTracks()[0].enabled)
+    }
+  }
+
   
+
+
+
 
 
   //방 입장 api
@@ -159,6 +199,30 @@ const RoomWaiting = () => {
             <StRoomWaitingUse>라이브룸에서 사용할 비디오와 프로필을 설정해주세요.</StRoomWaitingUse>
             <StRoomWaitingSettingBox>
               <StRoomWaitingVideo autoPlay ref={videoRef}></StRoomWaitingVideo>
+              <StRoomWaitingControllBox>
+                <StButtonMyDeviceOnOff
+                  width="150px"
+                  fontColor="red"
+                  onClick={onClickPublisherVideoToggle}
+                >
+                  {isPublisherVideo ? (
+                    <BsFillCameraVideoFill />
+                  ) : (
+                    <BsFillCameraVideoOffFill className="off" />
+                  )}
+                </StButtonMyDeviceOnOff>
+                <StButtonMyDeviceOnOff
+                  width="150px"
+                  fontColor="red"
+                  onClick={onClickPublisherAudioToggle}
+                >
+                  {isPublisherAudio ? (
+                    <BsMicFill />
+                  ) : (
+                    <BsMicMuteFill className="off" />
+                  )}
+                </StButtonMyDeviceOnOff>
+              </StRoomWaitingControllBox>
               <StRoomWaitingInputBox onSubmit={onSubmitJoinRoom}>
                 <StRoomWaitingInput 
                   value={nickName} 
@@ -177,6 +241,13 @@ const RoomWaiting = () => {
   )
 }
 
+
+const StButtonMyDeviceOnOff=styled.button``
+
+const StRoomWaitingControllBox=styled.div`
+  display: flex;
+  justify-content: center;
+`
 
 const StValidMessage=styled.span`
   color: red;

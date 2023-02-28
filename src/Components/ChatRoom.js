@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { OpenVidu } from "openvidu-browser";
 import { useNavigate } from "react-router-dom";
+import { useBeforeunload } from 'react-beforeunload';
 
 /*컴포넌트*/
 import UserVideoComponent from "./UserVideoComponent";
@@ -35,15 +36,14 @@ import useStoreRoomDelete from "../zustand/storeRoomDelete";
 //스토어-방 정보 불러오기
 import useStoreRoomInfoGet from "../zustand/storeRoomInfoGet";
 
-//스토어-새로고침
-import useStoreRefreshStatus from "../zustand/storeRefreshStatus";
 
 function ChatRoom() {
-  useEffect(() => {
+  useEffect(() => { //토큰 없으면 로그인 페이지로 이동
     console.log("ChatRoom 시작!");
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) return navigate("/login");
   }, []);
+
 
   //roomTitle, userSessionId, userToken, userNickName, loading, hasErrors
   const roomTitle = localStorage.getItem("title");
@@ -72,24 +72,16 @@ function ChatRoom() {
   const [publisherConnectionId, setPublisherConnectionId] = useState(undefined);
 
   //오디오, 비디오 컨트롤
-  const [isPublisherAudio, setIsPublisherAudio] = useState(true);
-  const [isPublisherVideo, setIsPublisherVideo] = useState(true);
+  const userVideoEnabled = localStorage.getItem("videoEnabled") === "true"
+  const userAudioEnabled = localStorage.getItem("audioEnabled") === "true"
+  const [isPublisherAudio, setIsPublisherAudio] = useState(userAudioEnabled);
+  const [isPublisherVideo, setIsPublisherVideo] = useState(userVideoEnabled);
   const [isSubscriberAudio, setIsSubscriberAudio] = useState(true);
   const [isSubscriberVideo, setIsSubscriberVideo] = useState(true);
   const [nowSubscriber, setNowSubscriber] = useState(null);
   const [isPublisherSpeaker, setIsPublisherSpeaker] = useState(false); //음성 감지 상태 - 게시자
-
-  //사용자 디바이스
-  const userDevice = {
-    videoId: localStorage.getItem("videoId"),
-    videoActive: localStorage.getItem("videoActive"),
-    audioId: localStorage.getItem("audioId"),
-    audioActive: localStorage.getItem("audioActive"),
-  };
-
   //const [isSubscriberSpeaker, setIsSubscriberSpeaker]=useState(false) //음성 감지 상태 - 참여자
-  const [subscriberSpeakerConnectionId, setSubscriberSpeakerConnectionId] =
-    useState(undefined);
+  const [subscriberSpeakerConnectionId, setSubscriberSpeakerConnectionId] = useState(undefined);
 
   //스토어-방 삭제
   const fetchDeleteRoom = useStoreRoomDelete((state) => state.fetchDeleteRoom);
@@ -103,25 +95,29 @@ function ChatRoom() {
 
   //새로고침 시
   const refreshSession = (e) => {
-    e.preventDefault();
     fetchDeleteRoom(userSessionId);
     //setIsRefresh(true);
     resetSession();
-    navigate("/roomWaiting");
-    e.returnValue = "";
+    navigate("/roomWaiting")
   };
 
-  //브라우저 새로고침, 종료 시 실행
+  useBeforeunload((event) => {
+    event.preventDefault()
+  });
 
+  //브라우저 새로고침, 종료 시 실행
+  
   useEffect(() => {
-    window.addEventListener("beforeunload", refreshSession);
+    window.addEventListener("unload", refreshSession);
     return () => {
-      window.removeEventListener("beforeunload", refreshSession);
+      window.removeEventListener("unload", refreshSession);
     };
   }, []);
+  
 
+  //방 정보 불러오기
   useEffect(() => {
-    //방 정보 불러오기
+
     fetchRoomInfoGet(userSessionId).then((res) => {
       if (res === undefined) {
         return navigate("/roomWaiting");
@@ -378,32 +374,22 @@ function ChatRoom() {
           resolution: "1280x720",
           frameRate: 10,
         }).then( async (mediaStream) => {
-          const devices = mediaStream.getVideoTracks()
-          const newDevices = await OV.getDevices();
-          console.log("💥💥채팅방 getVideoTracks", devices)
-          console.log("💥💥채팅방 getVideoTracks[0]", devices[0])
-          console.log("💥💥채팅방 OV.getDevice!!!@@@", newDevices)
-          const videoDevices = devices.filter(
-            (device) => device.kind === "videoinput"
-          );
-          const currentVideoDeviceIdUser = localStorage.getItem("videoLabel")
-          console.log("currentVideoDeviceIdUser local ", currentVideoDeviceIdUser)
-          const currentVideoDevice = newDevices.find(
-            (device) => device.label == currentVideoDeviceIdUser
-          );
-          
-          console.log("💥💥채팅방 videoDevices filter ", videoDevices)
-          console.log("💥💥채팅방 선택했던 currentVideoDevice ", currentVideoDevice)
-          if(!devices){ //디바이스가 없다면 대기 페이지로 이동
+          const videoTrack = mediaStream.getVideoTracks()[0]
+          const user={
+            userVideoEnabled:userVideoEnabled,
+            userAudioEnabled:userAudioEnabled
+          }
+          console.log("suer : ", user)
+          if(!videoTrack){ //디바이스가 없다면 대기 페이지로 이동
             alert("디바이스 선택은 필수입니다!")
             return navigate("/roomWating")
           }
 
           let publisher = OV.initPublisher(undefined, {
             audioSource: undefined, //audio. undefined = default audio
-            videoSource: currentVideoDevice, //video. undefined = default webcam
-            publishAudio: true,
-            publishVideo: true,
+            videoSource: videoTrack, //video. undefined = default webcam
+            publishAudio: userAudioEnabled,
+            publishVideo: userVideoEnabled,
             resolution: "680x480", //video size
             frameRate: 30,
             insertMode: "APPEND",

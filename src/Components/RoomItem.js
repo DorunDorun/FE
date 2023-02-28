@@ -84,7 +84,7 @@ const RoomItem = ({sessionId, category, title, subTitle, status, password, userC
                 {
                 !isPasswordInputHide &&
                 <>
-                  <StInputPassword placeholder="password" value={roomPasswordInput} onChange={(e)=>setRoomPasswordInput(e.target.value)}/> 
+                  <StInputPassword placeholder="password" value={roomPasswordInput} onChange={(e)=>setRoomPasswordInput(e.target.value)} autoFocus/> 
                   <ButtonDefault fontSize="10px" width="45px" height="25px" borderRadius="5px" hoverBgColor={COLOR.grayLight} onClick={onClickClosePasswordInput}>취소</ButtonDefault>
                   <ButtonDefault fontSize="10px" width="45px" height="25px" borderRadius="5px" fontColor="#fff" bgColor={COLOR.baseLight} hoverBgColor={COLOR.baseDefault} onClick={onClickSubmitPassword}>확인</ButtonDefault>
                   

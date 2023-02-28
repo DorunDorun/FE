@@ -218,7 +218,7 @@ const onBlurRegExpSubTitle = (e) => {
   
   //유효성 검사 비밀번호
   const onBlurRegExpPassword = (e) => {
-    if (!regExpPassword.test(e.target.value)) {
+    if (!regExpPassword(e.target.value)) {
       setIsRegExp({ ...isRegExp, password: false });
       return setValidMessage({
         ...validMessage,
