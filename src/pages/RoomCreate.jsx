@@ -164,22 +164,6 @@ function RoomCreate() {
       return setValidMessage({ ...validMessage, title: "" });
     }
   };
-  /*
-  const onBlurRegExpTitle = (e) => {
-    //유효성 검사 방 제목
-    const regExpTitle = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|" "|~!@#$%^&*()_+|<>?:{}|]{5,20}$/;
-    let { value } = e.target;
-    if (!regExpTitle.test(value.trim())) {
-      setIsRegExp({ ...isRegExp, title: false });
-
-      return setValidMessage({ ...validMessage, title: messageForm.title });
-    } else {
-      setIsRegExp({ ...isRegExp, title: true });
-
-      return setValidMessage({ ...validMessage, title: "" });
-    }
-  };
-*/
 
 //유효성 검사 방 내용
 const onBlurRegExpSubTitle = (e) => {
@@ -195,26 +179,6 @@ const onBlurRegExpSubTitle = (e) => {
   }
 };
 
-
-  /*
-  const onBlurRegExpSubTitle = (e) => {
-    //유효성 검사 방 내용
-    const regExpSubTitle = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|" "|~!@#$%^&*()_+|<>?:{}|]{5,20}$/;
-    let { value } = e.target;
-    if (!regExpSubTitle.test(value.trim())) {
-      setIsRegExp({ ...isRegExp, subTitle: false });
-
-      return setValidMessage({
-        ...validMessage,
-        subTitle: messageForm.subTitle,
-      });
-    } else {
-      setIsRegExp({ ...isRegExp, subTitle: true });
-
-      return setValidMessage({ ...validMessage, subTitle: "" });
-    }
-  };
-*/
   
   //유효성 검사 비밀번호
   const onBlurRegExpPassword = (e) => {
@@ -231,23 +195,6 @@ const onBlurRegExpSubTitle = (e) => {
   };
   
   
-  /*
-  const onBlurRegExpPassword = (e) => {
-    console.log("비밀번호 체크 isDisabled 2 : ", isDisabled);
-    const regExpPassword = /^[a-z|A-Z|0-9|" "|]{5,10}$/;
-    let { value } = e.target;
-    if (!regExpPassword.test(value.trim())) {
-      setIsRegExp({ ...isRegExp, password: false });
-      return setValidMessage({
-        ...validMessage,
-        password: messageForm.password,
-      });
-    } else {
-      setIsRegExp({ ...isRegExp, password: true });
-      return setValidMessage({ ...validMessage, password: "" });
-    }
-  };
-*/
   //방 생성 데이터
   const { data } = useStoreRoomCreate((state) => state.data);
   const loading = useStoreRoomCreate((state) => state.loading);
@@ -282,7 +229,6 @@ const onBlurRegExpSubTitle = (e) => {
         title: roomTitle,
         subtitle: roomSubTitle,
         category: roomCategory,
-        buttonImage: roomJoinButtonImage,
       };
 
       const newRoomCreatePrivate = {
@@ -292,7 +238,6 @@ const onBlurRegExpSubTitle = (e) => {
         subtitle: roomSubTitle,
         category: roomCategory,
         password: roomPassword,
-        buttonImage: roomJoinButtonImage,
       };
 
       //공개방, 비공개방 전달 정보 다름
