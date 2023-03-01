@@ -5,12 +5,16 @@
   font-family: Pretendard;
   --color-baseDefault: #8500EF;
   --color-baseLight: #CB8AFE;
+  --color-pinkLight: #F5E8FF;
+
 }
 
 #root{
   background-color: #fff;
 }
-
+.userVideoStream{
+  width: 100%;
+}
 .d-block{
   visibility: visible;
 }
@@ -181,11 +185,11 @@ textarea {
 .canvasWrap{
   background: transparent;
   position: absolute;
-  top: 94px;
+  top: 0;
   left: 0;
   z-index: 10;
   width: 100%;
-  height: calc(100% - 184px);
+  height: 100%;
   
 }
 .canvasWrap.defaultNone{
@@ -193,6 +197,13 @@ textarea {
 }
 .canvasSaveDataBox{
   display: none;
+}
+
+.captureOn .canvas:not(.disabled){
+  border-color:transparent !important;
+}
+.captureOn .button-container{
+  visibility: hidden !important;
 }
 /*캔버스 끝*/
 
@@ -204,6 +215,7 @@ textarea {
 	border-color: var(--color-baseDefault) !important;
 }
 .UserVideoComponent{
+  width: 100%;
   overflow: auto;
 }
 
@@ -235,4 +247,14 @@ textarea {
 .sessionStreamBox:nth-child(2), .sessionStreamBox:nth-child(5){
   margin-left: 20px;
   margin-right: 20px;
+}
+
+.StSessionVideoBox{
+  min-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  background-color: var(--color-pinkLight);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }

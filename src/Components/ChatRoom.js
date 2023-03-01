@@ -1,11 +1,10 @@
 /*기본*/
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { OpenVidu } from "openvidu-browser";
 import { useNavigate } from "react-router-dom";
 import { useBeforeunload } from 'react-beforeunload';
 import html2canvas from 'html2canvas';
-
 
 /*컴포넌트*/
 import UserVideoComponent from "./UserVideoComponent";
@@ -58,6 +57,7 @@ function ChatRoom() {
   const userProfileImage = localStorage.getItem("profile");
   const userNickName = localStorage.getItem("name");
   const [newNickName, setNewNickName] = useState(userNickName);
+
   //방 정보 불러오기
   const fetchRoomInfoGet = useStoreRoomInfoGet(
     (state) => state.fetchRoomInfoGet
@@ -91,7 +91,11 @@ function ChatRoom() {
   //캔버스 컨트롤
   const [isCanvas, setIsCanvas] = useState(false);
   const [isCanvasDefault, setIsCanvasDefault] = useState(true);
+  const [isCapture, setIsCapture] = useState(false)
 
+  //캔버스 컨테이너 (캡쳐용)
+  const captureBoxRef=useRef()
+  
   //화이트보드
   const [isWhiteBoard, setIsWhiteBoard] = useState(false);
 
@@ -265,12 +269,47 @@ function ChatRoom() {
     setIsWhiteBoard(!isWhiteBoard);
   };
 
+
+
   //라이브룸 캡쳐
-  const onClickCaptureRoom = () => {
+  const onClickCaptureRoom = async () => {
     console.log("캡쳐 시작")
-    //html2canvas()
+    await setIsCapture(true)
+    
+    html2canvas(captureBoxRef.current,{
+      //options
+      height: 737,
+      scale:window.devicePixelRatio,
+    }).then(canvas => {
+      /*
+      canvas.style.position = 'fixed';
+      canvas.style.top = '0';
+      canvas.style.left = '0';
+      canvas.style.opacity = '0';
+      canvas.style.transform = 'scale(0)';
+      */
+     
+     console.log("canvas 캡쳐 : " , canvas)
+     onSaveImage(canvas.toDataURL('image/png'), `DorunDorun-${roomTitle}-${newNickName}.png`)
+    });
+    
   };
 
+  //캡쳐 이미지 저장
+  const onSaveImage = (uri, fileName) => {
+    console.log("onSaveImage")
+    const link = document.createElement('a')
+    document.body.appendChild(link)
+    link.href = uri
+    link.download = fileName
+    link.click()
+    document.body.removeChild(link)
+    setIsCapture(false)
+  }
+
+
+
+  
   //음성감지
   useEffect(() => {
     const mySession = session;
@@ -541,27 +580,28 @@ function ChatRoom() {
             <ChatRoomSideBar />
           </StSideNav>
 
-          <StSessionVideoBox>
-            <StSessionVideoBoxView>
+          <StSessionVideoBox ref={captureBoxRef}>
               <StSessionHeader>
-                <StSessionH1Box>
-                  <StSessionH1>{roomTitle}</StSessionH1>
-                </StSessionH1Box>
+                <StSessionHeaderContainer>
+                  <StSessionH1Box>
+                    <StSessionH1>{roomTitle}</StSessionH1>
+                  </StSessionH1Box>
 
-                <StSessionUserBox>
-                  <ButtonDefault
-                    height="48px"
-                    padding="0 30px"
-                    borderRadius="24px"
-                    bgColor={COLOR.baseDefault}
-                    fontColor="#fff"
-                    hoverBgColor={COLOR.kakaoDefault}
-                    hoverFontColor="#000"
-                    onClick={onClickInviteLink}
-                  >
-                    초대하기
-                  </ButtonDefault>
-                </StSessionUserBox>
+                  <StSessionUserBox visibility={isCapture ? "hidden" : "visible"}>
+                    <ButtonDefault
+                      height="48px"
+                      padding="0 30px"
+                      borderRadius="24px"
+                      bgColor={COLOR.baseDefault}
+                      fontColor="#fff"
+                      hoverBgColor={COLOR.kakaoDefault}
+                      hoverFontColor="#000"
+                      onClick={onClickInviteLink}
+                    >
+                      초대하기
+                    </ButtonDefault>
+                  </StSessionUserBox>
+                </StSessionHeaderContainer>
               </StSessionHeader>
 
               <StSessionVidoContainer>
@@ -641,14 +681,13 @@ function ChatRoom() {
                     })}
                 </StSessionVidoContainerInner>
               </StSessionVidoContainer>
-
+              {/* 
               {mainStreamManager !== undefined && (
                 <StSessionMainVideo>
                   <UserVideoComponent streamManager={mainStreamManager} />
                 </StSessionMainVideo>
               )}
-            </StSessionVideoBoxView>
-
+              */}
             <StMyStreamControlBox>
               <StMyStreamControlBoxLeft>
                 <StMyStreamNickNameBox>
@@ -730,13 +769,20 @@ function ChatRoom() {
                 </ButtonDefault>
               </StMyStreamControlBoxRight>
             </StMyStreamControlBox>
-
-            <CanvasDrawing
+            
+            <StCanvasContianer
               className={isCanvas ? "d-block" : "d-none"}
               defaultClass={isCanvasDefault ? "defaultNone" : ""}
-            />
+            >
+              <CanvasDrawing
+                className={isCanvas ? "d-block" : "d-none"}
+                defaultClass={isCanvasDefault ? "defaultNone" : ""}
+                isCapture={isCapture ? "captureOn" : ""}
+              />
+            </StCanvasContianer>
+            
+            <WhiteBoard className={isWhiteBoard ? "block" : "none"} isCapture={isCapture}/>
 
-            <WhiteBoard className={isWhiteBoard ? "block" : "none"} />
           </StSessionVideoBox>
 
           <Chat props={userSessionId} />
@@ -748,6 +794,19 @@ function ChatRoom() {
   );
 }
 
+
+
+
+
+const StCanvasContianer=styled.div`
+  background-color: transparent;
+  position: absolute;
+  top: 94px;
+  left: 0;
+  z-index: 9;
+  width: 100%;
+  height: calc(100% - 184px);
+`
 const StMyProfileNickName = styled.span``;
 const StMyProfileImage = styled.img`
   width: 30px;
@@ -823,6 +882,7 @@ const StButtonDeviceOnOff = styled.button`
 `;
 const StSideNav = styled.nav`
   min-width: 300px;
+  height: calc(100vh - 120px);
   background-color: #fff;
   border-right: 1px solid ${COLOR.grayLight};
 `;
@@ -899,15 +959,19 @@ const StSessionVidoContainer = styled.div`
 */
   width: 100%;
   height: 500px;
-  margin-top: 70px;
   text-align: center;
+  padding: 70px 60px 0;
+  flex-grow: 2;
 `;
 
 const StSessionVideoBoxView = styled.div`
   padding: 30px 60px;
 `;
 const StSessionVideoBox = styled.div`
-  min-width: 900px;
+  //min-width: 900px;
+  max-width: 1272px;
+  width: 1272px;
+  min-width: 1150px;
   margin: 0 auto;
   position: relative;
   background-color: ${COLOR.pinkLight};
@@ -926,16 +990,25 @@ const StSessionH1 = styled.h1`
   font-weight: bold;
   display: inline;
 `;
-const StSessionUserBox = styled.div``;
+const StSessionUserBox = styled.div`
+  visibility: ${(props)=>props.visibility};
+`;
 const StSessionH1Box = styled.div`
   display: flex;
   align-items: center;
 `;
+
+const StSessionHeaderContainer=styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;`
 const StSessionHeader = styled.div`
-  padding-bottom: 24px;
+  width: calc(100% - 120px);
   border-bottom: 1px solid ${COLOR.baseDefault};
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  padding: 30px 0 25px;
+  margin: 0 auto;
 `;
 
 const StSessionWrap = styled.div`

@@ -10,7 +10,7 @@ const OpenViduVideoComponent = (props) => {
         return () => {};
     }, [props.streamManager, videoRef]);
 
-    return <video autoPlay={true} ref={videoRef} />;
+    return <video autoPlay={true} ref={videoRef} className="userVideoStream" />;
 };
 
 export default OpenViduVideoComponent;
