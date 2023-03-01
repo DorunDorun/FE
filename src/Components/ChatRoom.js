@@ -57,6 +57,7 @@ function ChatRoom() {
   const userProfileImage = localStorage.getItem("profile");
   const userNickName = localStorage.getItem("name");
   const [newNickName, setNewNickName] = useState(userNickName);
+
   //방 정보 불러오기
   const fetchRoomInfoGet = useStoreRoomInfoGet(
     (state) => state.fetchRoomInfoGet
@@ -289,7 +290,7 @@ function ChatRoom() {
       */
      
      console.log("canvas 캡쳐 : " , canvas)
-     onSaveImage(canvas.toDataURL('image/png'), 'DorunDorun-CanvasImage.png') // ${newNickName}으로 변경 예정
+     onSaveImage(canvas.toDataURL('image/png'), `DorunDorun-${roomTitle}-${newNickName}.png`)
     });
     
   };
