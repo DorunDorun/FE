@@ -15,6 +15,7 @@ const useStoreRoomList = create((set) => ({
       const data = await api.get(
         `api/rooms/${payload}`
       );
+      console.log("방 불러오기 data , " , data)
       set((state) => ({ data: (state.data = data.data), loading: false }));
       set((state) => ({ roomList: (state.roomList = data.data.data.chattingRoomList), loading: false }));
       return data

@@ -19,6 +19,7 @@
     "react-beforeunload": "^2.5.3",
     "react-canvas-draw": "^1.2.1",
     "react-color": "^2.19.3",
+    "react-component-export-image": "^1.0.6",
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
     "react-google-login": "^5.2.2",
@@ -32,6 +33,7 @@
     "stompjs": "^2.3.3",
     "styled-components": "^5.3.6",
     "universal-cookie": "^4.0.4",
+    "use-react-screenshot": "^3.0.0",
     "web-vitals": "^2.1.4",
     "zustand": "^4.3.3"
   },

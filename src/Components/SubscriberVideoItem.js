@@ -119,8 +119,9 @@ const StStreamNickNamePublisher = styled.span`
 `;
 
 const StSubscribersSessionStreamInnerBox=styled.div`
-  height: 100%;
+  width: 100%;
   min-height: 140px;
+  height: 100%;
   border-radius: 5px;
   position: relative;
   border: 3px solid transparent;

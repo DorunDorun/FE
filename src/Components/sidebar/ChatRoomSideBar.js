@@ -41,6 +41,7 @@ export default ChatRoomSideBar;
 
 const Container = styled.div`
   position: relative;
+  height: 100%;
 `;
 
 const Btns = styled.div`
@@ -49,7 +50,7 @@ const Btns = styled.div`
   background-color: #fff;
   border-right: 1px solid gray;
   width: 70px;
-  height: 839px;
+  height: 100%;
   align-items: flex-start;
 `;
 
@@ -71,7 +72,7 @@ const Openbar = styled.div`
   top: 0;
   left: 70px;
   width: 228.5px;
-  height: 839px;
+  height: 100%;
   background-color: #fff;
   transform: translateX(${(props) => (props.isOpen ? "0" : "-100%")});
   transition: transform 0.2s ease-in-out;
