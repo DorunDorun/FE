@@ -53,7 +53,7 @@ const colors = [
 
 //const width = `${Math.ceil(colors.length / 2) * 32}px`;
 
-function CanvasDrawing({className, defaultClass}) {
+function CanvasDrawing({className, defaultClass, isCapture}) {
   const classNameProps=className
   const defaultClassProps=defaultClass
   const canvasRef = useRef()
@@ -93,73 +93,78 @@ function CanvasDrawing({className, defaultClass}) {
 
   return (
     <div className={"canvasWrap " + classNameProps + " " + defaultClassProps}>
-      
+      <StCaptureStatusBox className={isCapture}>
         <CanvasDraw {...props} />
-      
-      <div className="button-container">
-        <div ref={paletteRef} className="picker-container">
+        <StCanvasDrawingButtonBox className="button-container">
+          <div ref={paletteRef} className="picker-container">
+            <button
+              className="palette canvasButton"
+              onClick={() => {
+                setShowColor((s) => !s);
+              }}
+            >
+              <span role="img" aria-label="">
+                🎨
+              </span>{" "}
+              color
+            </button>
+            {showColor && (
+              <div className="picker-popper">
+                <TwitterPicker
+                  triangle={"hide"}
+                  color={brushColor}
+                  colors={colors}
+                  //width={width}
+                  onChangeComplete={(c) => setBrushColor(c.hex)}
+                />
+            </div>
+            )}
+          </div>
           <button
-            className="palette canvasButton"
+            className="undo canvasButton"
             onClick={() => {
-              setShowColor((s) => !s);
+              canvasRef.current.undo();
             }}
           >
             <span role="img" aria-label="">
-              🎨
+              ↩️
             </span>{" "}
-            color
+            undo
           </button>
-          {showColor && (
-            <div className="picker-popper">
-              <TwitterPicker
-                triangle={"hide"}
-                color={brushColor}
-                colors={colors}
-                //width={width}
-                onChangeComplete={(c) => setBrushColor(c.hex)}
-              />
+          <button className="clear canvasButton" onClick={handleClear}>
+            <span className="non-hover" role="img" aria-label="">
+              💣
+            </span>{" "}
+            <span className="hover" role="img" aria-label="">
+              🧨
+            </span>{" "}
+            clear
+          </button>
+          {/* <button className="save" onClick={handleSave}>
+            <span role="img" aria-label="">
+              💾
+            </span>{" "}
+            save
+          </button> */}
+        </StCanvasDrawingButtonBox>
+        {saveData && (
+          <div className="canvasSaveDataBox">
+            <img src={saveData} alt="드로잉 이미지" />
+            <textarea rows={10} value={saveData} readOnly />
           </div>
-          )}
-        </div>
-        <button
-          className="undo canvasButton"
-          onClick={() => {
-            canvasRef.current.undo();
-          }}
-        >
-          <span role="img" aria-label="">
-            ↩️
-          </span>{" "}
-          undo
-        </button>
-        <button className="clear canvasButton" onClick={handleClear}>
-          <span className="non-hover" role="img" aria-label="">
-            💣
-          </span>{" "}
-          <span className="hover" role="img" aria-label="">
-            🧨
-          </span>{" "}
-          clear
-        </button>
-        {/* <button className="save" onClick={handleSave}>
-          <span role="img" aria-label="">
-            💾
-          </span>{" "}
-          save
-        </button> */}
-      </div>
-      {saveData && (
-        <div className="canvasSaveDataBox">
-          <img src={saveData} alt="드로잉 이미지" />
-          <textarea rows={10} value={saveData} readOnly />
-        </div>
-      )}
+        )}
+      </StCaptureStatusBox>
     </div>
   );
 }
 
-const StCanvasBox=styled.div``
 
-
+const StCaptureStatusBox=styled.div`
+  width: 100%;
+  height: 100%;
+`
+const StCanvasDrawingButtonBox=styled.div`
+  display: ${(props)=>props.display || "flex"};
+`
 
 export default CanvasDrawing;

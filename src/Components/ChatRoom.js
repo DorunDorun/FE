@@ -1,11 +1,10 @@
 /*기본*/
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { OpenVidu } from "openvidu-browser";
 import { useNavigate } from "react-router-dom";
-import { useBeforeunload } from 'react-beforeunload';
-import html2canvas from 'html2canvas';
-
+import { useBeforeunload } from "react-beforeunload";
+import html2canvas from "html2canvas";
 
 /*컴포넌트*/
 import UserVideoComponent from "./UserVideoComponent";
@@ -38,14 +37,13 @@ import useStoreRoomDelete from "../zustand/storeRoomDelete";
 //스토어-방 정보 불러오기
 import useStoreRoomInfoGet from "../zustand/storeRoomInfoGet";
 
-
 function ChatRoom() {
-  useEffect(() => { //토큰 없으면 로그인 페이지로 이동
+  useEffect(() => {
+    //토큰 없으면 로그인 페이지로 이동
     console.log("ChatRoom 시작!");
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) return navigate("/login");
   }, []);
-
 
   //roomTitle, userSessionId, userToken, userNickName, loading, hasErrors
   const roomTitle = localStorage.getItem("title");
@@ -58,6 +56,7 @@ function ChatRoom() {
   const userProfileImage = localStorage.getItem("profile");
   const userNickName = localStorage.getItem("name");
   const [newNickName, setNewNickName] = useState(userNickName);
+
   //방 정보 불러오기
   const fetchRoomInfoGet = useStoreRoomInfoGet(
     (state) => state.fetchRoomInfoGet
@@ -74,8 +73,8 @@ function ChatRoom() {
   const [publisherConnectionId, setPublisherConnectionId] = useState(undefined);
 
   //오디오, 비디오 컨트롤
-  const userVideoEnabled = localStorage.getItem("videoEnabled") === "true"
-  const userAudioEnabled = localStorage.getItem("audioEnabled") === "true"
+  const userVideoEnabled = localStorage.getItem("videoEnabled") === "true";
+  const userAudioEnabled = localStorage.getItem("audioEnabled") === "true";
   const [isPublisherAudio, setIsPublisherAudio] = useState(userAudioEnabled);
   const [isPublisherVideo, setIsPublisherVideo] = useState(userVideoEnabled);
   const [isSubscriberAudio, setIsSubscriberAudio] = useState(true);
@@ -83,7 +82,8 @@ function ChatRoom() {
   const [nowSubscriber, setNowSubscriber] = useState(null);
   const [isPublisherSpeaker, setIsPublisherSpeaker] = useState(false); //음성 감지 상태 - 게시자
   //const [isSubscriberSpeaker, setIsSubscriberSpeaker]=useState(false) //음성 감지 상태 - 참여자
-  const [subscriberSpeakerConnectionId, setSubscriberSpeakerConnectionId] = useState(undefined);
+  const [subscriberSpeakerConnectionId, setSubscriberSpeakerConnectionId] =
+    useState(undefined);
 
   //스토어-방 삭제
   const fetchDeleteRoom = useStoreRoomDelete((state) => state.fetchDeleteRoom);
@@ -91,6 +91,10 @@ function ChatRoom() {
   //캔버스 컨트롤
   const [isCanvas, setIsCanvas] = useState(false);
   const [isCanvasDefault, setIsCanvasDefault] = useState(true);
+  const [isCapture, setIsCapture] = useState(false);
+
+  //캔버스 컨테이너 (캡쳐용)
+  const captureBoxRef = useRef();
 
   //화이트보드
   const [isWhiteBoard, setIsWhiteBoard] = useState(false);
@@ -100,26 +104,24 @@ function ChatRoom() {
     fetchDeleteRoom(userSessionId);
     //setIsRefresh(true);
     resetSession();
-    navigate("/roomWaiting")
+    navigate("/roomWaiting");
   };
 
   useBeforeunload((event) => {
-    event.preventDefault()
+    event.preventDefault();
   });
 
   //브라우저 새로고침, 종료 시 실행
-  
+
   useEffect(() => {
     window.addEventListener("unload", refreshSession);
     return () => {
       window.removeEventListener("unload", refreshSession);
     };
   }, []);
-  
 
   //방 정보 불러오기
   useEffect(() => {
-
     fetchRoomInfoGet(userSessionId).then((res) => {
       if (res === undefined) {
         return navigate("/roomWaiting");
@@ -266,10 +268,31 @@ function ChatRoom() {
   };
 
   //라이브룸 캡쳐
-  const onClickCaptureRoom = () => {
-    console.log("캡쳐 시작")
-    //html2canvas()
+  const onClickCaptureRoom = async () => {
+    console.log("캡쳐 시작");
+    await setIsCapture(true);
+
+    html2canvas(captureBoxRef.current, {
+      //options
+      height: 737,
+    }).then(canvas => {
+     console.log("canvas 캡쳐 : " , canvas)
+     onSaveImage(canvas.toDataURL('image/png'), `DorunDorun-${roomTitle}-${newNickName}.png`)
+    });
   };
+
+  //캡쳐 이미지 저장
+  const onSaveImage = (uri, fileName) => {
+    console.log("onSaveImage")
+    const link = document.createElement('a')
+    link.style.visibility = "hidden"
+    document.body.appendChild(link)
+    link.href = uri
+    link.download = fileName
+    link.click()
+    document.body.removeChild(link)
+    setIsCapture(false)
+  }
 
   //음성감지
   useEffect(() => {
@@ -376,16 +399,17 @@ function ChatRoom() {
           videoSource: undefined,
           resolution: "1280x720",
           frameRate: 10,
-        }).then( async (mediaStream) => {
-          const videoTrack = mediaStream.getVideoTracks()[0]
-          const user={
-            userVideoEnabled:userVideoEnabled,
-            userAudioEnabled:userAudioEnabled
-          }
-          console.log("suer : ", user)
-          if(!videoTrack){ //디바이스가 없다면 대기 페이지로 이동
-            alert("디바이스 선택은 필수입니다!")
-            return navigate("/roomWating")
+        }).then(async (mediaStream) => {
+          const videoTrack = mediaStream.getVideoTracks()[0];
+          const user = {
+            userVideoEnabled: userVideoEnabled,
+            userAudioEnabled: userAudioEnabled,
+          };
+          console.log("suer : ", user);
+          if (!videoTrack) {
+            //디바이스가 없다면 대기 페이지로 이동
+            alert("디바이스 선택은 필수입니다!");
+            return navigate("/roomWating");
           }
 
           let publisher = OV.initPublisher(undefined, {
@@ -541,14 +565,14 @@ function ChatRoom() {
             <ChatRoomSideBar />
           </StSideNav>
 
-          <StSessionVideoBox>
-            <StSessionVideoBoxView>
-              <StSessionHeader>
+          <StSessionVideoBox ref={captureBoxRef}>
+            <StSessionHeader>
+              <StSessionHeaderContainer>
                 <StSessionH1Box>
                   <StSessionH1>{roomTitle}</StSessionH1>
                 </StSessionH1Box>
 
-                <StSessionUserBox>
+                <StSessionUserBox visibility={isCapture ? "hidden" : "visible"}>
                   <ButtonDefault
                     height="48px"
                     padding="0 30px"
@@ -562,93 +586,91 @@ function ChatRoom() {
                     초대하기
                   </ButtonDefault>
                 </StSessionUserBox>
-              </StSessionHeader>
+              </StSessionHeaderContainer>
+            </StSessionHeader>
 
-              <StSessionVidoContainer>
-                <StSessionVidoContainerInner>
-                  {publisher !== undefined && (
-                    <div className="sessionStreamBox">
-                      <StSubscribersSessionStreamInnerBox
-                        className={isPublisherSpeaker && "isSpeaker"}
-                        onClick={() => onClickMainVideoStream(publisher)}
-                      >
-                        <StStreamNickNamePublisher>
-                          나
-                        </StStreamNickNamePublisher>
-                        <UserVideoComponent streamManager={publisher} />
-                        <StStreamControlButtonBox>
-                          <StButtonDeviceOnOff
-                            width="150px"
-                            fontColor="red"
-                            onClick={onClickPublisherVideoToggle}
-                          >
-                            {isPublisherVideo ? (
-                              <BsCameraVideo />
-                            ) : (
-                              <BsCameraVideoOff className="off" />
-                            )}
-                          </StButtonDeviceOnOff>
-                          <StButtonDeviceOnOff
-                            width="150px"
-                            fontColor="red"
-                            onClick={onClickPublisherAudioToggle}
-                          >
-                            {isPublisherAudio ? (
-                              <BsMic />
-                            ) : (
-                              <BsMicMute className="off" />
-                            )}
-                          </StButtonDeviceOnOff>
-                        </StStreamControlButtonBox>
-                      </StSubscribersSessionStreamInnerBox>
-                    </div>
-                  )}
-                  {subscribers.length > 0 &&
-                    subscribers?.map((sub) => {
-                      return (
-                        <SubscriberVideoItem
-                          key={sub.id}
-                          sub={sub}
-                          subscriberSpeakerConnectionId={
-                            subscriberSpeakerConnectionId
-                          }
-                          subStreamConnectionConnectionId={
+            <StSessionVidoContainer>
+              <StSessionVidoContainerInner>
+                {publisher !== undefined && (
+                  <div className="sessionStreamBox">
+                    <StSubscribersSessionStreamInnerBox
+                      className={isPublisherSpeaker && "isSpeaker"}
+                      onClick={() => onClickMainVideoStream(publisher)}
+                    >
+                      <StStreamNickNamePublisher>나</StStreamNickNamePublisher>
+                      <UserVideoComponent streamManager={publisher} />
+                      <StStreamControlButtonBox>
+                        <StButtonDeviceOnOff
+                          width="150px"
+                          fontColor="red"
+                          onClick={onClickPublisherVideoToggle}
+                        >
+                          {isPublisherVideo ? (
+                            <BsCameraVideo />
+                          ) : (
+                            <BsCameraVideoOff className="off" />
+                          )}
+                        </StButtonDeviceOnOff>
+                        <StButtonDeviceOnOff
+                          width="150px"
+                          fontColor="red"
+                          onClick={onClickPublisherAudioToggle}
+                        >
+                          {isPublisherAudio ? (
+                            <BsMic />
+                          ) : (
+                            <BsMicMute className="off" />
+                          )}
+                        </StButtonDeviceOnOff>
+                      </StStreamControlButtonBox>
+                    </StSubscribersSessionStreamInnerBox>
+                  </div>
+                )}
+                {subscribers.length > 0 &&
+                  subscribers?.map((sub) => {
+                    return (
+                      <SubscriberVideoItem
+                        key={sub.id}
+                        sub={sub}
+                        subscriberSpeakerConnectionId={
+                          subscriberSpeakerConnectionId
+                        }
+                        subStreamConnectionConnectionId={
+                          sub.stream.connection.connectionId
+                        }
+                        onClickMainVideo={() => {
+                          onClickMainVideoStream(sub);
+                        }}
+                        onClickSubscriberVideoToggle={() => {
+                          onClickSubscriberVideoToggle(
                             sub.stream.connection.connectionId
-                          }
-                          onClickMainVideo={() => {
-                            onClickMainVideoStream(sub);
-                          }}
-                          onClickSubscriberVideoToggle={() => {
-                            onClickSubscriberVideoToggle(
-                              sub.stream.connection.connectionId
-                            );
-                          }}
-                          onClickSubscriberAudioToggle={() => {
-                            onClickSubscriberAudioToggle(
-                              sub.stream.connection.connectionId
-                            );
-                          }}
-                          userNickName={
-                            JSON.parse(
-                              sub.stream.connection.data.substring(
-                                0,
-                                sub.stream.connection.data.indexOf("%")
-                              )
-                            ).clientName
-                          }
-                        />
-                      );
-                    })}
-                </StSessionVidoContainerInner>
-              </StSessionVidoContainer>
-
+                          );
+                        }}
+                        onClickSubscriberAudioToggle={() => {
+                          onClickSubscriberAudioToggle(
+                            sub.stream.connection.connectionId
+                          );
+                        }}
+                        userNickName={
+                          JSON.parse(
+                            sub.stream.connection.data.substring(
+                              0,
+                              sub.stream.connection.data.indexOf("%")
+                            )
+                          ).clientName
+                        }
+                      />
+                    );
+                  })}
+              </StSessionVidoContainerInner>
+            </StSessionVidoContainer>
+            {/* 
               {mainStreamManager !== undefined && (
                 <StSessionMainVideo>
                   <UserVideoComponent streamManager={mainStreamManager} />
                 </StSessionMainVideo>
               )}
-            </StSessionVideoBoxView>
-
+              */}
             <StMyStreamControlBox>
               <StMyStreamControlBoxLeft>
                 <StMyStreamNickNameBox>
@@ -731,15 +753,24 @@ function ChatRoom() {
               </StMyStreamControlBoxRight>
             </StMyStreamControlBox>
 
-            <CanvasDrawing
+            <StCanvasContianer
               className={isCanvas ? "d-block" : "d-none"}
               defaultClass={isCanvasDefault ? "defaultNone" : ""}
-            />
+            >
+              <CanvasDrawing
+                className={isCanvas ? "d-block" : "d-none"}
+                defaultClass={isCanvasDefault ? "defaultNone" : ""}
+                isCapture={isCapture ? "captureOn" : ""}
+              />
+            </StCanvasContianer>
 
-            <WhiteBoard className={isWhiteBoard ? "block" : "none"} />
+            <WhiteBoard
+              className={isWhiteBoard ? "block" : "none"}
+              isCapture={isCapture}
+            />
           </StSessionVideoBox>
 
-          <Chat props={userSessionId} />
+          <Chat props={newNickName} />
         </StStreamWrap>
 
         <StFooter></StFooter>
@@ -748,6 +779,15 @@ function ChatRoom() {
   );
 }
 
+const StCanvasContianer = styled.div`
+  background-color: transparent;
+  position: absolute;
+  top: 94px;
+  left: 0;
+  z-index: 9;
+  width: 100%;
+  height: calc(100% - 184px);
+`;
 const StMyProfileNickName = styled.span``;
 const StMyProfileImage = styled.img`
   width: 30px;
@@ -823,6 +863,7 @@ const StButtonDeviceOnOff = styled.button`
 `;
 const StSideNav = styled.nav`
   min-width: 300px;
+  height: calc(100vh - 120px);
   background-color: #fff;
   border-right: 1px solid ${COLOR.grayLight};
 `;
@@ -899,15 +940,19 @@ const StSessionVidoContainer = styled.div`
 */
   width: 100%;
   height: 500px;
-  margin-top: 70px;
   text-align: center;
+  padding: 70px 60px 0;
+  flex-grow: 2;
 `;
 
 const StSessionVideoBoxView = styled.div`
   padding: 30px 60px;
 `;
 const StSessionVideoBox = styled.div`
-  min-width: 900px;
+  //min-width: 900px;
+  max-width: 1272px;
+  width: 1272px;
+  min-width: 1150px;
   margin: 0 auto;
   position: relative;
   background-color: ${COLOR.pinkLight};
@@ -926,16 +971,26 @@ const StSessionH1 = styled.h1`
   font-weight: bold;
   display: inline;
 `;
-const StSessionUserBox = styled.div``;
+const StSessionUserBox = styled.div`
+  visibility: ${(props) => props.visibility};
+`;
 const StSessionH1Box = styled.div`
   display: flex;
   align-items: center;
 `;
-const StSessionHeader = styled.div`
-  padding-bottom: 24px;
-  border-bottom: 1px solid ${COLOR.baseDefault};
+
+const StSessionHeaderContainer = styled.div`
+  width: 100%;
   display: flex;
   justify-content: space-between;
+`;
+const StSessionHeader = styled.div`
+  width: calc(100% - 120px);
+  border-bottom: 1px solid ${COLOR.baseDefault};
+  display: flex;
+  justify-content: center;
+  padding: 30px 0 25px;
+  margin: 0 auto;
 `;
 
 const StSessionWrap = styled.div`

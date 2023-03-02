@@ -10,13 +10,3 @@ export const sendMessage = create((set) => ({
       })
     ),
 }));
-
-export const removeMessage = create((set) => ({
-  data: [],
-  clearData: () =>
-    set(
-      produce((state) => {
-        state.data = null;
-      })
-    ),
-}));
