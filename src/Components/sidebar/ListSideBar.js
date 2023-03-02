@@ -6,7 +6,7 @@ import "../../css/fonts/Fonts.css";
 const ListSideBar = () => {
   const navigate = useNavigate();
   const gotoLive = () => {
-    navigate("/RoomList");
+    navigate("/roomList");
   };
   const gotoInfo = () => {
     navigate("/Info");

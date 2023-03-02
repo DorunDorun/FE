@@ -281,14 +281,6 @@ function ChatRoom() {
       height: 737,
       scale:window.devicePixelRatio,
     }).then(canvas => {
-      /*
-      canvas.style.position = 'fixed';
-      canvas.style.top = '0';
-      canvas.style.left = '0';
-      canvas.style.opacity = '0';
-      canvas.style.transform = 'scale(0)';
-      */
-     
      console.log("canvas 캡쳐 : " , canvas)
      onSaveImage(canvas.toDataURL('image/png'), `DorunDorun-${roomTitle}-${newNickName}.png`)
     });
@@ -299,6 +291,7 @@ function ChatRoom() {
   const onSaveImage = (uri, fileName) => {
     console.log("onSaveImage")
     const link = document.createElement('a')
+    link.style.visibility = "hidden"
     document.body.appendChild(link)
     link.href = uri
     link.download = fileName

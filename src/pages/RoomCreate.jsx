@@ -9,6 +9,7 @@ import ButtonDefault from "../Components/ButtonDefault";
 import RadioGroup from "../Components/RadioGroup";
 import RadioGroupImage from "../Components/RadioGroupImage";
 import InputWithLabelDefault from "../Components/InputWithLabelDefault";
+import { categoryList } from '../Components/lists/CategoryList'; //카테고리 목록
 
 //유효성 검사
 import { regExpTitle, regExpSubTitle, regExpPassword } from '../Components/apis/RegExp';
@@ -77,45 +78,6 @@ function RoomCreate() {
     subTitle: "한글, 영어, 숫자/ 5~20자 이내",
     password: "비공개 비밀번호 : 영어, 숫자/ 5~10자 이내",
   });
-
-  //카테고리 목록
-  const categoryList = [
-    {
-      categoryName: "공부",
-      categoryValue: "STUDY",
-      categoryImage: joinRoomButtonImageList.image1.url,
-    },
-    {
-      categoryName: "친목",
-      categoryValue: "SOCIAL",
-      categoryImage: joinRoomButtonImageList.image2.url,
-    },
-    {
-      categoryName: "취미",
-      categoryValue: "HOBBY",
-      categoryImage: joinRoomButtonImageList.image3.url,
-    },
-    {
-      categoryName: "운동",
-      categoryValue: "WORKOUT",
-      categoryImage: joinRoomButtonImageList.image1.url,
-    },
-    {
-      categoryName: "직장인",
-      categoryValue: "JOBS",
-      categoryImage: joinRoomButtonImageList.image2.url,
-    },
-    {
-      categoryName: "재테크",
-      categoryValue: "INVESTMENT",
-      categoryImage: joinRoomButtonImageList.image3.url,
-    },
-    {
-      categoryName: "기타",
-      categoryValue: "ETC",
-      categoryImage: joinRoomButtonImageList.image1.url,
-    },
-  ];
 
   //카테고리 선택
   const onChangeRadioCategory = (value) => {
@@ -339,6 +301,7 @@ const onBlurRegExpSubTitle = (e) => {
                     labelText=""
                     inputPaceholder={messageForm.password}
                     disabled={isDisabled}
+                    maxLength={10}
                   />
                 </StPasswordInputBox>
               </StInputItem>
@@ -360,6 +323,7 @@ const onBlurRegExpSubTitle = (e) => {
               validMessage={validMessage.title}
               labelText="라이브룸 이름"
               inputPaceholder={messageForm.title}
+              maxLength={20}
             />
           </StRoomCreateInputDiv>
           {/* 방 내용 */}
@@ -377,6 +341,7 @@ const onBlurRegExpSubTitle = (e) => {
               validMessage={validMessage.subTitle}
               labelText="소개글"
               inputPaceholder={messageForm.subTitle}
+              maxLength={20}
             />
           </StRoomCreateInputDiv>
           {/* 카테고리 */}
