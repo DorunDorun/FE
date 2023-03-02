@@ -5,8 +5,10 @@ import "../../css/fonts/Fonts.css";
 
 const ListSideBar = () => {
   const navigate = useNavigate();
+
   const gotoLanding = () => {
     navigate("/");
+
   };
   const gotoMypage = () => {
     navigate("/mypage");
