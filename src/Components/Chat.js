@@ -10,10 +10,11 @@ import Wait from "./Wait";
 // 스토어
 import useStoreRoomCreate from "../zustand/storeRoomCreate";
 import { api } from "../shared/api";
-import { sendMessage, removeMessage } from "../zustand/storeSendMessage";
+import { sendMessage } from "../zustand/storeSendMessage";
 
-const Chat = (/* { props } */) => {
-  // const sessionId = props;
+const Chat = ({ props }) => {
+  const nickId = props;
+  console.log(nickId);
   const sessionId = localStorage.getItem("sessionId");
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
@@ -39,7 +40,6 @@ const Chat = (/* { props } */) => {
   const loading = sendMessage((state) => state.loading);
   const hasErrors = sendMessage((state) => state.hasErrors);
   const fetchData = sendMessage((state) => state.fetch);
-  const del = removeMessage.clearData;
 
   // 채팅 엔터키 전송
   const handleEnterPress = (e) => {
@@ -49,26 +49,27 @@ const Chat = (/* { props } */) => {
     }
   };
 
+  // 화상방정보 가져오기
   useEffect(() => {
     if (!sessionId) {
       return;
     }
     // 소켓 연결
     if (sessionId) {
-      console.log(9999, headers);
-      console.log(9876, { headers });
       try {
-        // client.debug = () => {};
+        client.debug = null;
         client.connect(
-          {},
+          headers,
           () => {
             // 채팅방 구독
             client.subscribe(`/sub/chat/room/${sessionId}`, (res) => {
               const receive = JSON.parse(res.body);
+              console.log(receive);
               fetchData(receive);
+              // fetchdata로 보낼것들
             });
           },
-          {}
+          headers
         );
       } catch (e) {
         console.log(e);
@@ -76,76 +77,10 @@ const Chat = (/* { props } */) => {
     }
   }, [sessionId]);
 
-  // // 화상방정보 가져오기
-  // useEffect(() => {
-  //   if (!sessionId) {
-  //     return;
-  //   }
-  //   // 소켓 연결
-  //   if (sessionId && (!client || !client.connected)) {
-  //     // 소켓 연결 여부도 확인
-  //     try {
-  //       client.debug = () => {};
-  //       client.connect(headers, () => {
-  //         // 채팅방 구독
-  //         client.subscribe(
-  //           `/sub/chat/room/${sessionId}`,
-  //           (res) => {
-  //             console.log(sessionId);
-  //             const receive = JSON.parse(res.body);
-  //             fetchData(receive);
-  //             // fetchdata로 보낼것들
-  //           },
-  //           headers
-  //         );
-  //       });
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //   }
-  //   // beforeunload 이벤트 리스너 등록
-  //   window.addEventListener("beforeunload", handleBeforeUnload);
-
-  //   // 컴포넌트 언마운트시 beforeunload 이벤트 리스너 제거 및 소켓 해제
-  //   return () => {
-  //     window.removeEventListener("beforeunload", handleBeforeUnload);
-
-  //     if (client && client.connected) {
-  //       client.unsubscribe("sub-0");
-  //       stompDisConnect();
-  //       del(); // fetchData 변수 초기화
-  //     }
-  //   };
-  // }, [sessionId, client]);
-
-  const handleBeforeUnload = (event) => {
-    event.preventDefault();
-    event.returnValue = "";
-    stompDisConnect();
-  };
-
-  const stompDisConnect = () => {
-    try {
-      if (client && client.connected) {
-        // 소켓 연결상태 확인
-        client.debug = null;
-        client.unsubscribe("sub-0");
-        client.disconnect(() => {
-          del(); // fetchData 변수 초기화
-        }, headers);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const sendChat = () => {
-    if (!client || !client.connected) {
-      console.log("소켓이 연결되어 있지 않습니다.");
-      return;
-    }
     const msg = chatRef.current.value;
     const img = imgRef.current.files[0];
+    const now = new Date();
     if (msg === "" && !img) {
       // 메시지와 이미지 둘 다 없을 경우
       return;
@@ -165,6 +100,7 @@ const Chat = (/* { props } */) => {
             nickname: name,
             message: msg,
             imgByteCode: imgDataStr, // 압축하지 않고 그대로 사용
+            createdAt: now,
           })
         );
         // 이미지 미리보기 초기화
@@ -181,6 +117,7 @@ const Chat = (/* { props } */) => {
           socialUid: id,
           nickname: name,
           message: msg,
+          createdAt: now,
         })
       );
     }
@@ -248,14 +185,17 @@ const Chat = (/* { props } */) => {
                   key={chating.receive.messageId || chating.receive.fileId}
                 >
                   <SendSet>
-                    <p>{chating.receive.nickname}</p>
+                    <p>{nickId}</p>
                   </SendSet>
                   <SendBox>
                     {chating.receive.imgUrl && (
                       <img src={chating.receive.imgUrl} />
                     )}
                     {chating.receive.message && (
-                      <span>{chating.receive.message}</span>
+                      <span>
+                        {chating.receive.message}
+                        {chating.receive.createdAt}
+                      </span>
                     )}
                   </SendBox>
                 </SendMessage>
@@ -269,7 +209,10 @@ const Chat = (/* { props } */) => {
                       <img src={chating.receive.imgUrl} />
                     )}
                     {chating.receive.message && (
-                      <span>{chating.receive.message}</span>
+                      <span>
+                        {chating.receive.message}
+                        {chating.receive.createdAt}
+                      </span>
                     )}
                   </Box>
                 </ReceivedMessage>

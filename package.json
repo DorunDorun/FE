@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/material": "^5.11.11",
     "@stomp/stompjs": "^7.0.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -19,6 +22,7 @@
     "react-beforeunload": "^2.5.3",
     "react-canvas-draw": "^1.2.1",
     "react-color": "^2.19.3",
+    "react-color-palette": "^6.2.0",
     "react-component-export-image": "^1.0.6",
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",

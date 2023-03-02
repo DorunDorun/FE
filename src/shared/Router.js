@@ -6,6 +6,7 @@ import Landing from "../pages/Landing";
 import Info from "../pages/Info";
 import Notice from "../pages/Notice";
 import MyPage from "../pages/MyPage";
+import Test from "../pages/Test";
 
 // 로그인관련
 import Login from "../pages/login/Login";
@@ -20,9 +21,6 @@ import RoomWaiting from "../pages/RoomWaiting";
 import Room from "../pages/Room";
 
 const Router = () => {
-
-  
-
   return (
     <BrowserRouter>
       <Routes>
@@ -31,6 +29,7 @@ const Router = () => {
         <Route path="/info" element={<Info />} />
         <Route path="/notice" element={<Notice />} />
         <Route path="/mypage" element={<MyPage />} />
+        <Route path="/test" element={<Test />} />
 
         {/* 리다이렉트 주소 */}
         <Route path="/kakao" element={<Kakao />} />
