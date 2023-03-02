@@ -44,7 +44,6 @@ const HearderContainer = styled.div`
   width: 1920px;
   /* width: 100%; */
   height: 70px;
-  border: 1px solid purple;
 `;
 
 const Logo = styled.div`
