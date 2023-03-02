@@ -1,12 +1,8 @@
 import React, { useState } from "react";
-import { autocompleteClasses, Checkbox } from "@mui/material";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { pink, yellow } from "@mui/material/colors";
 import { Button, Box } from "@mui/material";
 import styled from "styled-components";
 import { ColorPicker, useColor } from "react-color-palette";
 import "react-color-palette/lib/css/styles.css";
-import { flexbox } from "@mui/system";
 import { AiFillCheckSquare } from "react-icons/ai";
 
 const Palette = () => {

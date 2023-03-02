@@ -3,14 +3,14 @@ import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
-import { useInView } from "react-intersection-observer"
+import { useInView } from "react-intersection-observer";
 
 //컴포넌트, 스타일
 import ButtonDefault from "../Components/ButtonDefault";
 import RoomItem from "../Components/RoomItem";
 import Wait from "../Components/Wait";
 import ListSideBar from "../Components/sidebar/ListSideBar";
-import { categoryList } from '../Components/lists/CategoryList';
+import { categoryList } from "../Components/lists/CategoryList";
 
 //아이콘
 import { GrSort } from "react-icons/gr";
@@ -18,7 +18,6 @@ import { IoIosSearch } from "react-icons/io";
 import { BsFillGridFill } from "react-icons/bs";
 import { SlArrowLeft } from "react-icons/sl";
 import { SlArrowRight } from "react-icons/sl";
-
 
 //이미지
 import { roomListBack } from "../Components/ImagesGlobal";
@@ -33,38 +32,40 @@ const RoomList = () => {
   const navigate = useNavigate();
 
   //방 목록 유무 판단 - 방 목록 없을 때 메세지 컨트롤
-  const [isNoRooms, setIsNoRooms] = useState(false)
+  const [isNoRooms, setIsNoRooms] = useState(false);
 
   //방 목록 데이터
   const fetchGetRoomList = useStoreRoomList((state) => state.fetchGetRoomList);
-  const fetchGetRoomSearchList = useStoreRoomList((state) => state.fetchGetRoomSearchList);
+  const fetchGetRoomSearchList = useStoreRoomList(
+    (state) => state.fetchGetRoomSearchList
+  );
   const data = useStoreRoomList((state) => state.data);
   const loading = useStoreRoomList((state) => state.loading);
   const hasErrors = useStoreRoomList((state) => state.hasErrors);
   const roomList = useStoreRoomList((state) => state.roomList);
 
-
   //검색
-  const [searchValue, setSearchValue] = useState("") //검색 input 값
-  const [prevSearchValue, setPrevSearchValue]=useState(searchValue)
-  const [isSerachStatus, setIsSerachStatus]=useState(false)
-  const scrollBoxRef = useRef() //검색 후 scroll top을 위한 target 설정
-  
+  const [searchValue, setSearchValue] = useState(""); //검색 input 값
+  const [prevSearchValue, setPrevSearchValue] = useState(searchValue);
+  const [isSerachStatus, setIsSerachStatus] = useState(false);
+  const scrollBoxRef = useRef(); //검색 후 scroll top을 위한 target 설정
 
   //room list 모드
-  const listMode={
-    all : "all", //전체
-    search : "search", //검색
-    category : "category", //카테고리
-    history : "history", //히스토리
-  }
-  const [roomListMode, setRoomListMode] = useState(listMode.all)
+  const listMode = {
+    all: "all", //전체
+    search: "search", //검색
+    category: "category", //카테고리
+    history: "history", //히스토리
+  };
+  const [roomListMode, setRoomListMode] = useState(listMode.all);
 
   //카테고리
-  const categoryLists = categoryList
-  const fetchGetRoomCategoryList = useStoreRoomList((state) => state.fetchGetRoomCategoryList);
-  const [prevCategoryValue, setPrevCategoryValue]=useState("")
-  const [isCategorySearch, setIsCategorySearch]=useState(false)
+  const categoryLists = categoryList;
+  const fetchGetRoomCategoryList = useStoreRoomList(
+    (state) => state.fetchGetRoomCategoryList
+  );
+  const [prevCategoryValue, setPrevCategoryValue] = useState("");
+  const [isCategorySearch, setIsCategorySearch] = useState(false);
 
   //메세지
   const message = {
@@ -72,265 +73,235 @@ const RoomList = () => {
     noRooms: "두런두런의 첫 방을 만들어 보세요!",
   };
 
-
   //무한스크롤
-  const [pageCount, setPageCount]=useState(1) //페이지 카운터
-  const [isLoading, setIsLoading]=useState(false) //observer target el 컨트롤
-  const [roomData, setRoomData] = useState(roomList) //방 목록 추가
-  const [isRoomEnd, setIsRoomEnd] = useState(false) //마지막 목록 체크
+  const [pageCount, setPageCount] = useState(1); //페이지 카운터
+  const [isLoading, setIsLoading] = useState(false); //observer target el 컨트롤
+  const [roomData, setRoomData] = useState(roomList); //방 목록 추가
+  const [isRoomEnd, setIsRoomEnd] = useState(false); //마지막 목록 체크
 
   //무한 스크롤 옵션
   const [target, inView] = useInView({
-    root: null, 
-    rootMargin: '0px', 
+    root: null,
+    rootMargin: "0px",
     threshold: 0, //옵저버 target element 활성화 view 퍼센트 , 0 : 보이자마자 , 1 : 모두 보일 때
   });
 
-
   //카테고리 슬라이더
-  const categorySliderBoxRef = useRef()
-  const categorySliderBox = categorySliderBoxRef.current
+  const categorySliderBoxRef = useRef();
+  const categorySliderBox = categorySliderBoxRef.current;
   const handleNextButtonClick = (nextType) => {
-    const slideWidth = 400
-    if (!categorySliderBox) return false
-      if (nextType === 'prev') {
-        categorySliderBox.scrollTo({
-          left: categorySliderBox.scrollLeft - slideWidth,
-          behavior: 'smooth',
-        });
-      } else {
-        categorySliderBox.scrollTo({
-          left: categorySliderBox.scrollLeft + slideWidth,
-          behavior: 'smooth',
-        });
-      }
+    const slideWidth = 400;
+    if (!categorySliderBox) return false;
+    if (nextType === "prev") {
+      categorySliderBox.scrollTo({
+        left: categorySliderBox.scrollLeft - slideWidth,
+        behavior: "smooth",
+      });
+    } else {
+      categorySliderBox.scrollTo({
+        left: categorySliderBox.scrollLeft + slideWidth,
+        behavior: "smooth",
+      });
+    }
   };
-
-
-
-
 
   //방 목록 불러오기 api
   const getRoomList = async () => {
-    setRoomListMode(listMode.all) //방 목록 모드 전체로 변경
-    setIsLoading(true) //옵저버 target element 비활성화
-    console.log("getRoomList 시작")
+    setRoomListMode(listMode.all); //방 목록 모드 전체로 변경
+    setIsLoading(true); //옵저버 target element 비활성화
+    console.log("getRoomList 시작");
     await fetchGetRoomList(pageCount) //api - 전체
-    .then((res) => {
-      const resRoomListData = res.data.data.chattingRoomList
-      setRoomData((prev)=> [...prev, ...resRoomListData])
-      console.log("fetchGetRoomList 완료 ", resRoomListData)
-      setIsRoomEnd(false) //옵저버 target element 그대로 보이기
+      .then((res) => {
+        const resRoomListData = res.data.data.chattingRoomList;
+        setRoomData((prev) => [...prev, ...resRoomListData]);
+        console.log("fetchGetRoomList 완료 ", resRoomListData);
+        setIsRoomEnd(false); //옵저버 target element 그대로 보이기
 
-      if(resRoomListData.length < 16){ //방 목록 갯수가 응답 최대 값보다 작다면
-        setIsRoomEnd(true) //옵저버 target element 숨기기
-        console.log("방 목록 끝!")
-      } else if(resRoomListData.length === 0){
-        setIsRoomEnd(true) //옵저버 target element 숨기기
-        setIsNoRooms(true) //방 목록 없는 상태
-        console.log("방 목록 끝!")
-      }
-    });
-    setIsLoading(false) //옵저버 target element 활성화
+        if (resRoomListData.length < 16) {
+          //방 목록 갯수가 응답 최대 값보다 작다면
+          setIsRoomEnd(true); //옵저버 target element 숨기기
+          console.log("방 목록 끝!");
+        } else if (resRoomListData.length === 0) {
+          setIsRoomEnd(true); //옵저버 target element 숨기기
+          setIsNoRooms(true); //방 목록 없는 상태
+          console.log("방 목록 끝!");
+        }
+      });
+    setIsLoading(false); //옵저버 target element 활성화
   };
-
-
-
 
   //상황별 방 목록 불러오기
   useEffect(() => {
-
-    if(roomListMode === listMode.all && pageCount === 1){
-      console.log("🎄 처음 방 목록 불러오기 mode : ", roomListMode)
-      getRoomList()
-    }else if(pageCount > 1){
-      console.log("🎄 방 목록 mode : ", roomListMode)
+    if (roomListMode === listMode.all && pageCount === 1) {
+      console.log("🎄 처음 방 목록 불러오기 mode : ", roomListMode);
+      getRoomList();
+    } else if (pageCount > 1) {
+      console.log("🎄 방 목록 mode : ", roomListMode);
       //리스트 모드에 따른 조건문
-      switch(roomListMode){
-        case listMode.all : //전체 목록
-          getRoomList()
-          break
-        case listMode.search : //검색 목록
-          getRoomSerachList()
-          break
-        case listMode.category : 
-          getRoomCategorySearchList()
-          break
-        default :
-          getRoomList()
-        break
+      switch (roomListMode) {
+        case listMode.all: //전체 목록
+          getRoomList();
+          break;
+        case listMode.search: //검색 목록
+          getRoomSerachList();
+          break;
+        case listMode.category:
+          getRoomCategorySearchList();
+          break;
+        default:
+          getRoomList();
+          break;
       }
     }
-    
-    
   }, [pageCount]);
 
+  useEffect(() => {
+    //무한 스크롤
+    console.log("옵저버 시작", inView);
 
-
-  useEffect(()  => { //무한 스크롤
-    console.log("옵저버 시작", inView)
-
-    if (inView && !loading) { //target 감지 && 로딩 중이 아닐 떄
+    if (inView && !loading) {
+      //target 감지 && 로딩 중이 아닐 떄
       setPageCount((prevState) => prevState + 1);
     }
 
-    console.log("옵저버 끝", inView)
+    console.log("옵저버 끝", inView);
   }, [inView]);
 
-
-  useEffect(()=>{
-    console.log("⭐ roomData 갯수 : ", roomData.length)
-  },[roomData])
-
-
+  useEffect(() => {
+    console.log("⭐ roomData 갯수 : ", roomData.length);
+  }, [roomData]);
 
   //검색어 변경시 pagecount 초기화
   const onChangeSearchValue = (e) => {
-    const {value} = e.target
-    setSearchValue(value)
-    setPageCount(1)
-  }
-
-
-  //방 검색 버튼 클릭
-  const onSubmitGetRoomSerachList = async (e)=>{
-    e.preventDefault()
-    setRoomListMode(listMode.search) //목록 모드 검색으로 변경
-    setPageCount(1) //검색 버튼을 누르면 무조건 페이지 카운트 초기화
-    setIsSerachStatus(true) //검색 상태 true
-  }
-
-
-
-  //검색 상태가 true일 경우 실행 : 검색 버튼 클릭일 경우
-  useEffect(()=>{
-    isSerachStatus && getRoomSerachList()
-  },[isSerachStatus])
-
-
-
-  //방 검색
-  const getRoomSerachList = async () => { 
-
-    console.log("검색 시작 : ", searchValue)
-    
-    //첫 검색일 경우(검색 버튼 클릭일 경우) 스크롤 위치 최상단으로 이동
-    if(pageCount === 1){ 
-      scrollBoxRef.current.scrollTo({
-          top: 0,
-          behavior: 'auto',
-        })
-      setRoomData([]) // 첫 목록이라면 방 목록 초기화
-    } 
-
-    await setPrevSearchValue(searchValue) //이전 검색 기록을 현재 검색어로 세팅
-    setIsLoading(true)
-
-    
-    const serachRoomPayload={
-      pageCount:pageCount,
-      searchValue:searchValue
-    }
-    
-    await fetchGetRoomSearchList(serachRoomPayload)
-    .then((res) => {
-      const resRoomSearchListData = res.data.data.chattingRoomList
-      setRoomData((prev)=> [...prev, ...resRoomSearchListData])
-      
-      console.log("fetchGetRoomList 완료 ", resRoomSearchListData)
-      setIsRoomEnd(false) //마지막 목록 상태가 아님
-
-      if(resRoomSearchListData.length < 16){
-        setIsRoomEnd(true) //마지막 목록 상태
-        console.log("방 목록 끝!")
-      } else if(resRoomSearchListData.length === 0){
-        setIsRoomEnd(true) //마지막 목록 상태
-        setIsNoRooms(true) //방 목록 없는 상태
-        console.log("방 목록 끝!")
-      }
-    });
-    setIsLoading(false)
-    setIsSerachStatus(false)
+    const { value } = e.target;
+    setSearchValue(value);
+    setPageCount(1);
   };
 
+  //방 검색 버튼 클릭
+  const onSubmitGetRoomSerachList = async (e) => {
+    e.preventDefault();
+    setRoomListMode(listMode.search); //목록 모드 검색으로 변경
+    setPageCount(1); //검색 버튼을 누르면 무조건 페이지 카운트 초기화
+    setIsSerachStatus(true); //검색 상태 true
+  };
 
+  //검색 상태가 true일 경우 실행 : 검색 버튼 클릭일 경우
+  useEffect(() => {
+    isSerachStatus && getRoomSerachList();
+  }, [isSerachStatus]);
+
+  //방 검색
+  const getRoomSerachList = async () => {
+    console.log("검색 시작 : ", searchValue);
+
+    //첫 검색일 경우(검색 버튼 클릭일 경우) 스크롤 위치 최상단으로 이동
+    if (pageCount === 1) {
+      scrollBoxRef.current.scrollTo({
+        top: 0,
+        behavior: "auto",
+      });
+      setRoomData([]); // 첫 목록이라면 방 목록 초기화
+    }
+
+    await setPrevSearchValue(searchValue); //이전 검색 기록을 현재 검색어로 세팅
+    setIsLoading(true);
+
+    const serachRoomPayload = {
+      pageCount: pageCount,
+      searchValue: searchValue,
+    };
+
+    await fetchGetRoomSearchList(serachRoomPayload).then((res) => {
+      const resRoomSearchListData = res.data.data.chattingRoomList;
+      setRoomData((prev) => [...prev, ...resRoomSearchListData]);
+
+      console.log("fetchGetRoomList 완료 ", resRoomSearchListData);
+      setIsRoomEnd(false); //마지막 목록 상태가 아님
+
+      if (resRoomSearchListData.length < 16) {
+        setIsRoomEnd(true); //마지막 목록 상태
+        console.log("방 목록 끝!");
+      } else if (resRoomSearchListData.length === 0) {
+        setIsRoomEnd(true); //마지막 목록 상태
+        setIsNoRooms(true); //방 목록 없는 상태
+        console.log("방 목록 끝!");
+      }
+    });
+    setIsLoading(false);
+    setIsSerachStatus(false);
+  };
 
   //카테고리 검색
-  const onClickCategorySearch=(value)=>{ //카테고리 버튼 클릭
-    console.log("카테고리 value ", value)
-     
-    if(value){ //검색한 값이 있다면 > 버튼 클릭일 경우에만 해당
-      setRoomListMode(listMode.category) //목록 모드 변경
-      setIsCategorySearch(true) //버튼 클릭 상태(첫 검색)
-      setPageCount(1) //첫 검색이므로 페이지 카운트 초기화
-      setPrevCategoryValue(value) //이전 검색 값에 현재 카테고리 값 설정
+  const onClickCategorySearch = (value) => {
+    //카테고리 버튼 클릭
+    console.log("카테고리 value ", value);
+
+    if (value) {
+      //검색한 값이 있다면 > 버튼 클릭일 경우에만 해당
+      setRoomListMode(listMode.category); //목록 모드 변경
+      setIsCategorySearch(true); //버튼 클릭 상태(첫 검색)
+      setPageCount(1); //첫 검색이므로 페이지 카운트 초기화
+      setPrevCategoryValue(value); //이전 검색 값에 현재 카테고리 값 설정
     }
-  }
+  };
 
-
-  useEffect(()=>{ //카테고리 버튼 클릭일 경우
+  useEffect(() => {
+    //카테고리 버튼 클릭일 경우
 
     //처음 검색(true)일 경우 카테고리 목록 불러오기
     //처음 검색이 아니면 옵저버 영역에서 컨트롤함
-    isCategorySearch && getRoomCategorySearchList()
-
-  },[isCategorySearch])
+    isCategorySearch && getRoomCategorySearchList();
+  }, [isCategorySearch]);
 
   const getRoomCategorySearchList = async () => {
-    
-    setIsLoading(true)
+    setIsLoading(true);
 
-     //해당 키워드 첫 검색일 경우 스크롤 위치 최상단으로 이동
-     if(pageCount === 1){ 
-      
+    //해당 키워드 첫 검색일 경우 스크롤 위치 최상단으로 이동
+    if (pageCount === 1) {
       scrollBoxRef.current.scrollTo({
-          top: 0,
-          behavior: 'auto',
-        })
-      setRoomData([]) // 첫 목록이라면 방 목록 초기화
+        top: 0,
+        behavior: "auto",
+      });
+      setRoomData([]); // 첫 목록이라면 방 목록 초기화
     }
-    
-    console.log("prevCategoryValue : ", prevCategoryValue)
 
-    const serachRoomPayload={
-      pageCount:pageCount,
-      categoryValue:prevCategoryValue
-    }
-    await fetchGetRoomCategoryList(serachRoomPayload)
-    .then((res) => {
-      const resRoomSearchListData = res.data.data.chattingRoomList
-      
-      setRoomData((prev)=> [...prev, ...resRoomSearchListData])
-      console.log("fetchGetRoomList 완료 ", resRoomSearchListData)
-      setIsRoomEnd(false) //마지막 목록 상태가 아님
+    console.log("prevCategoryValue : ", prevCategoryValue);
 
-      if(resRoomSearchListData.length < 16){
-        setIsRoomEnd(true) //마지막 목록 상태
-        console.log("방 목록 끝!")
-      } else if(resRoomSearchListData.length === 0){
-        setIsRoomEnd(true) //마지막 목록 상태
-        setIsNoRooms(true) //방 목록 없는 상태
-        console.log("방 목록 끝!")
+    const serachRoomPayload = {
+      pageCount: pageCount,
+      categoryValue: prevCategoryValue,
+    };
+    await fetchGetRoomCategoryList(serachRoomPayload).then((res) => {
+      const resRoomSearchListData = res.data.data.chattingRoomList;
+
+      setRoomData((prev) => [...prev, ...resRoomSearchListData]);
+      console.log("fetchGetRoomList 완료 ", resRoomSearchListData);
+      setIsRoomEnd(false); //마지막 목록 상태가 아님
+
+      if (resRoomSearchListData.length < 16) {
+        setIsRoomEnd(true); //마지막 목록 상태
+        console.log("방 목록 끝!");
+      } else if (resRoomSearchListData.length === 0) {
+        setIsRoomEnd(true); //마지막 목록 상태
+        setIsNoRooms(true); //방 목록 없는 상태
+        console.log("방 목록 끝!");
       }
     });
-    setIsLoading(false)
-    setIsCategorySearch(false)
+    setIsLoading(false);
+    setIsCategorySearch(false);
   };
 
-
-
-
-
-
-
-  const onClickRoomJoin = (title, sessionId, status) => { //방 입장
+  const onClickRoomJoin = (title, sessionId, status) => {
+    //방 입장
     const info = {
       title: title,
       sessionId: sessionId,
       status: status,
     };
     console.log(" 방 목록 info : ", info);
-    if (status) { //공개 방 입장
+    if (status) {
+      //공개 방 입장
       localStorage.setItem("title", title);
       localStorage.setItem("sessionId", sessionId);
       localStorage.setItem("status", status);
@@ -343,18 +314,17 @@ const RoomList = () => {
     navigate("/roomCreate");
   };
 
-
-  if(loading){
-    pageCount === 1 && <Wait/>
+  if (loading) {
+    pageCount === 1 && <Wait />;
   }
 
   if (hasErrors) {
-    alert("다시 시도해주세요!")
-    return navigate("/login")
+    alert("다시 시도해주세요!");
+    return navigate("/login");
   }
 
-  console.log("🎄 방 목록 mode : ", roomListMode)
-  
+  console.log("🎄 방 목록 mode : ", roomListMode);
+
   return (
     <StRoomListWrap>
       <StRoomListSideNav>
@@ -364,8 +334,13 @@ const RoomList = () => {
       <StRoomListCenter>
         <StRoomListTopContainer>
           <StRoomListHeader>
-            <StRoomListSearchBox onSubmit={(e)=>onSubmitGetRoomSerachList(e)}>
-              <StRoomListSearchInput value={searchValue} onChange={(e)=>onChangeSearchValue(e)} placeholder="관심있는 키워드를 검색해보세요!" maxLength={20}/>
+            <StRoomListSearchBox onSubmit={(e) => onSubmitGetRoomSerachList(e)}>
+              <StRoomListSearchInput
+                value={searchValue}
+                onChange={(e) => onChangeSearchValue(e)}
+                placeholder="관심있는 키워드를 검색해보세요!"
+                maxLength={20}
+              />
               <StRoomListSearchButton>
                 <IoIosSearch className="iconSearch" />
               </StRoomListSearchButton>
@@ -385,18 +360,18 @@ const RoomList = () => {
           </StRoomListHeader>
 
           <StRoomListCategorySlide>
-
-            <StButtonCircle onClick={()=>handleNextButtonClick("prev")}>
-              <SlArrowLeft/>
+            <StButtonCircle onClick={() => handleNextButtonClick("prev")}>
+              <SlArrowLeft />
             </StButtonCircle>
-            
+
             <StRoomListCategorySlideContainer ref={categorySliderBoxRef}>
-              
-              {categoryLists.map((category)=>{
-                return(
+              {categoryLists.map((category) => {
+                return (
                   <ButtonDefault
                     key={nanoid()}
-                    onClick={()=>onClickCategorySearch(category.categoryValue)}
+                    onClick={() =>
+                      onClickCategorySearch(category.categoryValue)
+                    }
                     width="auto"
                     height="44px"
                     padding="10px 20px"
@@ -408,22 +383,19 @@ const RoomList = () => {
                   >
                     {category.categorySubTitle}
                   </ButtonDefault>
-                )
+                );
               })}
-              
             </StRoomListCategorySlideContainer>
 
-            <StButtonCircle onClick={()=>handleNextButtonClick("next")}>
-              <SlArrowRight/>
+            <StButtonCircle onClick={() => handleNextButtonClick("next")}>
+              <SlArrowRight />
             </StButtonCircle>
-
           </StRoomListCategorySlide>
         </StRoomListTopContainer>
 
         <StRoomListBox>
           <StRoomListBoxInfo>
             <StRoomListBoxInfoH2>{message.welcome}</StRoomListBoxInfoH2>
-        
           </StRoomListBoxInfo>
 
           <StRoomListBoxRooms>
@@ -454,8 +426,7 @@ const RoomList = () => {
                   />
                 );
               })}
-              {roomData.length > 0 && (
-                !isRoomEnd && !isLoading &&
+              {roomData.length > 0 && !isRoomEnd && !isLoading && (
                 <StScrollTarget ref={target}>
                   <StScrollTargetLoading></StScrollTargetLoading>
                 </StScrollTarget>
@@ -468,32 +439,31 @@ const RoomList = () => {
   );
 };
 
-const StScrollTargetLoading=styled.div`
-    width: 50px;
-    height: 50px;
-    border: 5px solid #FFF;
-    border-bottom-color: ${COLOR.baseDefault};
-    border-radius: 50%;
-    display: inline-block;
-    box-sizing: border-box;
-    animation: rotation 1s linear infinite;
-    @keyframes rotation {
-      0% {
-          transform: rotate(0deg);
-      }
-      100% {
-          transform: rotate(360deg);
-      }
-    } 
-`
-const StScrollTarget=styled.div`
+const StScrollTargetLoading = styled.div`
+  width: 50px;
+  height: 50px;
+  border: 5px solid #fff;
+  border-bottom-color: ${COLOR.baseDefault};
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+const StScrollTarget = styled.div`
   width: 100%;
   height: 300px;
   display: flex;
   justify-content: center;
   align-items: center;
-  
-`
+`;
 
 const StNoRooms = styled.p`
   display: flex;
@@ -536,7 +506,7 @@ const StRoomListBoxInfo = styled.div`
 `;
 const StRoomListBox = styled.div``;
 
-const StButtonCircle=styled.div`
+const StButtonCircle = styled.div`
   border: 1px solid #707070;
   border-radius: 50%;
   display: flex;
@@ -545,14 +515,14 @@ const StButtonCircle=styled.div`
   font-size: 15px;
   padding: 12px;
   cursor: pointer;
-  :hover{
+  :hover {
     background-color: ${COLOR.baseLight};
     color: #fff;
     border-color: ${COLOR.baseLight};
   }
-`
+`;
 
-const StRoomListCategorySlideContainer=styled.div`
+const StRoomListCategorySlideContainer = styled.div`
   width: 85%;
   overflow: hidden;
   overflow-x: auto;
@@ -563,7 +533,7 @@ const StRoomListCategorySlideContainer=styled.div`
   }
   -ms-overflow-style: none; /* 인터넷 익스플로러 */
   scrollbar-width: none; /* 파이어폭스 */
-`
+`;
 const StRoomListCategorySlide = styled.div`
   display: flex;
   justify-content: center;
@@ -571,8 +541,6 @@ const StRoomListCategorySlide = styled.div`
   max-width: 1200px;
   height: 44px;
   margin: 0 auto;
-  
-
 `;
 const StRoomCreateButton = styled.button``;
 const StRoomListSearchButton = styled.button`
@@ -632,5 +600,5 @@ const StRoomListWrap = styled.section`
   justify-content: center;
   background-color: #fff;
   width: 1800px;
-`
+`;
 export default RoomList;
