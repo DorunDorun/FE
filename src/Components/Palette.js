@@ -22,7 +22,7 @@ const Palette = () => {
     <Stpicker>
       <ColorPicker
         width={228}
-        height={100}
+        height={70}
         color={color}
         onChange={handleColorChange}
         hideRGB
