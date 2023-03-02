@@ -9,10 +9,14 @@ import ButtonDefault from "../Components/ButtonDefault";
 import RadioGroup from "../Components/RadioGroup";
 import RadioGroupImage from "../Components/RadioGroupImage";
 import InputWithLabelDefault from "../Components/InputWithLabelDefault";
-import { categoryList } from '../Components/lists/CategoryList'; //카테고리 목록
+import { categoryList } from "../Components/lists/CategoryList"; //카테고리 목록
 
 //유효성 검사
-import { regExpTitle, regExpSubTitle, regExpPassword } from '../Components/apis/RegExp';
+import {
+  regExpTitle,
+  regExpSubTitle,
+  regExpPassword,
+} from "../Components/apis/RegExp";
 
 //css
 import { COLOR } from "../Components/style/style";
@@ -127,21 +131,20 @@ function RoomCreate() {
     }
   };
 
-//유효성 검사 방 내용
-const onBlurRegExpSubTitle = (e) => {
-  if (!regExpSubTitle(e.target.value)) {
-    setIsRegExp({ ...isRegExp, subTitle: false });
-    return setValidMessage({
-      ...validMessage,
-      subTitle: messageForm.subTitle,
-    });
-  } else {
-    setIsRegExp({ ...isRegExp, subTitle: true });
-    return setValidMessage({ ...validMessage, subTitle: "" });
-  }
-};
+  //유효성 검사 방 내용
+  const onBlurRegExpSubTitle = (e) => {
+    if (!regExpSubTitle(e.target.value)) {
+      setIsRegExp({ ...isRegExp, subTitle: false });
+      return setValidMessage({
+        ...validMessage,
+        subTitle: messageForm.subTitle,
+      });
+    } else {
+      setIsRegExp({ ...isRegExp, subTitle: true });
+      return setValidMessage({ ...validMessage, subTitle: "" });
+    }
+  };
 
-  
   //유효성 검사 비밀번호
   const onBlurRegExpPassword = (e) => {
     if (!regExpPassword(e.target.value)) {
@@ -155,8 +158,7 @@ const onBlurRegExpSubTitle = (e) => {
       return setValidMessage({ ...validMessage, password: "" });
     }
   };
-  
-  
+
   //방 생성 데이터
   const { data } = useStoreRoomCreate((state) => state.data);
   const loading = useStoreRoomCreate((state) => state.loading);
