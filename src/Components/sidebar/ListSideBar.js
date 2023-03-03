@@ -8,7 +8,6 @@ const ListSideBar = () => {
 
   const gotoLanding = () => {
     navigate("/");
-
   };
   const gotoMypage = () => {
     navigate("/mypage");
@@ -26,7 +25,7 @@ const ListSideBar = () => {
       </Logo>
       <Menu>
         <Room onClick={() => setOn(true)} className={on ? "on" : ""}>
-          <span>개설된 라이브룸</span>
+          <span>전체 라이브룸</span>
         </Room>
         <History onClick={() => setOn(false)} className={on ? "" : "on"}>
           <span>참여히스토리</span>

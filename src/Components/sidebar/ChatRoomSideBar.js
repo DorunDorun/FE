@@ -81,34 +81,6 @@ const ChatRoomSideBar = () => {
             {showColor && (
               <StChoice>
                 <Palette />
-                <span>Cheers</span>
-                <div>
-                  <PCheers />
-                </div>
-                <span>Garden</span>
-                <div>
-                  <PGarden />
-                </div>
-                <span>Cat</span>
-                <div>
-                  <PCat />
-                </div>
-                <span>Caramelldanse</span>
-                <div>
-                  <PCaramelldanse />
-                </div>
-                <span>Volcano</span>
-                <div>
-                  <PVolcano />
-                </div>
-                <span>Morning Dew</span>
-                <div>
-                  <PMorningDew />
-                </div>
-                <span>Forest</span>
-                <div>
-                  <PForest />
-                </div>
               </StChoice>
             )}
 
@@ -212,8 +184,6 @@ const StChoice = styled.div`
     opacity: 1;
   }
 `;
-
-const StcolorBtn = styled.div``;
 
 const StWise = styled.div`
   span {

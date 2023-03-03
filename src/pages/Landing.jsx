@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import LandingHeader from "../Components/headers/LandingHeader";
@@ -6,6 +6,27 @@ import "../css/fonts/Fonts.css";
 import { BsFillCircleFill } from "react-icons/bs";
 
 const Landing = () => {
+  const [count, setCount] = useState(0);
+
+  function handleCountEvent(receive) {
+    setCount(receive.chatRoomCount);
+  }
+
+  useLayoutEffect(() => {
+    const sse = new EventSource("https://dorundorun.shop/api/sse");
+
+    sse.addEventListener("connect", (e) => {
+      console.log("e : ", e);
+      let receive = JSON.parse(e.data);
+      console.log("연결 현재 채팅방 수 :", receive); // "connected!"
+      handleCountEvent(receive);
+    });
+
+    return () => {
+      sse.close();
+    };
+  }, []);
+
   const token = localStorage.getItem("accessToken");
   const refresh = localStorage.getItem("refreshToken");
   const navigate = useNavigate();
@@ -22,7 +43,7 @@ const Landing = () => {
         <LandingHeader />
         <Duruning>
           <BsFillCircleFill color="#8600F0" />
-          <span>32개의 꿈을 두런두런 중</span>
+          <span>{count}개의 꿈을 두런두런 중</span>
         </Duruning>
         <Main>
           <span>Do</span> Your
@@ -32,7 +53,7 @@ const Landing = () => {
         </Main>
         <Text>
           [두런두런]은 같은 취향, 관심사, 목표를 가진 사람들과 두런두런 이야기를
-          나누고, 그 순간을 네컷 사진으로 기록할 수 있는 공간입니다.
+          나누고, 그 순간을 사진으로 기록할 수 있는 공간입니다.
         </Text>
         <In onClick={gotoRoom}>
           <span>방 둘러보기</span>
@@ -70,7 +91,7 @@ const Duruning = styled.div`
   position: absolute;
   top: 227px;
   left: 140px;
-  width: 259px;
+  width: 270px;
   height: 44px;
   /* UI Properties */
   background-color: #fbfbfb 0% 0% no-repeat padding-box;
@@ -81,9 +102,9 @@ const Duruning = styled.div`
   opacity: 1;
   span {
     display: flex;
-    width: 195px;
+    width: 250px;
     height: 24px;
-    margin-left: 5px;
+    margin-left: 10px;
     text-align: left;
     font: 20px/24px Pretendard;
     letter-spacing: 0px;
