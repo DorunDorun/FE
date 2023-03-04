@@ -123,14 +123,14 @@ const RoomItem = ({
         <StRoomItemMainInfoRoomInfo>
           {/*방 제목*/}
           <StRoomItemMainInfoRoomInfoTitleBox>
-            <StRoomItemMainInfoRoomInfoTitle>
+            <StRoomItemMainInfoRoomInfoTitle title={title}>
               {title}
             </StRoomItemMainInfoRoomInfoTitle>
           </StRoomItemMainInfoRoomInfoTitleBox>
 
           {/*방 소개글*/}
           <StRoomItemMainInfoRoomInfoSubTitleBox>
-            <StRoomItemMainInfoRoomInfoSubTitle>
+            <StRoomItemMainInfoRoomInfoSubTitle title={subTitle}>
               {subTitle}
             </StRoomItemMainInfoRoomInfoSubTitle>
           </StRoomItemMainInfoRoomInfoSubTitleBox>
