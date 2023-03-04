@@ -1,15 +1,7 @@
 import { useState, useRef } from "react";
 import styled from "styled-components";
 import HorizonLine from "../horizon/HorizonLine";
-import Palette, {
-  PCheers,
-  PCaramelldanse,
-  PCat,
-  PForest,
-  PGarden,
-  PMorningDew,
-  PVolcano,
-} from "../Palette";
+import Palette from "../Palette";
 
 const ChatRoomSideBar = () => {
   const [isOpen, setIsOpen] = useState(false);

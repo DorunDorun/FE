@@ -4,14 +4,24 @@ import styled from "styled-components";
 import { ColorPicker, useColor } from "react-color-palette";
 import "react-color-palette/lib/css/styles.css";
 import { AiFillCheckSquare } from "react-icons/ai";
+import { StorePalette } from "../zustand/storePalette";
 
 const Palette = () => {
   const [color, setColor] = useColor("hex", "#F4E7FF");
   const [colorData, setColorData] = useState("");
   const [selectedBox, setSelectedBox] = useState(null);
 
+  // Zustand 스토어에 접근하여 상태를 변경합니다.
+  const setColorInStore = StorePalette((state) => state.setColor);
+
   const handleColorChange = (newColor) => {
     setColor(newColor);
+  };
+
+  const handleClick = () => {
+    console.log("선택된 색상 데이터:", color.hex);
+    setColorData(color.hex);
+    setColorInStore(color.hex);
   };
 
   const handleBoxClick = (index) => {
@@ -22,9 +32,21 @@ const Palette = () => {
     }
   };
 
-  const handleClick = () => {
-    console.log("선택된 색상 데이터:", colorData);
-    setColorData(color);
+  const boxClick = () => {
+    const selectedColorIndex = selectedBox;
+    if (selectedColorIndex !== null) {
+      const menuItem = menuItems.find((item) => {
+        return (
+          selectedColorIndex >= item.startIndex &&
+          selectedColorIndex < item.startIndex + item.colors.length
+        );
+      });
+      const selectedColor =
+        menuItem.colors[selectedColorIndex - menuItem.startIndex];
+      console.log(selectedColor);
+      setColorInStore(selectedColor);
+      setSelectedBox(null);
+    }
   };
 
   const menuItems = [
@@ -43,7 +65,7 @@ const Palette = () => {
     {
       title: "Cat",
       className: "StCat",
-      colors: ["#FF8225", "#EE6421", "#C43D0D", "#A9928C", "#EFD3B"],
+      colors: ["#FF8225", "#EE6421", "#C43D0D", "#A9928C", "#EFD3BB"],
       startIndex: 10,
     },
     {
@@ -54,10 +76,10 @@ const Palette = () => {
         "#3342BC",
         "#3723A6",
         "#BB7FFE",
-        "#BB7FFE",
-        "#BB7FFE",
+        "#8F8EFF",
+        "#A8CDFF",
       ],
-      startIndex: 10,
+      startIndex: 15,
     },
     {
       title: "Volcano",
@@ -70,7 +92,7 @@ const Palette = () => {
         "#FC5301",
         "#F5400B",
       ],
-      startIndex: 10,
+      startIndex: 21,
     },
     {
       title: "MorningDew",
@@ -83,13 +105,13 @@ const Palette = () => {
         "#FABD65",
         "#F78E32",
       ],
-      startIndex: 10,
+      startIndex: 27,
     },
     {
       title: "Forest",
       className: "StForest",
       colors: ["#71D472", "#A7F3B0", "#619B5D", "#1E4032", "#052717"],
-      startIndex: 10,
+      startIndex: 33,
     },
   ];
 
@@ -124,7 +146,9 @@ const Palette = () => {
                           ? "2px solid #fff"
                           : "2px solid transparent",
                     }}
-                    onClick={() => handleBoxClick(colorIndex + item.startIndex)}
+                    onClick={() => {
+                      handleBoxClick(colorIndex + item.startIndex);
+                    }}
                   >
                     {selectedBox === colorIndex + item.startIndex && (
                       <AiFillCheckSquare color="#fff" />
@@ -134,6 +158,9 @@ const Palette = () => {
               </div>
             </React.Fragment>
           ))}
+          <button disabled={selectedBox === null} onClick={boxClick}>
+            선택 완료
+          </button>
         </StMenu>
       </Stpalette>
     </Container>
@@ -172,32 +199,14 @@ const StMenu = styled.div`
     color: #171717;
     opacity: 1;
   }
-`;
-
-const StCheers = styled.div`
-  display: flex;
-`;
-
-const StGarden = styled.div`
-  display: flex;
-`;
-
-const StCat = styled.div`
-  display: flex;
-`;
-
-const StCaramelldanse = styled.div`
-  display: flex;
-`;
-
-const StVolcano = styled.div`
-  display: flex;
-`;
-
-const StMorningDew = styled.div`
-  display: flex;
-`;
-
-const StForest = styled.div`
-  display: flex;
+  div {
+    display: flex;
+  }
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    width: 100px;
+  }
 `;
