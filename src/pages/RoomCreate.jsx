@@ -10,54 +10,36 @@ import RadioGroup from "../Components/RadioGroup";
 import RadioGroupImage from "../Components/RadioGroupImage";
 import InputWithLabelDefault from "../Components/InputWithLabelDefault";
 import { categoryList } from "../Components/lists/CategoryList"; //카테고리 목록
+import LinkPrev from '../Components/apis/LinkPrev';
+
 
 //유효성 검사
-import {
-  regExpTitle,
-  regExpSubTitle,
-  regExpPassword,
-} from "../Components/apis/RegExp";
+import { regExpTitle, regExpSubTitle, regExpPassword,} from "../Components/apis/RegExp";
 
 //css
 import { COLOR } from "../Components/style/style";
 
-//버튼 이미지
-import joinRoomButtonImageList from "../Components/joinRoomButtonImagePath";
 
 //스토어 방 생성
 import useStoreRoomCreate from "../zustand/storeRoomCreate";
 //스토어 방장 상태
 import useStoreRoomMasterCheck from "../zustand/stoerRoomMasterCheck";
 
+
 function RoomCreate() {
+
   const navigate = useNavigate();
 
+  //방 만들기 정보
   const [roomInfo, setRoomInfo] = useState({
-    nickName: "user" + Math.floor(Math.random() * 1000),
     roomTitle: "",
     roomSubTitle: "",
     roomCategory: "",
     roomStatus: true,
     roomPassword: "",
-    roomJoinButtonImage: joinRoomButtonImageList.image1.name,
   });
 
-  const {
-    nickName,
-    roomTitle,
-    roomSubTitle,
-    roomCategory,
-    roomPassword,
-    roomStatus,
-    roomJoinButtonImage,
-  } = roomInfo;
-
-  //입장 버튼 이미지
-  const joinRoomButtonImages = [
-    joinRoomButtonImageList.image1,
-    joinRoomButtonImageList.image2,
-    joinRoomButtonImageList.image3,
-  ];
+  const { roomTitle, roomSubTitle, roomCategory, roomPassword, roomStatus, roomJoinButtonImage} = roomInfo;
 
   //비밀번호 인풋 활성화
   const [isDisabled, setIsDisabled] = useState(true);
@@ -69,7 +51,7 @@ function RoomCreate() {
     password: true,
   });
 
-  //상태메세지
+  //유효성 검사 상태메세지
   const [validMessage, setValidMessage] = useState({
     title: "",
     subTitle: "",
@@ -78,9 +60,9 @@ function RoomCreate() {
 
   //메세지 양식
   const [messageForm, setMessageForm] = useState({
-    title: "한글, 영어, 숫자/ 5~20자 이내",
-    subTitle: "한글, 영어, 숫자/ 5~20자 이내",
-    password: "비공개 비밀번호 : 영어, 숫자/ 5~10자 이내",
+    title: "5~20자 이내로 입력하세요",
+    subTitle: "5~20자 이내로 입력하세요",
+    password: "영어, 숫자/ 5~10자 이내",
   });
 
   //카테고리 선택
@@ -88,9 +70,11 @@ function RoomCreate() {
     setRoomInfo({ ...roomInfo, roomCategory: value });
   };
 
+
   useEffect(() => {
     console.log("roomCategory : ", roomCategory);
   }, [roomCategory]);
+
 
   //방 공개 비공개
   const onChangeRoomStatus = (roomStatusValue) => {
@@ -98,6 +82,7 @@ function RoomCreate() {
     setIsDisabled(roomStatusValue);
   };
 
+  //방 공개 비공개
   useEffect(() => {
     console.log("roomStatus 변경 ! : ", roomStatus);
     console.log("isDisabled 는 ", isDisabled);
@@ -165,11 +150,6 @@ function RoomCreate() {
   const hasErrors = useStoreRoomCreate((state) => state.hasErrors);
   const fetchData = useStoreRoomCreate((state) => state.fetch);
 
-  //방장 상태
-  const roomMasterStatus = useStoreRoomMasterCheck(
-    (state) => state.roomMasterStatus
-  );
-
   //방 생성
   const roomCreate = (e) => {
     e.preventDefault();
@@ -187,16 +167,15 @@ function RoomCreate() {
       return false;
     } else {
       console.log("유효성 검사 통과");
-      const newRoomCreateOpen = {
-        //공개 방 정보
+      
+      const newRoomCreateOpen = { //공개 방 정보
         status: roomStatus,
         title: roomTitle,
         subtitle: roomSubTitle,
         category: roomCategory,
       };
 
-      const newRoomCreatePrivate = {
-        //비공개 방 정보
+      const newRoomCreatePrivate = { //비공개 방 정보
         status: roomStatus,
         title: roomTitle,
         subtitle: roomSubTitle,
@@ -229,40 +208,65 @@ function RoomCreate() {
           }
         }
         return navigate(`/roomWaiting`);
-        /*
-                if(sessionId){
-                    console.log(`sessionId : ${sessionId}`)
-                    roomMasterStatus(true) //방장 상태 true
-                    //navigate(`/room/${sessionId}`)
-                }
-                */
+
       });
     }
   };
+
+
 
   if (loading) {
     return <p>Loading</p>;
   }
   if (hasErrors) {
-    return <p>cannot read data : 서버 응답 에러</p>;
+    return <p>cannot read data : 서버 응답 에러! 다시 시도해주세요!</p>;
   }
 
   return (
     <StRoomCreateWrap>
       <StRoomCreateContainer>
+
         <StRoomCreateTitleBox>
+
+           {/*뒤로가기*/}
+          <LinkPrev/>
+
+           {/*방 생성 타이틀*/}
           <StRoomCreateTitle className="roomCreateTitle">
-            {" "}
-            라이브 룸 만들기{" "}
+            라이브 룸 만들기
           </StRoomCreateTitle>
+
         </StRoomCreateTitleBox>
-        <StRoomCreateForm
-          onSubmit={(e) => {
-            roomCreate(e);
-          }}
-        >
+
+        <StRoomCreateForm onSubmit={(e) => {roomCreate(e);}}>
+
+          {/* 방 제목 */}
+          <StRoomCreateInputDiv>
+            <InputWithLabelDefault
+              width="85%"
+              labelWidth="15%"
+              positionLeft="15%"
+              height="44px"
+              inputType="text"
+              inputId="roomTitleInput"
+              inputValue={roomTitle}
+              onChange={(e) => {
+                setRoomInfo({ ...roomInfo, roomTitle: e.target.value });
+              }}
+              onBlur={onBlurRegExpTitle}
+              validMessage={validMessage.title}
+              labelText="이름"
+              inputPaceholder={messageForm.title}
+              maxLength={20}
+            />
+          </StRoomCreateInputDiv>
+
+
           {/* 공개 여부 */}
-          <StRoomCreateInputDivFlex>
+          <StRoomCreateInputDivFlex margin="0 0 16px 0">
+            <StSpanNormal>
+              공개 설정
+            </StSpanNormal>
             <StStatusInputBox>
               <StInputItem>
                 <StInputDefault
@@ -278,6 +282,7 @@ function RoomCreate() {
                 <StLabel htmlFor="isOpenRoom">공개</StLabel>
               </StInputItem>
               <StInputItem>
+            
                 <StInputDefault
                   id="isPrivateRoom"
                   type="radio"
@@ -288,50 +293,67 @@ function RoomCreate() {
                 />
                 <StLabel htmlFor="isPrivateRoom">비공개</StLabel>
 
-                <StPasswordInputBox display={isDisabled ? "none" : "block"}>
-                  <InputWithLabelDefault
-                    width="100%"
-                    height="44px"
-                    inputType="text"
-                    inputId="roomPasswordInput"
-                    inputValue={roomPassword}
-                    onChange={(e) =>
-                      setRoomInfo({ ...roomInfo, roomPassword: e.target.value })
-                    }
-                    onBlur={onBlurRegExpPassword}
-                    validMessage={validMessage.password}
-                    labelText=""
-                    inputPaceholder={messageForm.password}
-                    disabled={isDisabled}
-                    maxLength={10}
-                  />
-                </StPasswordInputBox>
               </StInputItem>
+
             </StStatusInputBox>
+
           </StRoomCreateInputDivFlex>
 
-          {/* 방 제목 */}
+          {/*방 비공개 비밀번호 인풋*/}
+          <StRoomCreateInputDivFlex>
+            <StPasswordInputBox display={isDisabled ? "none" : "block"}>
+                <InputWithLabelDefault
+                  width="100%"
+                  positionLeft="0"
+                  height="44px"
+                  inputType="text"
+                  inputId="roomPasswordInput"
+                  inputValue={roomPassword}
+                  onChange={(e) =>
+                    setRoomInfo({ ...roomInfo, roomPassword: e.target.value })
+                  }
+                  onBlur={onBlurRegExpPassword}
+                  validMessage={validMessage.password}
+                  labelText=""
+                  inputPaceholder={messageForm.password}
+                  disabled={isDisabled}
+                  maxLength={10}
+                />
+              </StPasswordInputBox>
+
+          </StRoomCreateInputDivFlex>
+
+          {/* 카테고리 */}
           <StRoomCreateInputDiv>
-            <InputWithLabelDefault
-              width="100%"
-              height="44px"
-              inputType="text"
-              inputId="roomTitleInput"
-              inputValue={roomTitle}
-              onChange={(e) => {
-                setRoomInfo({ ...roomInfo, roomTitle: e.target.value });
-              }}
-              onBlur={onBlurRegExpTitle}
-              validMessage={validMessage.title}
-              labelText="라이브룸 이름"
-              inputPaceholder={messageForm.title}
-              maxLength={20}
-            />
+            <StRoomCreateInputDivCategory>
+              <StSpanNormal>카테고리</StSpanNormal>
+              <StCategoryBox>
+                <StCategoryBoxContainer>
+                  {categoryList.map((category) => {
+                    return (
+                      <RadioGroup
+                        key={nanoid()}
+                        categoryName={category.categoryName}
+                        checked={category.categoryValue === roomCategory}
+                        value={category.categoryValue}
+                        imageUrl={category.categoryImage}
+                        onChange={(e) => {
+                          onChangeRadioCategory(e.target.value);
+                        }}
+                      />
+                    );
+                  })}
+                </StCategoryBoxContainer>
+              </StCategoryBox>
+            </StRoomCreateInputDivCategory>
           </StRoomCreateInputDiv>
-          {/* 방 내용 */}
+
+            {/* 방 내용 */}
           <StRoomCreateInputDiv>
             <InputWithLabelDefault
-              width="100%"
+              width="85%"
+              labelWidth="15%"
+              positionLeft="15%"
               height="44px"
               inputType="text"
               inputId="roomSubTitleInput"
@@ -346,43 +368,8 @@ function RoomCreate() {
               maxLength={20}
             />
           </StRoomCreateInputDiv>
-          {/* 카테고리 */}
-          <StRoomCreateInputDiv>
-            카테고리
-            <StCategoryBox>
-              {categoryList.map((category) => {
-                return (
-                  <RadioGroup
-                    key={nanoid()}
-                    categoryName={category.categoryName}
-                    checked={category.categoryValue === roomCategory}
-                    value={category.categoryValue}
-                    imageUrl={category.categoryImage}
-                    onChange={(e) => {
-                      onChangeRadioCategory(e.target.value);
-                    }}
-                  />
-                );
-              })}
-            </StCategoryBox>
-          </StRoomCreateInputDiv>
 
-          {/* 버튼 이미지 
-                    <StRoomCreateInputDiv>
-                        입장 버튼 이미지 : 
-                        {joinRoomButtonImages.map((image)=>{
-                            return(
-                                <RadioGroupImage 
-                                key={nanoid()}
-                                imageUrl={image.url}
-                                imageName={image.name}
-                                checked={image.name === roomJoinButtonImage}
-                                onChange={(e)=>{onChangeRoomJoinButtonImage(e.target.value)}}
-                                />
-                            )
-                        })}
-                    </StRoomCreateInputDiv>
-                    */}
+          {/* 만들기 버튼 */}
           <StRoomCreateButtonBox>
             <ButtonDefault
               width="100%"
@@ -400,11 +387,15 @@ function RoomCreate() {
   );
 }
 
+
+
+
 const StRoomCreateButtonBox = styled.div`
   margin-top: 50px;
 `;
-const StJoinRoomButtonImage = styled.img``;
 const StInputItem = styled.div`
+  display: flex;
+  align-items: center;
   :nth-child(2) {
     flex-grow: 2;
   }
@@ -414,61 +405,98 @@ const StStatusInputBox = styled.div`
   width: 100%;
   column-gap: 20px;
 `;
-const StSpanDiv = styled.span`
+
+const StSpanNormal=styled.span`
   display: block;
-`;
+  font-weight: bold;
+  flex-basis: 15%;
+  min-width: 32px;
+`
 const StRoomCreateInputDivFlex = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 30px;
+  column-gap: 10px;
+  margin: ${(props)=>props.margin || "0 0 30px 0"};
+  position: relative;
 `;
 const StInputDefault = styled.input.attrs((props) => ({
   type: props.type || "text",
 }))``;
 
-const StCategoryBox = styled.div`
-  margin-top: 20px;
+
+const StCategoryBoxContainer=styled.div`
   display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
   column-gap: 20px;
+  row-gap: 20px;
+
+`
+const StCategoryBox = styled.div`
+  width: 100%;  
+  flex-basis: 85%;
+  display: flex;
   justify-content: center;
   align-items: center;
+  padding: 15px 0;
 `;
 
 const StPasswordInputBox = styled.div`
+  width: 100%;
   display: ${(props) => props.display || "block"};
+  margin-bottom: 5px;
 `;
 
 const StLabel = styled.label`
   display: inline-block;
   padding: 0 12px 0 4px;
-  margin-bottom: 10px;
+  //margin-bottom: 10px;
 `;
+
+const StRoomCreateInputDivCategory=styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  position: relative;
+  border-top: 1px solid #dfdfdf;
+  border-bottom: 1px solid #dfdfdf;
+`
 const StRoomCreateInputDiv = styled.div`
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  position: relative;
 `;
 const StRoomCreateTitle = styled.h2`
   font-family: "LottriaChab";
   font-size: 30px;
-  margin-bottom: 80px;
+  margin-bottom: 60px;
 `;
 const StRoomCreateTitleBox = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
   width: 100%;
+  position: relative;
 `;
 const StRoomCreateForm = styled.form`
   width: 100%;
 `;
 const StRoomCreateContainer = styled.div`
   width: 60%;
+  max-width: 1100px;
+  min-width: 900px;
   height: 100%;
+
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+
   background-color: #fff;
-  padding: 0 200px;
+  padding: 30px 200px 0;
 `;
 const StRoomCreateWrap = styled.div`
   display: flex;
