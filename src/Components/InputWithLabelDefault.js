@@ -3,14 +3,15 @@ import styled from 'styled-components'
 
 
 function InputWithLabelDefault({autoFocus, inputType, inputId, inputValue, inputPaceholder, 
-  onChange, onBlur, validMessage, width, height, labelText, className, inputRef, disabled, maxLength}) {
+  onChange, onBlur, validMessage, width, labelWidth, positionLeft,height, labelText, className, inputRef, disabled, maxLength}) {
   return (
     <>
       { labelText
-      ? <StLabelWrap><StLabelDefault htmlfor={inputId}>{labelText}</StLabelDefault> 
-          {validMessage && <StValidMessageSpan> {validMessage}</StValidMessageSpan>}
+      ? <StLabelWrap labelWidth={labelWidth}>
+          <StLabelDefault htmlfor={inputId} >{labelText}</StLabelDefault> 
+          {validMessage && <StValidMessageSpan positionLeft={positionLeft}> {validMessage}</StValidMessageSpan>}
       </StLabelWrap>
-      : validMessage && <StValidMessageSpan> {validMessage}</StValidMessageSpan>
+      : validMessage && <StValidMessageSpan positionLeft={positionLeft}> {validMessage}</StValidMessageSpan>
       }
       <StInputDefault type={inputType} id={inputId} value={inputValue} 
       placeholder={inputPaceholder}
@@ -33,12 +34,17 @@ function InputWithLabelDefault({autoFocus, inputType, inputId, inputValue, input
 const StValidMessageSpan=styled.span`
   margin-left: 10px;
   color: red;
+  position: absolute;
+  left: ${(props)=>props.positionLeft || "0"};
+  bottom: -22px;
 `
 const StLabelWrap=styled.span`
   display: inline-block;
-  margin-bottom: 10px;
+  width: ${(props)=>props.labelWidth || "auto"}
 `
 const StLabelDefault=styled.label`
+  display: inline-block;
+  font-weight: bold;
   margin-right: 10px;
 `
 const StInputDefault=styled.input.attrs(props=>({
