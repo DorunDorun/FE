@@ -275,24 +275,27 @@ function ChatRoom() {
     html2canvas(captureBoxRef.current, {
       //options
       height: 737,
-    }).then(canvas => {
-     console.log("canvas 캡쳐 : " , canvas)
-     onSaveImage(canvas.toDataURL('image/png'), `DorunDorun-${roomTitle}-${newNickName}.png`)
+    }).then((canvas) => {
+      console.log("canvas 캡쳐 : ", canvas);
+      onSaveImage(
+        canvas.toDataURL("image/png"),
+        `DorunDorun-${roomTitle}-${newNickName}.png`
+      );
     });
   };
 
   //캡쳐 이미지 저장
   const onSaveImage = (uri, fileName) => {
-    console.log("onSaveImage")
-    const link = document.createElement('a')
-    link.style.visibility = "hidden"
-    document.body.appendChild(link)
-    link.href = uri
-    link.download = fileName
-    link.click()
-    document.body.removeChild(link)
-    setIsCapture(false)
-  }
+    console.log("onSaveImage");
+    const link = document.createElement("a");
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.href = uri;
+    link.download = fileName;
+    link.click();
+    document.body.removeChild(link);
+    setIsCapture(false);
+  };
 
   //음성감지
   useEffect(() => {

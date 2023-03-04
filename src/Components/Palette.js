@@ -4,392 +4,209 @@ import styled from "styled-components";
 import { ColorPicker, useColor } from "react-color-palette";
 import "react-color-palette/lib/css/styles.css";
 import { AiFillCheckSquare } from "react-icons/ai";
+import { StorePalette } from "../zustand/storePalette";
 
 const Palette = () => {
   const [color, setColor] = useColor("hex", "#F4E7FF");
   const [colorData, setColorData] = useState("");
+  const [selectedBox, setSelectedBox] = useState(null);
+
+  // Zustand 스토어에 접근하여 상태를 변경합니다.
+  const setColorInStore = StorePalette((state) => state.setColor);
 
   const handleColorChange = (newColor) => {
     setColor(newColor);
   };
 
   const handleClick = () => {
-    console.log("Color data:", color);
-    setColorData(color);
+    console.log("선택된 색상 데이터:", color.hex);
+    setColorData(color.hex);
+    setColorInStore(color.hex);
   };
-
-  return (
-    <Stpicker>
-      <ColorPicker
-        width={228}
-        height={70}
-        color={color}
-        onChange={handleColorChange}
-        hideRGB
-        hideHSV
-      />
-      <button onClick={handleClick}>전송</button>
-    </Stpicker>
-  );
-};
-export default Palette;
-
-export const PCheers = () => {
-  const [selectedBox, setSelectedBox] = useState(null);
 
   const handleBoxClick = (index) => {
     if (selectedBox === index) {
-      setSelectedBox(null); // 선택한 박스를 다시 누르면 선택 해제
+      setSelectedBox(null);
     } else {
       setSelectedBox(index);
     }
   };
 
+  const boxClick = () => {
+    const selectedColorIndex = selectedBox;
+    if (selectedColorIndex !== null) {
+      const menuItem = menuItems.find((item) => {
+        return (
+          selectedColorIndex >= item.startIndex &&
+          selectedColorIndex < item.startIndex + item.colors.length
+        );
+      });
+      const selectedColor =
+        menuItem.colors[selectedColorIndex - menuItem.startIndex];
+      console.log(selectedColor);
+      setColorInStore(selectedColor);
+      setSelectedBox(null);
+    }
+  };
+
+  const menuItems = [
+    {
+      title: "Cheers",
+      className: "StCheers",
+      colors: ["#144653", "#01A08C", "#F0C15C", "#FF9E51", "#F66647"],
+      startIndex: 0,
+    },
+    {
+      title: "Garden",
+      className: "StGarden",
+      colors: ["#3F4754", "#352629", "#497446", "#2CF123", "#CD77FE"],
+      startIndex: 5,
+    },
+    {
+      title: "Cat",
+      className: "StCat",
+      colors: ["#FF8225", "#EE6421", "#C43D0D", "#A9928C", "#EFD3BB"],
+      startIndex: 10,
+    },
+    {
+      title: "Caramelldanse",
+      className: "StCaramelldanse",
+      colors: [
+        "#615ADE",
+        "#3342BC",
+        "#3723A6",
+        "#BB7FFE",
+        "#8F8EFF",
+        "#A8CDFF",
+      ],
+      startIndex: 15,
+    },
+    {
+      title: "Volcano",
+      className: "StVolcano",
+      colors: [
+        "#A38579",
+        "#33333B",
+        "#141319",
+        "#FC7047",
+        "#FC5301",
+        "#F5400B",
+      ],
+      startIndex: 21,
+    },
+    {
+      title: "MorningDew",
+      className: "StMorningDew",
+      colors: [
+        "#1A5012",
+        "#3B7D1C",
+        "#75AB93",
+        "#C28BCF",
+        "#FABD65",
+        "#F78E32",
+      ],
+      startIndex: 27,
+    },
+    {
+      title: "Forest",
+      className: "StForest",
+      colors: ["#71D472", "#A7F3B0", "#619B5D", "#1E4032", "#052717"],
+      startIndex: 33,
+    },
+  ];
+
   return (
-    <Stpalette>
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#144653",
-          border:
-            selectedBox === 0 ? "2px solid #fff" : "2px solid transparent",
-        }}
-        onClick={() => handleBoxClick(0)}
-      >
-        {selectedBox === 0 && <AiFillCheckSquare />}
-      </Box>
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#01A08C",
-          border:
-            selectedBox === 1 ? "2px solid #fff" : "2px solid transparent",
-        }}
-        onClick={() => handleBoxClick(1)}
-      >
-        {selectedBox === 1 && <AiFillCheckSquare />}
-      </Box>
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#F0C15C ",
-          border:
-            selectedBox === 2 ? "2px solid #fff" : "2px solid transparent",
-        }}
-        onClick={() => handleBoxClick(2)}
-      >
-        {selectedBox === 2 && <AiFillCheckSquare />}
-      </Box>
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#FF9E51 ",
-          border:
-            selectedBox === 3 ? "2px solid #fff" : "2px solid transparent",
-        }}
-        onClick={() => handleBoxClick(3)}
-      >
-        {selectedBox === 3 && <AiFillCheckSquare />}
-      </Box>
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#F66647",
-          border:
-            selectedBox === 4 ? "2px solid #fff" : "2px solid transparent",
-        }}
-        onClick={() => handleBoxClick(4)}
-      >
-        {selectedBox === 4 && <AiFillCheckSquare />}
-      </Box>
-    </Stpalette>
+    <Container>
+      <Stpicker>
+        <ColorPicker
+          width={228}
+          height={100}
+          color={color}
+          onChange={handleColorChange}
+          hideRGB
+          hideHSV
+        />
+        <button onClick={handleClick}>선택 완료</button>
+      </Stpicker>
+      <Stpalette>
+        <StMenu>
+          {menuItems.map((item, index) => (
+            <React.Fragment key={index}>
+              <span>{item.title}</span>
+              <div className={item.className}>
+                {item.colors.map((color, colorIndex) => (
+                  <Box
+                    key={colorIndex}
+                    sx={{
+                      width: 30,
+                      height: 30,
+                      backgroundColor: color,
+                      border:
+                        selectedBox === colorIndex + item.startIndex
+                          ? "2px solid #fff"
+                          : "2px solid transparent",
+                    }}
+                    onClick={() => {
+                      handleBoxClick(colorIndex + item.startIndex);
+                    }}
+                  >
+                    {selectedBox === colorIndex + item.startIndex && (
+                      <AiFillCheckSquare color="#fff" />
+                    )}
+                  </Box>
+                ))}
+              </div>
+            </React.Fragment>
+          ))}
+          <button disabled={selectedBox === null} onClick={boxClick}>
+            선택 완료
+          </button>
+        </StMenu>
+      </Stpalette>
+    </Container>
   );
 };
 
-export const PGarden = () => {
-  return (
-    <Stpalette>
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#3F4754",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#352629",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#497446",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#2CF123",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#CD77FE",
-        }}
-      />
-    </Stpalette>
-  );
-};
+export default Palette;
 
-export const PCat = () => {
-  return (
-    <Stpalette>
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#FF8225",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#EE6421",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#C43D0D",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#A9928C",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: " #EFD3BB",
-        }}
-      />
-    </Stpalette>
-  );
-};
-
-export const PCaramelldanse = () => {
-  return (
-    <Stpalette>
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#615ADE",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#3342BC",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#3723A6",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#BB7FFE",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#8F8EFF",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#A8CDFF",
-        }}
-      />
-    </Stpalette>
-  );
-};
-
-export const PVolcano = () => {
-  return (
-    <Stpalette>
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#FF8225",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#33333B",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#141319 ",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#FC7047 ",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: " #FC5301 ",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: " #F5400B ",
-        }}
-      />
-    </Stpalette>
-  );
-};
-
-export const PMorningDew = () => {
-  return (
-    <Stpalette>
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#1A5012 ",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#3B7D1C ",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#75AB93 ",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#C28BCF ",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#FABD65 ",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: " #F78E32 ",
-        }}
-      />
-    </Stpalette>
-  );
-};
-
-export const PForest = () => {
-  return (
-    <Stpalette>
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#71D472",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#A7F3B0",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#619B5D ",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: "#1E4032 ",
-        }}
-      />
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          backgroundColor: " #052717 ",
-        }}
-      />
-    </Stpalette>
-  );
-};
+const Container = styled.div`
+  position: relative;
+  height: 100%;
+`;
 
 const Stpalette = styled.div`
   display: flex;
-  margin: auto;
+  margin-left: 10px;
 `;
 
 const Stpicker = styled.div`
   display: flex;
   flex-direction: column;
+  margin: auto;
+  padding: auto;
+`;
+
+const StMenu = styled.div`
+  display: flex;
+  flex-direction: column;
+  span {
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 3px;
+    text-align: left;
+    font: bold 14px/16px Pretendard;
+    letter-spacing: 0px;
+    color: #171717;
+    opacity: 1;
+  }
+  div {
+    display: flex;
+  }
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    width: 100px;
+  }
 `;
