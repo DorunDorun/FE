@@ -285,13 +285,14 @@ const RoomWaiting = () => {
                     return(
                       <RadioGroup
                         key={nanoid()}
-                        categoryName={MediaBackImage.name}
+                        categoryName={`mediaBackImage-${MediaBackImage.name}`}
                         checked={MediaBackImage.name === mediaBackImage}
                         value={MediaBackImage.name}
                         imageUrl={MediaBackImage.small}
                         onChange={(e) => {
                           onChangeRadioMediaBackImage(e.target.value);
                         }}
+                        
                         labelBg={COLOR.pinkLight2}
                         width="72px"
                         height="72px"
