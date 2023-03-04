@@ -1,5 +1,4 @@
-
-import CategoryImageList from './CategoryImageList';
+import CategoryImageList from "./CategoryImageList";
 
 export const categoryList = [
   {

@@ -5,12 +5,21 @@ import { useNavigate } from "react-router-dom";
 
 //컴포넌트
 import ButtonDefault from "./ButtonDefault";
-import CategoryImageList from './lists/CategoryImageList';
+import CategoryImageList from "./lists/CategoryImageList";
 
 //css
 import { COLOR } from "../Components/style/style";
 
-const RoomItem = ({ sessionId, category, title, subTitle, status, password, userCount, onClick,}) => {
+const RoomItem = ({
+  sessionId,
+  category,
+  title,
+  subTitle,
+  status,
+  password,
+  userCount,
+  onClick,
+}) => {
   const navigate = useNavigate();
 
   //password 입력 상태
@@ -24,7 +33,8 @@ const RoomItem = ({ sessionId, category, title, subTitle, status, password, user
   //click props + 비밀번호 창 컨트롤
   const onClickProps = () => {
     onClick();
-    if (!status) { //비공개 상태에 따른 비밀번호 입력 인풋 컨트롤
+    if (!status) {
+      //비공개 상태에 따른 비밀번호 입력 인풋 컨트롤
       setIsPasswordInputHide(status);
     }
   };
@@ -47,83 +57,78 @@ const RoomItem = ({ sessionId, category, title, subTitle, status, password, user
 
   //비밀번호 창 확인 버튼 클릭
   const onClickSubmitPassword = () => {
-    if (roomPasswordInput === password) { //방 비밀번호, 입력 번호 일치
+    if (roomPasswordInput === password) {
+      //방 비밀번호, 입력 번호 일치
       localStorage.setItem("title", title);
       localStorage.setItem("sessionId", sessionId);
       localStorage.setItem("status", status);
       localStorage.setItem("password", password);
 
       return navigate(`/roomWaiting`);
-
     } else {
       return alert("입장 비밀번호가 다릅니다!");
     }
   };
 
   //카테고리 text 영어로 변환된 값
-  const [categoryEN, setCategoryEN]=useState("")
-  
+  const [categoryEN, setCategoryEN] = useState("");
+
   //카테고리 이미지
-  const [backgroundImage, setBackgroundImage]=useState(undefined)
+  const [backgroundImage, setBackgroundImage] = useState(undefined);
 
-
-  useEffect(()=>{ //카테고리 응답값 영어로 변환, 현재 한글로 응답 오는 중
-    switch(category){
-      case "공부" :
-        setCategoryEN("STUDY")
+  useEffect(() => {
+    //카테고리 응답값 영어로 변환, 현재 한글로 응답 오는 중
+    switch (category) {
+      case "공부":
+        setCategoryEN("STUDY");
         break;
-      case "친목" :
-        setCategoryEN("SOCIAL")
+      case "친목":
+        setCategoryEN("SOCIAL");
         break;
-      case "취미" :
-        setCategoryEN("HOBBY")
+      case "취미":
+        setCategoryEN("HOBBY");
         break;
-      case "운동" :
-        setCategoryEN("WORKOUT")
+      case "운동":
+        setCategoryEN("WORKOUT");
         break;
-      case "직장인" :
-        setCategoryEN("JOBS")
+      case "직장인":
+        setCategoryEN("JOBS");
         break;
-      case "재테크" :
-        setCategoryEN("INVESTMENT")
+      case "재테크":
+        setCategoryEN("INVESTMENT");
         break;
-      case "기타" :
-        setCategoryEN("ETC")
+      case "기타":
+        setCategoryEN("ETC");
         break;
       default:
-        setCategoryEN("")
+        setCategoryEN("");
         break;
     }
-  },[])
-  
+  }, []);
 
   //배경 이미지 가져오기
-  useEffect(()=>{
-    setBackgroundImage(CategoryImageList[categoryEN]?.backgroundImageUrl)
-  },[categoryEN])
-  
-
-
+  useEffect(() => {
+    setBackgroundImage(CategoryImageList[categoryEN]?.backgroundImageUrl);
+  }, [categoryEN]);
 
   return (
     <StRoomItem>
       <StRoomItemMainInfo>
-
-         {/*방 카테고리 이미지 영역*/}
-        <StRoomItemMainInfoCategoryBox backgroundImage={backgroundImage} title={category}>
-        </StRoomItemMainInfoCategoryBox>
-        
+        {/*방 카테고리 이미지 영역*/}
+        <StRoomItemMainInfoCategoryBox
+          backgroundImage={backgroundImage}
+          title={category}
+        ></StRoomItemMainInfoCategoryBox>
 
         <StRoomItemMainInfoRoomInfo>
-
-           {/*방 제목*/}
+          {/*방 제목*/}
           <StRoomItemMainInfoRoomInfoTitleBox>
             <StRoomItemMainInfoRoomInfoTitle title={title}>
               {title}
             </StRoomItemMainInfoRoomInfoTitle>
           </StRoomItemMainInfoRoomInfoTitleBox>
 
-           {/*방 소개글*/}
+          {/*방 소개글*/}
           <StRoomItemMainInfoRoomInfoSubTitleBox>
             <StRoomItemMainInfoRoomInfoSubTitle title={subTitle}>
               {subTitle}
@@ -140,7 +145,9 @@ const RoomItem = ({ sessionId, category, title, subTitle, status, password, user
           </StRoomItemMainInfoButtonBox>
 
           {/*비밀번호 인풋*/}
-          <StRoomItemMainInfoRoomInfoLockBox justifyContent={isPasswordInputHide ? "flex-start" : "center"}>
+          <StRoomItemMainInfoRoomInfoLockBox
+            justifyContent={isPasswordInputHide ? "flex-start" : "center"}
+          >
             {!isPasswordInputHide && (
               <>
                 <StInputPassword
@@ -174,14 +181,11 @@ const RoomItem = ({ sessionId, category, title, subTitle, status, password, user
               </>
             )}
           </StRoomItemMainInfoRoomInfoLockBox>
-
         </StRoomItemMainInfoRoomInfo>
       </StRoomItemMainInfo>
-      
 
       {/*방 목록 하단 정보*/}
       <StRoomItemPeopleConutBox>
-        
         {/*참가자 정보*/}
         <StCountBoxItem>
           <StRoomItemPeopleConutBoxStatus
@@ -191,11 +195,8 @@ const RoomItem = ({ sessionId, category, title, subTitle, status, password, user
             <StRoomItemPeopleConutBoxTitle>참가자</StRoomItemPeopleConutBoxTitle>
           */}
           <StRoomItemPeopleConutBoxCount>
-          {/*<StRoomItemUserCount status={userStatus}>*/}
-          <StRoomItemUserCount>
-              {userCount}
-            </StRoomItemUserCount>
-            명 참여중
+            {/*<StRoomItemUserCount status={userStatus}>*/}
+            <StRoomItemUserCount>{userCount}</StRoomItemUserCount>명 참여중
           </StRoomItemPeopleConutBoxCount>
         </StCountBoxItem>
 
@@ -203,19 +204,15 @@ const RoomItem = ({ sessionId, category, title, subTitle, status, password, user
         <StRoomItemMainInfoRoomInfoLock title="비공개 방">
           {!status && <FcLock />}
         </StRoomItemMainInfoRoomInfoLock>
-
       </StRoomItemPeopleConutBox>
-
     </StRoomItem>
   );
 };
 
-
-
-const StCountBoxItem=styled.div`
+const StCountBoxItem = styled.div`
   display: flex;
   align-items: flex-start;
-`
+`;
 const StRoomItemUserCount = styled.span`
   margin: 0 4px 0 6px;
   color: ${(props) => props.status};
@@ -288,8 +285,8 @@ const StRoomItemMainInfoRoomInfoLock = styled.i`
   display: flex;
   align-items: center;
   font-size: 24px;
-  svg path:nth-child(2){
-    fill: ${COLOR.grayLight}
+  svg path:nth-child(2) {
+    fill: ${COLOR.grayLight};
   }
 `;
 const StRoomItemMainInfoRoomInfoLockBox = styled.div`
@@ -301,7 +298,7 @@ const StRoomItemMainInfoRoomInfoLockBox = styled.div`
   column-gap: 5px;
   position: absolute;
   bottom: 10px;
-  left:0;
+  left: 0;
 `;
 const StRoomItemMainInfoRoomInfo = styled.div`
   display: flex;
@@ -355,7 +352,6 @@ const StRoomItemMainInfo = styled.div`
   background-color: #fff;
 `;
 const StRoomItem = styled.div`
-  
   width: calc(25% - 40px);
   max-width: 360px;
   max-height: 374px;
@@ -367,7 +363,7 @@ const StRoomItem = styled.div`
   margin: 20px;
   font-size: 16px;
   background-color: ${COLOR.pinkLight2};
-  :hover{
+  :hover {
     border: 4px solid ${COLOR.baseDefault};
   }
 `;
