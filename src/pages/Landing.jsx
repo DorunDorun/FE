@@ -5,12 +5,23 @@ import LandingHeader from "../Components/headers/LandingHeader";
 import "../css/fonts/Fonts.css";
 import { BsFillCircleFill } from "react-icons/bs";
 
+//스토어 랜딩
+import { Landingstore } from "../zustand/storeLanding";
+
 const Landing = () => {
   const [count, setCount] = useState(0);
 
   function handleCountEvent(receive) {
     setCount(receive.chatRoomCount);
   }
+
+  const Landing = Landingstore((state) => state.fetchdata);
+
+  useEffect(() => {
+    Landing();
+  }, [Landing]);
+
+  console.log(Landing);
 
   useLayoutEffect(() => {
     const sse = new EventSource("https://dorundorun.shop/api/sse");

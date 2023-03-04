@@ -11,8 +11,7 @@ import RoomItem from "../Components/RoomItem";
 import Wait from "../Components/Wait";
 import ListSideBar from "../Components/sidebar/ListSideBar";
 import { categoryList } from "../Components/lists/CategoryList";
-import { regExpSearch } from '../Components/apis/RegExp';
-
+import { regExpSearch } from "../Components/apis/RegExp";
 
 //아이콘
 import { GrSort } from "react-icons/gr";
@@ -22,7 +21,7 @@ import { SlArrowLeft } from "react-icons/sl";
 import { SlArrowRight } from "react-icons/sl";
 
 //이미지
-import CategoryImageList from '../Components/lists/CategoryImageList';
+import CategoryImageList from "../Components/lists/CategoryImageList";
 
 //css
 import { COLOR } from "../Components/style/style";
@@ -47,11 +46,11 @@ const RoomList = () => {
   const roomList = useStoreRoomList((state) => state.roomList);
 
   //검색
-  const [searchValue, setSearchValue] = useState("") //검색 input 값
-  const [prevSearchValue, setPrevSearchValue] = useState(searchValue)
-  const [isSerachStatus, setIsSerachStatus] = useState(false)
-  const scrollBoxRef = useRef() //검색 후 scroll top을 위한 target 설정
-  const searchInputRef = useRef()
+  const [searchValue, setSearchValue] = useState(""); //검색 input 값
+  const [prevSearchValue, setPrevSearchValue] = useState(searchValue);
+  const [isSerachStatus, setIsSerachStatus] = useState(false);
+  const scrollBoxRef = useRef(); //검색 후 scroll top을 위한 target 설정
+  const searchInputRef = useRef();
 
   //room list 모드
   const listMode = {
@@ -100,7 +99,8 @@ const RoomList = () => {
         left: categorySliderBox.scrollLeft - slideWidth,
         behavior: "smooth",
       });
-    } else { // nextType : next
+    } else {
+      // nextType : next
       categorySliderBox.scrollTo({
         left: categorySliderBox.scrollLeft + slideWidth,
         behavior: "smooth",
@@ -184,9 +184,10 @@ const RoomList = () => {
   //방 검색 버튼 클릭
   const onSubmitGetRoomSerachList = async (e) => {
     e.preventDefault();
-    if(!regExpSearch(searchValue)) { //검색어 유효성 검사 실패일 경우
-      searchInputRef.current.focus()
-      return false
+    if (!regExpSearch(searchValue)) {
+      //검색어 유효성 검사 실패일 경우
+      searchInputRef.current.focus();
+      return false;
     }
     setRoomListMode(listMode.search); //목록 모드 검색으로 변경
     setPageCount(1); //검색 버튼을 누르면 무조건 페이지 카운트 초기화
@@ -341,7 +342,6 @@ const RoomList = () => {
       <StRoomListCenter>
         <StRoomListTopContainer>
           <StRoomListHeader>
-
             {/*검색*/}
             <StRoomListSearchBox onSubmit={(e) => onSubmitGetRoomSerachList(e)}>
               <StRoomListSearchInput
@@ -371,7 +371,6 @@ const RoomList = () => {
 
           {/*카테고리*/}
           <StRoomListCategorySlide>
-
             {/*카테고리 슬라이드 prev*/}
             <StButtonCircle onClick={() => handleNextButtonClick("prev")}>
               <SlArrowLeft />
@@ -411,8 +410,7 @@ const RoomList = () => {
 
         {/*방 목록 영역*/}
         <StRoomListBox>
-
-           {/*방 목록 위 타이틀*/}
+          {/*방 목록 위 타이틀*/}
           <StRoomListBoxInfo>
             <StRoomListBoxInfoH2>{message.welcome}</StRoomListBoxInfoH2>
           </StRoomListBoxInfo>
@@ -420,13 +418,12 @@ const RoomList = () => {
           {/*방 목록*/}
           <StRoomListBoxRooms>
             <StRoomListBoxRoomsContainer ref={scrollBoxRef}>
-
-               {/*방 목록 없을 떄 문구*/}
+              {/*방 목록 없을 떄 문구*/}
               {roomData.length === 0 && isNoRooms && (
                 <StNoRooms>{message.noRooms}</StNoRooms>
               )}
-              
-               {/*방 목록 컴포넌트*/}
+
+              {/*방 목록 컴포넌트*/}
               {roomData.map((room) => {
                 return (
                   <RoomItem
@@ -450,13 +447,12 @@ const RoomList = () => {
                 );
               })}
 
-               {/*방 목록 옵저버 타겟 - 불러올 목록 남아있고, 로딩 중이 아닐 때만 활성화*/}
+              {/*방 목록 옵저버 타겟 - 불러올 목록 남아있고, 로딩 중이 아닐 때만 활성화*/}
               {roomData.length > 0 && !isRoomEnd && !isLoading && (
                 <StScrollTarget ref={target}>
                   <StScrollTargetLoading></StScrollTargetLoading>
                 </StScrollTarget>
               )}
-
             </StRoomListBoxRoomsContainer>
           </StRoomListBoxRooms>
         </StRoomListBox>
@@ -474,7 +470,8 @@ const StScrollTargetLoading = styled.div`
   display: inline-block;
   box-sizing: border-box;
   animation: rotation 1s linear infinite;
-  @keyframes rotation { //방 목록 옵저버 타겟 로딩 중 spin
+  @keyframes rotation {
+    //방 목록 옵저버 타겟 로딩 중 spin
     0% {
       transform: rotate(0deg);
     }
@@ -508,7 +505,8 @@ const StRoomListBoxRoomsContainer = styled.div`
   height: 71vh;
   overflow-y: auto;
   text-align: left;
-  ::-webkit-scrollbar { //스크롤바 비활성화
+  ::-webkit-scrollbar {
+    //스크롤바 비활성화
     /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
     display: none;
   }
@@ -555,7 +553,8 @@ const StRoomListCategorySlideContainer = styled.div`
   overflow: hidden;
   overflow-x: auto;
   white-space: nowrap;
-  ::-webkit-scrollbar { //스크롤바 비활성화
+  ::-webkit-scrollbar {
+    //스크롤바 비활성화
     /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
     display: none;
   }
@@ -585,7 +584,7 @@ const StRoomListSearchButton = styled.button`
   border: none;
   border-left: 1px solid #c1c1c1;
   background-color: #f3f3f3;
-  color: #8B8B8B;
+  color: #8b8b8b;
   cursor: pointer;
   :hover {
     background-color: ${COLOR.baseLight};
