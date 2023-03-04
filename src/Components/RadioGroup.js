@@ -3,11 +3,17 @@ import styled from 'styled-components'
 import {COLOR} from './style/style.js'
 
 
-const RadioGroup = ({categoryName, value, imageUrl, onChange, checked}) => {
+const RadioGroup = ({
+  categoryName, value, imageUrl, onChange, checked,
+  width, height, labelBg, borderRadius, textDisplayNone
+}) => {
   return (
     <>
-      <StRadioGroupBox>
-        <StLabel htmlFor={categoryName} borderColor={checked ? `${COLOR.baseDefault}` : "transparent"}>
+      <StRadioGroupBox width={width} height={height}>
+        <StLabel htmlFor={categoryName} 
+          borderColor={checked ? `${COLOR.baseDefault}` : "transparent"}
+          labelBg={labelBg} borderRadius={borderRadius}
+        >
           <StCaterogyImg src={imageUrl}/>
           <StInputDefault
               id={categoryName}
@@ -19,9 +25,7 @@ const RadioGroup = ({categoryName, value, imageUrl, onChange, checked}) => {
               required
           />
         </StLabel>
-        <StSpanNormal>
-          {categoryName}
-        </StSpanNormal>
+        <StSpanNormal textDisplayNone={textDisplayNone}> {categoryName} </StSpanNormal>
       </StRadioGroupBox>
     </>
   )
@@ -30,7 +34,7 @@ const RadioGroup = ({categoryName, value, imageUrl, onChange, checked}) => {
 
 const StSpanNormal=styled.span`
   font-weight: bold;
-  display: block;
+  display: ${(props)=>props.textDisplayNone || "block"};
   text-align: center;
   margin-top: 7px;
 `
@@ -66,13 +70,15 @@ const StLabel=styled.label`
     align-items: center;
     cursor: pointer;
     border: 3px solid ${(props)=>props.borderColor};
-    border-radius: 4px;
+    border-radius: ${(props)=>props.borderRadius || "4px"};
+    background-color: ${(props)=>props.labelBg || "transparent"};
 `
 const StRadioGroupBox=styled.div`
   flex-basis: 22%;
   max-width: 140px;
-  min-width: 100px;
-  height: auto;
+  width: ${(props)=>props.width || "auto"};
+  height: ${(props)=>props.height || "auto"};
+  min-width: ${(props)=>props.width || "100px"};
   display: inline-block;
   position: relative;
 `

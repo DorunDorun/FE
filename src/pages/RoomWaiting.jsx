@@ -1,10 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
+import { nanoid } from 'nanoid'
 
 //컴포넌트
 import ButtonDefault from '../Components/ButtonDefault'
 import { regExpNickName } from '../Components/apis/RegExp'
+import MediaBackImageList from '../Components/lists/MediaBackImageList'
+import RadioGroup from '../Components/RadioGroup'
+
 
 //아이콘
 import { BsMicFill } from "react-icons/bs";
@@ -15,16 +19,22 @@ import { BsFillCameraVideoOffFill } from "react-icons/bs";
 
 //스토어-방 입장
 import useStoreRoomJoin from '../zustand/storeRoomJoin'
+import { COLOR } from '../Components/style/style'
 
 const RoomWaiting = () => {
 
   const navigate = useNavigate()
 
 
+  //유저 미디어 정보 불러오기
   useEffect(()=>{
     getUserMedia()
   },[])
 
+  const message={
+    welcome : "입장을 환영합니다!",
+    settingGuide : "라이브룸에서 사용할 프로필을 설정해주세요"
+  }
 
 
   //유효성 검사 메세지
@@ -51,7 +61,6 @@ const RoomWaiting = () => {
   const [isPublisherVideo, setIsPublisherVideo]=useState(true)
   const [isPublisherAudio, setIsPublisherAudio]=useState(true)
 
-
   const nickNameRef = useRef()
   const videoRef = useRef()
 
@@ -60,9 +69,20 @@ const RoomWaiting = () => {
   const [nickName, setNickName]=useState(nickNameBefroe)
 
 
+  //프로필 이미지
+  const [mediaBackImage, setMediaBackImage]=useState(undefined)
+
+
   useEffect(()=>{
     setSelectDevice((currentValue) => currentValue)
   },[selectDevice])
+
+
+
+  useEffect(()=>{
+    console.log("setMediaBackImage : ", mediaBackImage)
+  },[mediaBackImage])
+
 
 
   //방 정보가 없다면 이전 페이지로 이동
@@ -71,6 +91,7 @@ const RoomWaiting = () => {
     return navigate(-1)
   }
 
+  
   
 
   
@@ -104,6 +125,8 @@ const RoomWaiting = () => {
   } 
   
 
+  
+
   const onClickPublisherVideoToggle=()=>{
     setIsPublisherVideo(!isPublisherVideo)
     const videoEnabled = videoRef.current.srcObject.getVideoTracks()[0].enabled
@@ -132,10 +155,18 @@ const RoomWaiting = () => {
 
 
 
+  
+  //프로필 이미지 선택
+  const onChangeRadioMediaBackImage=(value)=>{
+    setMediaBackImage(value)
+  }
+
+
+  
 
 
   //방 입장 api
-  const onSubmitJoinRoom=(e)=>{
+  const onClickJoinRoom=(e)=>{
     e.preventDefault()
     console.log("selectDevice : ", selectDevice)
     if(!selectDevice) { //디바이스 선택 상태 값
@@ -158,7 +189,8 @@ const RoomWaiting = () => {
     if(status){ //공개 방
       const roomJoinPayloadOpen={ //공개 방 정보
         sessionId:sessionId,
-        nickName:nickName
+        nickName:nickName,
+        mediaBackImage:mediaBackImage
       }
       fetchPostRoomJoin(roomJoinPayloadOpen)
       .then((res)=>{
@@ -175,7 +207,9 @@ const RoomWaiting = () => {
       const roomJoinPayloadPrivate={ //비공개 방 정보
         sessionId:sessionId,
         nickName:nickName,
+        mediaBackImage:mediaBackImage,
         password:localStorage.getItem("password")
+        
       }
       console.log("roomJoinPayloadPrivate : ", roomJoinPayloadPrivate)
       fetchPostRoomJoinPassword(roomJoinPayloadPrivate)
@@ -195,53 +229,116 @@ const RoomWaiting = () => {
   return (
     <StRoomWaitingWrap>
         <StRoomWaitingContainer>
-            <StRoomWaitingTitle>{title}</StRoomWaitingTitle>
-            <StRoomWaitingUse>라이브룸에서 사용할 비디오와 프로필을 설정해주세요.</StRoomWaitingUse>
+            <StRoomWaitingTitle>[{title}]</StRoomWaitingTitle>
+            <StRoomWaitingWelcome>{message.welcome}</StRoomWaitingWelcome>
             <StRoomWaitingSettingBox>
-              <StRoomWaitingVideo autoPlay ref={videoRef}></StRoomWaitingVideo>
-              <StRoomWaitingControllBox>
-                <StButtonMyDeviceOnOff
-                  width="150px"
-                  fontColor="red"
-                  onClick={onClickPublisherVideoToggle}
-                >
-                  {isPublisherVideo ? (
-                    <BsFillCameraVideoFill />
-                  ) : (
-                    <BsFillCameraVideoOffFill className="off" />
-                  )}
-                </StButtonMyDeviceOnOff>
-                <StButtonMyDeviceOnOff
-                  width="150px"
-                  fontColor="red"
-                  onClick={onClickPublisherAudioToggle}
-                >
-                  {isPublisherAudio ? (
-                    <BsMicFill />
-                  ) : (
-                    <BsMicMuteFill className="off" />
-                  )}
-                </StButtonMyDeviceOnOff>
-              </StRoomWaitingControllBox>
-              <StRoomWaitingInputBox onSubmit={onSubmitJoinRoom}>
-                <StRoomWaitingInput 
-                  value={nickName} 
-                  onChange={(e)=>{setNickName(e.target.value)}} 
-                  placeholder="사용하실 닉네임을 입력하세요" 
-                  minlength="2"
-                  maxlength="20"
-                  ref={nickNameRef}
-                  autoFocus />
-                <ButtonDefault width="120px" height="50px" bgColor="#CB8AFE" fontColor="#fff" hoverBgColor="#8500EF" hoverFontColor="#fff">참여하기</ButtonDefault>
+
+              {/* 디바이스 컨트롤 */}
+              <StRoomWaitingSettingBoxStream>
+                <StRoomWaitingVideo autoPlay ref={videoRef}></StRoomWaitingVideo>
+              
+                <StRoomWaitingControllBox>
+                  <StButtonMyDeviceOnOff
+                    width="150px"
+                    fontColor="red"
+                    onClick={onClickPublisherVideoToggle}
+                  >
+                    {isPublisherVideo ? (
+                      <BsFillCameraVideoFill />
+                    ) : (
+                      <BsFillCameraVideoOffFill className="off" />
+                    )}
+                  </StButtonMyDeviceOnOff>
+                  <StButtonMyDeviceOnOff
+                    width="150px"
+                    fontColor="red"
+                    onClick={onClickPublisherAudioToggle}
+                  >
+                    {isPublisherAudio ? (
+                      <BsMicFill />
+                    ) : (
+                      <BsMicMuteFill className="off" />
+                    )}
+                  </StButtonMyDeviceOnOff>
+                </StRoomWaitingControllBox>
+              </StRoomWaitingSettingBoxStream>
+
+              {/* 프로필 설정 */}
+              <StRoomWaitingInputBox>
+                {/* 프로필 설정 상단 - 닉네임 */}
+                <StRoomWaitingInputBoxTop>
+                  <StRoomWaitingInputBoxTitle>{message.settingGuide}</StRoomWaitingInputBoxTitle>
+                  <StRoomWaitingInput 
+                    value={nickName} 
+                    onChange={(e)=>{setNickName(e.target.value)}} 
+                    placeholder="사용하실 닉네임을 입력하세요" 
+                    minlength="2"
+                    maxlength="20"
+                    ref={nickNameRef}
+                    autoFocus />
+                </StRoomWaitingInputBoxTop>
+
+
+                {/* 프로필 설정 하단 - 이미지 */}
+                <StMediaBackImageListBox>
+                  {MediaBackImageList.map((MediaBackImage)=>{
+                    return(
+                      <RadioGroup
+                        key={nanoid()}
+                        categoryName={MediaBackImage.name}
+                        checked={MediaBackImage.name === mediaBackImage}
+                        value={MediaBackImage.name}
+                        imageUrl={MediaBackImage.small}
+                        onChange={(e) => {
+                          onChangeRadioMediaBackImage(e.target.value);
+                        }}
+                        labelBg={COLOR.pinkLight2}
+                        width="72px"
+                        height="72px"
+                        borderRadius="20px"
+                        textDisplayNone="none"
+                      />
+                    )
+                  })}
+                </StMediaBackImageListBox>
+
+
+
               </StRoomWaitingInputBox>
               {validMessageNickName && <StValidMessage>{validMessageNickName}</StValidMessage>}
+
+
+
+
+
             </StRoomWaitingSettingBox>
+
+
+            <ButtonDefault onClick={onClickJoinRoom} width="120px" height="50px" bgColor="#CB8AFE" fontColor="#fff" hoverBgColor="#8500EF" hoverFontColor="#fff">참여하기</ButtonDefault>
+
         </StRoomWaitingContainer>
     </StRoomWaitingWrap>
   )
 }
 
 
+const StMediaBackImageListBox=styled.div`
+  display: flex;
+  justify-content: space-between;
+  column-gap: 10px;
+  row-gap: 20px;
+  flex-wrap: wrap;
+`
+
+const StRoomWaitingInputBoxTitle=styled.span`
+  display: inline-block;
+  font-size: 20px;
+  color: #fff;
+  margin-bottom: 20px;
+`
+const StRoomWaitingInputBoxTop=styled.div`
+  text-align: center;
+`
 const StButtonMyDeviceOnOff=styled.button``
 
 const StRoomWaitingControllBox=styled.div`
@@ -258,36 +355,54 @@ const StValidMessage=styled.span`
 `
 const StRoomWaitingVideo=styled.video`
   background-color: #000;
-  width: 600px;
+  width: 500px;
+  border: 2px solid #510090;
+  border-radius: 14px;
+`
+
+const StRoomWaitingSettingBoxStream=styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 `
 const StRoomWaitingInput=styled.input.attrs({
   type:"text"
 })`
-  width: 80%;
-  border-radius: 10px;
-  border: 2px solid #8D4DBD;
+  width: 100%;
+  border-radius: 12px;
+  height: 48px;
+  border: 1px solid #A74BEF;
   box-shadow: none;
-  padding: 5px 10px;
+  padding: 5px 12px;
+  font-size: 20px;
 `
-const StRoomWaitingInputBox=styled.form`
+const StRoomWaitingInputBox=styled.div`
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
   column-gap: 10px;
+  width: 355px;
+  height: 295px;
 `
 const StRoomWaitingSettingBox=styled.div`
   display: flex;
   justify-content: center;
-  flex-direction: column;
+  flex-direction: row;
+  column-gap: 50px;
   row-gap: 20px;
   position: relative;
 `
-const StRoomWaitingUse=styled.h3`
-  margin-bottom: 50px;
+const StRoomWaitingWelcome=styled.h3`
+  margin-bottom: 82px;
+  font-size: 46px;
+  color: #fff;
+  font-weight: bold;
 `
 const StRoomWaitingTitle=styled.h2`
   font-weight: bold;
-  font-size: 30px;
+  font-size: 46px;
   margin-bottom: 20px;
+  color: #fff;
 `
 const StRoomWaitingContainer=styled.div`
   display: flex;
@@ -298,8 +413,9 @@ const StRoomWaitingContainer=styled.div`
 `
 const StRoomWaitingWrap=styled.div`
   width: 100vw;
+  min-width: 800px;
   height: 100vh;
-  background-color: #fff;
+  background: transparent linear-gradient(0deg, ${COLOR.baseLight} 0%, ${COLOR.baseDefault} 95%, ${COLOR.baseLight} 120%) 0% 0% no-repeat;
   display: flex;
   justify-content: center;
   align-items: center;
