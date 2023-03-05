@@ -105,16 +105,19 @@ const Container = styled.div`
 `;
 
 const LandingImage = styled.div`
+  display: flex;
   background: url("${process.env.PUBLIC_URL}/asset/images/Landing_Image.png");
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: 70%;
+  background-attachment: fixed;
   background-repeat: no-repeat;
   background-position: left 140% top 25%;
+  position: absolute;
   opacity: 1;
   width: 100%;
-  height: calc(100vh - 50px);
+  height: calc(100vh - 100px);
 `;
 
 const Duruning = styled.div`
