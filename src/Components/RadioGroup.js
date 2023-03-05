@@ -14,7 +14,7 @@ const RadioGroup = ({
           borderColor={checked ? `${COLOR.baseDefaultBold}` : "transparent"}
           labelBg={labelBg} borderRadius={borderRadius}
         >
-          <StCaterogyImg src={process.env.PUBLIC_URL + imageUrl}/>
+          <StCaterogyImg src={imageUrl}/>
           <StInputDefault
               id={categoryName}
               type="radio"
