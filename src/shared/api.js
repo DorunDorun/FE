@@ -45,6 +45,9 @@ api.interceptors.request.use(
       //헤더에 담긴 토큰 다시 세팅
 
       console.log("😀 인터셉터 response : ", response)
+      console.log("😀 인터셉터 response 토큰 authorization: ", response.config.headers.authorization)
+      console.log("😀 인터셉터 response 토큰 refresh: ", response.config.headers.refresh)
+      
       return response;
     },
   
