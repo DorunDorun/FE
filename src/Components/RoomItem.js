@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 //컴포넌트
 import ButtonDefault from "./ButtonDefault";
+import CategoryImageList from "./lists/CategoryImageList";
+
 //css
 import { COLOR } from "../Components/style/style";
 
@@ -16,7 +18,6 @@ const RoomItem = ({
   status,
   password,
   userCount,
-  backgroundImage,
   onClick,
 }) => {
   const navigate = useNavigate();
@@ -33,10 +34,12 @@ const RoomItem = ({
   const onClickProps = () => {
     onClick();
     if (!status) {
+      //비공개 상태에 따른 비밀번호 입력 인풋 컨트롤
       setIsPasswordInputHide(status);
     }
   };
 
+  //방 참여 인원별 상태 circle 컨트롤
   useEffect(() => {
     if (userCount > 1 && userCount < maxUserCount) {
       return setUserStatus(COLOR.baseDefault);
@@ -54,10 +57,8 @@ const RoomItem = ({
 
   //비밀번호 창 확인 버튼 클릭
   const onClickSubmitPassword = () => {
-    //방 비밀번호 비교
     if (roomPasswordInput === password) {
-      //일치
-
+      //방 비밀번호, 입력 번호 일치
       localStorage.setItem("title", title);
       localStorage.setItem("sessionId", sessionId);
       localStorage.setItem("status", status);
@@ -69,27 +70,84 @@ const RoomItem = ({
     }
   };
 
+  //카테고리 text 영어로 변환된 값
+  const [categoryEN, setCategoryEN] = useState("");
+
+  //카테고리 이미지
+  const [backgroundImage, setBackgroundImage] = useState(undefined);
+
+  useEffect(() => {
+    //카테고리 응답값 영어로 변환, 현재 한글로 응답 오는 중
+    switch (category) {
+      case "공부":
+        setCategoryEN("STUDY");
+        break;
+      case "친목":
+        setCategoryEN("SOCIAL");
+        break;
+      case "취미":
+        setCategoryEN("HOBBY");
+        break;
+      case "운동":
+        setCategoryEN("WORKOUT");
+        break;
+      case "직장인":
+        setCategoryEN("JOBS");
+        break;
+      case "재테크":
+        setCategoryEN("INVESTMENT");
+        break;
+      case "기타":
+        setCategoryEN("ETC");
+        break;
+      default:
+        setCategoryEN("");
+        break;
+    }
+  }, []);
+
+  //배경 이미지 가져오기
+  useEffect(() => {
+    setBackgroundImage(CategoryImageList[categoryEN]?.backgroundImageUrl);
+  }, [categoryEN]);
+
   return (
     <StRoomItem>
-      <StRoomItemMainInfo backgroundImage={backgroundImage}>
-        <StRoomItemMainInfoCategoryBox>
-          <StRoomItemMainInfoCategory>{category}</StRoomItemMainInfoCategory>
-        </StRoomItemMainInfoCategoryBox>
-        <StRoomItemMainInfoButtonBox>
-          <StRoomItemMainInfoJoinButtonBox>
-            <StRoomItemMainInfoJoinButton onClick={onClickProps}>
-              입장
-            </StRoomItemMainInfoJoinButton>
-          </StRoomItemMainInfoJoinButtonBox>
-        </StRoomItemMainInfoButtonBox>
+      <StRoomItemMainInfo>
+        {/*방 카테고리 이미지 영역*/}
+        <StRoomItemMainInfoCategoryBox
+          backgroundImage={backgroundImage}
+          title={category}
+        ></StRoomItemMainInfoCategoryBox>
 
         <StRoomItemMainInfoRoomInfo>
+          {/*방 제목*/}
+          <StRoomItemMainInfoRoomInfoTitleBox>
+            <StRoomItemMainInfoRoomInfoTitle title={title}>
+              {title}
+            </StRoomItemMainInfoRoomInfoTitle>
+          </StRoomItemMainInfoRoomInfoTitleBox>
+
+          {/*방 소개글*/}
+          <StRoomItemMainInfoRoomInfoSubTitleBox>
+            <StRoomItemMainInfoRoomInfoSubTitle title={subTitle}>
+              {subTitle}
+            </StRoomItemMainInfoRoomInfoSubTitle>
+          </StRoomItemMainInfoRoomInfoSubTitleBox>
+
+          {/*입장 버튼*/}
+          <StRoomItemMainInfoButtonBox>
+            <StRoomItemMainInfoJoinButtonBox>
+              <StRoomItemMainInfoJoinButton onClick={onClickProps}>
+                입장
+              </StRoomItemMainInfoJoinButton>
+            </StRoomItemMainInfoJoinButtonBox>
+          </StRoomItemMainInfoButtonBox>
+
+          {/*비밀번호 인풋*/}
           <StRoomItemMainInfoRoomInfoLockBox
             justifyContent={isPasswordInputHide ? "flex-start" : "center"}
           >
-            <StRoomItemMainInfoRoomInfoLock>
-              {!status && <FcLock />}
-            </StRoomItemMainInfoRoomInfoLock>
             {!isPasswordInputHide && (
               <>
                 <StInputPassword
@@ -101,7 +159,7 @@ const RoomItem = ({
                 <ButtonDefault
                   fontSize="10px"
                   width="45px"
-                  height="25px"
+                  height="36px"
                   borderRadius="5px"
                   hoverBgColor={COLOR.grayLight}
                   onClick={onClickClosePasswordInput}
@@ -111,7 +169,7 @@ const RoomItem = ({
                 <ButtonDefault
                   fontSize="10px"
                   width="45px"
-                  height="25px"
+                  height="36px"
                   borderRadius="5px"
                   fontColor="#fff"
                   bgColor={COLOR.baseLight}
@@ -123,37 +181,40 @@ const RoomItem = ({
               </>
             )}
           </StRoomItemMainInfoRoomInfoLockBox>
-          <StRoomItemMainInfoRoomInfoTitleBox>
-            <StRoomItemMainInfoRoomInfoTitle>
-              {title}
-            </StRoomItemMainInfoRoomInfoTitle>
-          </StRoomItemMainInfoRoomInfoTitleBox>
-          <StRoomItemMainInfoRoomInfoSubTitleBox>
-            <StRoomItemMainInfoRoomInfoSubTitle>
-              {subTitle}
-            </StRoomItemMainInfoRoomInfoSubTitle>
-          </StRoomItemMainInfoRoomInfoSubTitleBox>
         </StRoomItemMainInfoRoomInfo>
       </StRoomItemMainInfo>
 
+      {/*방 목록 하단 정보*/}
       <StRoomItemPeopleConutBox>
-        <StRoomItemPeopleConutBoxStatus
-          status={userStatus}
-        ></StRoomItemPeopleConutBoxStatus>
-        <StRoomItemPeopleConutBoxTitle>참가자</StRoomItemPeopleConutBoxTitle>
-        <StRoomItemPeopleConutBoxCount>
-          <StRoomItemUserCount status={userStatus}>
-            {userCount}
-          </StRoomItemUserCount>
-          / {maxUserCount}
-        </StRoomItemPeopleConutBoxCount>
+        {/*참가자 정보*/}
+        <StCountBoxItem>
+          <StRoomItemPeopleConutBoxStatus
+            status={userStatus}
+          ></StRoomItemPeopleConutBoxStatus>
+          {/* 
+            <StRoomItemPeopleConutBoxTitle>참가자</StRoomItemPeopleConutBoxTitle>
+          */}
+          <StRoomItemPeopleConutBoxCount>
+            {/*<StRoomItemUserCount status={userStatus}>*/}
+            <StRoomItemUserCount>{userCount}</StRoomItemUserCount>명 참여중
+          </StRoomItemPeopleConutBoxCount>
+        </StCountBoxItem>
+
+        {/*자물쇠 아이콘*/}
+        <StRoomItemMainInfoRoomInfoLock title="비공개 방">
+          {!status && <FcLock />}
+        </StRoomItemMainInfoRoomInfoLock>
       </StRoomItemPeopleConutBox>
     </StRoomItem>
   );
 };
 
+const StCountBoxItem = styled.div`
+  display: flex;
+  align-items: flex-start;
+`;
 const StRoomItemUserCount = styled.span`
-  margin-right: 5px;
+  margin: 0 4px 0 6px;
   color: ${(props) => props.status};
 `;
 const StRoomItemPeopleConutBoxCount = styled.span`
@@ -167,20 +228,23 @@ const StRoomItemPeopleConutBoxTitle = styled.span`
 `;
 const StRoomItemPeopleConutBoxStatus = styled.span`
   display: inline-block;
-  width: 20px;
-  height: 20px;
-  border-radius: 20px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
   background-color: ${(props) => props.status};
 `;
 const StRoomItemPeopleConutBox = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 8px 10px 8px 20px;
+  padding: 10px 20px;
+  background: ${COLOR.pinkLight2};
+  border-radius: 0 0 10px 10px;
 `;
 const StRoomItemMainInfoRoomInfoSubTitle = styled.span`
   display: inline-block;
   width: 100%;
-  font-size: 14px;
+  font-size: 16px;
   text-overflow: ellipsis;
   overflow: hidden;
   display: -webkit-box;
@@ -190,7 +254,8 @@ const StRoomItemMainInfoRoomInfoSubTitle = styled.span`
 `;
 const StRoomItemMainInfoRoomInfoSubTitleBox = styled.div`
   width: 100%;
-  height: 28px;
+  height: 42px;
+  line-height: 1.3;
 `;
 const StRoomItemMainInfoRoomInfoTitle = styled.span`
   font-weight: bold;
@@ -210,11 +275,20 @@ const StInputPassword = styled.input.attrs({
 })`
   flex-basis: 55%;
   min-width: 55%;
-  padding: 0;
+  height: 36px;
   margin: 0;
   padding: 2px 5px;
+  border: 1px solid #c1c1c1;
+  border-radius: 4px;
 `;
-const StRoomItemMainInfoRoomInfoLock = styled.i``;
+const StRoomItemMainInfoRoomInfoLock = styled.i`
+  display: flex;
+  align-items: center;
+  font-size: 24px;
+  svg path:nth-child(2) {
+    fill: ${COLOR.grayLight};
+  }
+`;
 const StRoomItemMainInfoRoomInfoLockBox = styled.div`
   display: flex;
   justify-content: ${(props) => props.justifyContent};
@@ -222,21 +296,23 @@ const StRoomItemMainInfoRoomInfoLockBox = styled.div`
   flex-direction: row;
   width: 100%;
   column-gap: 5px;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
 `;
 const StRoomItemMainInfoRoomInfo = styled.div`
   display: flex;
   flex-direction: column;
   row-gap: 14px;
-  padding: 10px 20px 30px;
-  height: 130px;
+  padding: 10px 20px 55px;
 `;
 const StRoomItemMainInfoJoinButton = styled.button`
+  width: 100%;
+  height: 36px;
   background-color: ${COLOR.baseLight};
   border: none;
-  color: #000;
-  border-radius: 50px;
-  width: 60px;
-  height: 60px;
+  color: #fff;
+  border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
   :hover {
@@ -246,8 +322,9 @@ const StRoomItemMainInfoJoinButton = styled.button`
 `;
 const StRoomItemMainInfoJoinButtonBox = styled.div`
   display: flex;
-  justify-content: flex-end;
-  padding-right: 20px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 `;
 const StRoomItemMainInfoButtonBox = styled.div``;
 const StRoomItemMainInfoCategory = styled.span`
@@ -259,25 +336,36 @@ const StRoomItemMainInfoCategory = styled.span`
 `;
 const StRoomItemMainInfoCategoryBox = styled.div`
   display: flex;
-  padding: 15px 6px;
-`;
-const StRoomItemMainInfo = styled.div`
-  border-bottom: 1px solid ${COLOR.baseDefault};
-  border-radius: 10px;
+  width: 100%;
+  height: 108px;
+  padding: 0;
   background-image: url(${(props) => props.backgroundImage});
   background-position: top;
   background-repeat: no-repeat;
-  background-size: 100% 80px;
+  background-size: 100% auto;
+  border-radius: 6px 6px 0 0;
+`;
+const StRoomItemMainInfo = styled.div`
+  border-bottom: 1px solid #fff;
+  border-radius: 10px;
+  position: relative;
+  background-color: #fff;
 `;
 const StRoomItem = styled.div`
+  width: calc(25% - 40px);
+  max-width: 360px;
+  max-height: 374px;
+
   display: inline-block;
   text-align: left;
-  border: 1px solid ${COLOR.baseDefault};
+  border: 4px solid ${COLOR.pinkLight2};
   border-radius: 10px;
-  width: calc(25% - 20px);
-  max-width: 360px;
-  margin: 10px;
+  margin: 20px;
   font-size: 16px;
+  background-color: ${COLOR.pinkLight2};
+  :hover {
+    border: 4px solid ${COLOR.baseDefault};
+  }
 `;
 
 export default RoomItem;

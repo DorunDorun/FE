@@ -1,5 +1,5 @@
 import { connect } from "net";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
@@ -192,12 +192,19 @@ const Chat = ({ props }) => {
                       <img src={chating.receive.imgUrl} />
                     )}
                     {chating.receive.message && (
-                      <span>
-                        {chating.receive.message}
-                        {chating.receive.createdAt}
-                      </span>
+                      <span>{chating.receive.message}</span>
                     )}
                   </SendBox>
+                  <span style={{ fontSize: "small" }}>
+                    {new Date(chating.receive.createdAt).toLocaleTimeString(
+                      "ko-KR",
+                      {
+                        hour12: true,
+                        hour: "numeric",
+                        minute: "numeric",
+                      }
+                    )}
+                  </span>
                 </SendMessage>
               ) : (
                 <ReceivedMessage>
@@ -209,12 +216,19 @@ const Chat = ({ props }) => {
                       <img src={chating.receive.imgUrl} />
                     )}
                     {chating.receive.message && (
-                      <span>
-                        {chating.receive.message}
-                        {chating.receive.createdAt}
-                      </span>
+                      <span>{chating.receive.message}</span>
                     )}
                   </Box>
+                  <span style={{ fontSize: "small" }}>
+                    {new Date(chating.receive.createdAt).toLocaleTimeString(
+                      "ko-KR",
+                      {
+                        hour12: true,
+                        hour: "numeric",
+                        minute: "numeric",
+                      }
+                    )}
+                  </span>
                 </ReceivedMessage>
               )
             )}
@@ -270,6 +284,7 @@ const SendMessage = styled.div`
   width: 100%;
   justify-content: center;
   align-items: flex-end;
+  margin-bottom: 7px;
 `;
 
 const ReceivedMessage = styled.div`

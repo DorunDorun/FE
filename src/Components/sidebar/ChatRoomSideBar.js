@@ -1,15 +1,8 @@
 import { useState, useRef } from "react";
 import styled from "styled-components";
 import HorizonLine from "../horizon/HorizonLine";
-import Palette, {
-  PCheers,
-  PCaramelldanse,
-  PCat,
-  PForest,
-  PGarden,
-  PMorningDew,
-  PVolcano,
-} from "../Palette";
+import Palette from "../colorMenu/Palette";
+import Design from "../colorMenu/Design";
 
 const ChatRoomSideBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -81,38 +74,14 @@ const ChatRoomSideBar = () => {
             {showColor && (
               <StChoice>
                 <Palette />
-                <span>Cheers</span>
-                <div>
-                  <PCheers />
-                </div>
-                <span>Garden</span>
-                <div>
-                  <PGarden />
-                </div>
-                <span>Cat</span>
-                <div>
-                  <PCat />
-                </div>
-                <span>Caramelldanse</span>
-                <div>
-                  <PCaramelldanse />
-                </div>
-                <span>Volcano</span>
-                <div>
-                  <PVolcano />
-                </div>
-                <span>Morning Dew</span>
-                <div>
-                  <PMorningDew />
-                </div>
-                <span>Forest</span>
-                <div>
-                  <PForest />
-                </div>
               </StChoice>
             )}
 
-            {showDesign && <StChoice></StChoice>}
+            {showDesign && (
+              <StChoice>
+                <Design />
+              </StChoice>
+            )}
           </div>
         )}
         {sidebarContent.title === "명언" && (
@@ -123,7 +92,7 @@ const ChatRoomSideBar = () => {
         )}
         {sidebarContent.title === "오디오" && (
           <div>
-            <h3>오디오</h3>
+            <h3>음악</h3>
             <p>오디오 내용을 여기에 넣으세요.</p>
           </div>
         )}
@@ -212,8 +181,6 @@ const StChoice = styled.div`
     opacity: 1;
   }
 `;
-
-const StcolorBtn = styled.div``;
 
 const StWise = styled.div`
   span {

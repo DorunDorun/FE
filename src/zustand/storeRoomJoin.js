@@ -17,7 +17,8 @@ const useStoreRoomJoin = create((set) => ({
         `api/rooms/${payload.sessionId}`
         , 
         {
-          nickname: payload.nickName
+          nickname: payload.nickName,
+          mediaBackImage:payload.mediaBackImage
         }
       );
       set((state) => ({ data: (state.data = data.data), loading: false }));
@@ -39,7 +40,8 @@ const useStoreRoomJoin = create((set) => ({
         ,
         {
           password: payload.password,
-          nickname: payload.nickName
+          nickname: payload.nickName,
+          mediaBackImage:payload.mediaBackImage
         }
       );
       set((state) => ({ data: (state.data = data.data), loading: false }));

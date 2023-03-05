@@ -1,11 +1,43 @@
-import React from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import LandingHeader from "../Components/headers/LandingHeader";
 import "../css/fonts/Fonts.css";
 import { BsFillCircleFill } from "react-icons/bs";
 
+//스토어 랜딩
+import { Landingstore } from "../zustand/storeLanding";
+
 const Landing = () => {
+  const [count, setCount] = useState(0);
+
+  function handleCountEvent(receive) {
+    setCount(receive.chatRoomCount);
+  }
+
+  const fetchData = Landingstore((state) => state.fetch);
+  const data = Landingstore((state) => state.data);
+  const loading = Landingstore((state) => state.loading);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useLayoutEffect(() => {
+    const sse = new EventSource("https://dorundorun.shop/api/sse");
+
+    sse.addEventListener("connect", (e) => {
+      console.log("e : ", e);
+      let receive = JSON.parse(e.data);
+      console.log("연결 현재 채팅방 수 :", receive); // "connected!"
+      handleCountEvent(receive);
+    });
+
+    return () => {
+      sse.close();
+    };
+  }, []);
+
   const token = localStorage.getItem("accessToken");
   const refresh = localStorage.getItem("refreshToken");
   const navigate = useNavigate();
@@ -16,13 +48,23 @@ const Landing = () => {
       navigate("/Login");
     }
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  const totalHour = data?.data?.totalHour;
+  const totalRoom = data?.data?.totalRoom;
   return (
     <>
       <Container>
         <LandingHeader />
+        <LandingImage />
         <Duruning>
-          <BsFillCircleFill color="#8600F0" />
-          <span>32개의 꿈을 두런두런 중</span>
+          <div>
+            <BsFillCircleFill color="#8600F0" />
+          </div>
+          <span>{count}개의 꿈을 두런두런 중</span>
         </Duruning>
         <Main>
           <span>Do</span> Your
@@ -32,18 +74,18 @@ const Landing = () => {
         </Main>
         <Text>
           [두런두런]은 같은 취향, 관심사, 목표를 가진 사람들과 두런두런 이야기를
-          나누고, 그 순간을 네컷 사진으로 기록할 수 있는 공간입니다.
+          나누고, 그 순간을 사진으로 기록할 수 있는 공간입니다.
         </Text>
         <In onClick={gotoRoom}>
           <span>방 둘러보기</span>
         </In>
         <Total>
-          <p>240+</p>
-          <span>그동안 240개 이상의 라이브 방이 개설되었어요</span>
+          <p>{totalRoom}+</p>
+          <span>그동안 {totalRoom}개 이상의 라이브 방이 개설되었어요</span>
         </Total>
         <Time>
-          <p>370+</p>
-          <span>그동안 370시간 이상의 라이브 시간이 누적되었어요</span>
+          <p>{totalHour}+</p>
+          <span>그동안 {totalHour}시간 이상의 라이브 시간이 누적되었어요</span>
         </Time>
       </Container>
       <StFooter></StFooter>
@@ -62,6 +104,19 @@ const Container = styled.div`
   height: calc(100vh - 50px);
 `;
 
+const LandingImage = styled.div`
+  background: url("${process.env.PUBLIC_URL}/asset/images/Landing_Image.png");
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: 70%;
+  background-repeat: no-repeat;
+  background-position: left 140% top 25%;
+  opacity: 1;
+  width: 100%;
+  height: calc(100vh - 50px);
+`;
+
 const Duruning = styled.div`
   /* Layout Properties */
   display: flex;
@@ -70,7 +125,7 @@ const Duruning = styled.div`
   position: absolute;
   top: 227px;
   left: 140px;
-  width: 259px;
+  width: 270px;
   height: 44px;
   /* UI Properties */
   background-color: #fbfbfb 0% 0% no-repeat padding-box;
@@ -79,11 +134,14 @@ const Duruning = styled.div`
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   opacity: 1;
+  div {
+    margin-left: 10px;
+  }
   span {
     display: flex;
-    width: 195px;
+    width: 250px;
     height: 24px;
-    margin-left: 5px;
+    margin-left: 10px;
     text-align: left;
     font: 20px/24px Pretendard;
     letter-spacing: 0px;
