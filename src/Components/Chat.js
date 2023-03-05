@@ -91,6 +91,27 @@ const Chat = ({ props }) => {
       reader.onload = (event) => {
         const imgDataUrl = reader.result;
         const imgDataStr = `data:image/jpeg;base64,${imgDataUrl.split(",")[1]}`;
+        setTimeout(() => {
+          client.send(
+            `/pub/chat/room`,
+            {},
+            JSON.stringify({
+              sessionId: sessionId,
+              socialUid: id,
+              nickname: name,
+              message: msg,
+              imgByteCode: imgDataStr, // 압축하지 않고 그대로 사용
+              createdAt: now,
+            })
+          );
+          // 이미지 미리보기 초기화
+          setImage(null);
+        }, 1000);
+      };
+      reader.readAsDataURL(img);
+    } else {
+      // 메시지만 있는 경우
+      setTimeout(() => {
         client.send(
           `/pub/chat/room`,
           {},
@@ -99,27 +120,10 @@ const Chat = ({ props }) => {
             socialUid: id,
             nickname: name,
             message: msg,
-            imgByteCode: imgDataStr, // 압축하지 않고 그대로 사용
             createdAt: now,
           })
         );
-        // 이미지 미리보기 초기화
-        setImage(null);
-      };
-      reader.readAsDataURL(img);
-    } else {
-      // 메시지만 있는 경우
-      client.send(
-        `/pub/chat/room`,
-        {},
-        JSON.stringify({
-          sessionId: sessionId,
-          socialUid: id,
-          nickname: name,
-          message: msg,
-          createdAt: now,
-        })
-      );
+      }, 1000);
     }
 
     chatRef.current.value = null;
