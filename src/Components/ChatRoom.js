@@ -1124,6 +1124,14 @@ const StSessionHeader = styled.div`
 const StSessionWrap = styled.div`
   width: 100%;
   margin: 0 auto;
+  ::-webkit-scrollbar {
+    //스크롤바 비활성화
+    /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
+    display: none;
+  }
+  -ms-overflow-y-style: none; /* 인터넷 익스플로러 */
+  scrollbar-width: none; /* 파이어폭스 */
+  overflow-x: auto;
 `;
 const StWrap = styled.div`
   overflow: hidden;
