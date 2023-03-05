@@ -46,8 +46,8 @@ api.interceptors.request.use(
       const accessToken = response.config.headers.authorization
       const refreshToken = response.config.headers.refresh
 
-      console.log("😀 인터셉터 response 토큰 authorization: ", accessToken)
-      console.log("😀 인터셉터 response 토큰 refresh: ", refreshToken)
+      console.log("😀😀 인터셉터 response 토큰 authorization: ", accessToken)
+      console.log("😀😀 인터셉터 response 토큰 refresh: ", refreshToken)
 
       if(accessToken && refreshToken){
         localStorage.setItem("accessToken", accessToken);
