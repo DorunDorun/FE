@@ -23,9 +23,9 @@ const Header = () => {
       <Logo>
         <span>두</span>런<span>두</span>런
       </Logo>
-      <Room onClick={gotoLive}>라이브 룸</Room>
+      {/* <Room onClick={gotoLive}>라이브 룸</Room>
       <Mypage onClick={gotoMyPage}>마이페이지</Mypage>
-      <Info onClick={gotoInfo}>서비스 소개</Info>
+      <Info onClick={gotoInfo}>서비스 소개</Info> */}
       <Thumbnail>
         <span>{name}</span>
         <img src={thumbnail} />
@@ -39,20 +39,18 @@ export default Header;
 const HearderContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   background: #ffffff;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-  width: 1920px;
+  width: 100%;
   /* width: 100%; */
   height: 70px;
 `;
 
 const Logo = styled.div`
-  position: absolute;
-  width: 115px;
-  height: 40px;
-  left: 25px;
+  display: flex;
   text-align: center;
-  margin-right: 20px;
+  margin-left: 20px;
   font-family: "LottriaChab";
   font-style: normal;
   font-weight: 400;
@@ -115,10 +113,7 @@ const Info = styled.div`
 const Thumbnail = styled.div`
   display: flex;
   align-items: center;
-  flex-direction: row;
-  justify-content: center;
-  position: absolute;
-  left: 1789px;
+  margin-right: 20px;
   border: none;
   background: url(thumbnail);
   span {
