@@ -69,14 +69,14 @@ function ChatRoom() {
 
   //디바이스 on off 버튼
   const image = {
-    videoOnS: ButtonImageList.video.onSmall,
-    videoOffS: ButtonImageList.video.offSmall,
-    audioOnS: ButtonImageList.audio.onSmall,
-    audioOffS: ButtonImageList.audio.offSmall,
-    videoOnM: ButtonImageList.video.onMedium,
-    videoOffM: ButtonImageList.video.offMedium,
-    audioOnM: ButtonImageList.audio.onMedium,
-    audioOffM: ButtonImageList.audio.offMedium,
+    videoOnS: ButtonImageList.video.onSmall.slice(1),
+    videoOffS: ButtonImageList.video.offSmall.slice(1),
+    audioOnS: ButtonImageList.audio.onSmall.slice(1),
+    audioOffS: ButtonImageList.audio.offSmall.slice(1),
+    videoOnM: ButtonImageList.video.onMedium.slice(1),
+    videoOffM: ButtonImageList.video.offMedium.slice(1),
+    audioOnM: ButtonImageList.audio.onMedium.slice(1),
+    audioOffM: ButtonImageList.audio.offMedium.slice(1),
   };
 
   //방 정보 불러오기
@@ -729,7 +729,7 @@ function ChatRoom() {
                       <StRoomWaitingVideoBox>
                         <UserMediaBackImage
                           borderRadius="0"
-                          userMediaBackImage={userMediaBackImage}
+                          userMediaBackImage={userMediaBackImage.slice(1)}
                         />
                       </StRoomWaitingVideoBox>
                     )}
