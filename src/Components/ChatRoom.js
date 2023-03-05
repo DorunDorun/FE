@@ -15,9 +15,9 @@ import Chat from "./Chat";
 import Header from "./headers/Header";
 import SubscriberVideoItem from "./SubscriberVideoItem";
 import ChatRoomSideBar from "./sidebar/ChatRoomSideBar";
-import UserMediaBackImage from './UserMediaBackImage';
-import MediaBackImageList from './lists/MediaBackImageList';
-import ButtonImageList from './lists/ButtonImageList';
+import UserMediaBackImage from "./UserMediaBackImage";
+import MediaBackImageList from "./lists/MediaBackImageList";
+import ButtonImageList from "./lists/ButtonImageList";
 
 //아이콘
 import { BsCameraVideo } from "react-icons/bs";
@@ -30,8 +30,7 @@ import { BsMicFill } from "react-icons/bs";
 import { BsMicMuteFill } from "react-icons/bs";
 import { BsFillCameraVideoFill } from "react-icons/bs";
 import { BsFillCameraVideoOffFill } from "react-icons/bs";
-import {GiCardExchange} from "react-icons/gi";
-
+import { GiCardExchange } from "react-icons/gi";
 
 //css
 import { COLOR } from "./style/style";
@@ -43,7 +42,6 @@ import useStoreRoomDelete from "../zustand/storeRoomDelete";
 import useStoreRoomInfoGet from "../zustand/storeRoomInfoGet";
 
 function ChatRoom() {
-
   useEffect(() => {
     //토큰 없으면 로그인 페이지로 이동
     console.log("ChatRoom 시작!");
@@ -64,23 +62,22 @@ function ChatRoom() {
   const [newNickName, setNewNickName] = useState(userNickName);
 
   //유저 프로필 이미지
-  const [userInfo, setUserInfo]=useState({
-    mediaBackImage:"1",
-    userMediaBackImage:undefined,
-  })
+  const [userInfo, setUserInfo] = useState({
+    mediaBackImage: "1",
+    userMediaBackImage: undefined,
+  });
 
   //디바이스 on off 버튼
-  const image={
-    videoOnS:ButtonImageList.video.onSmall.slice(1),
-    videoOffS:ButtonImageList.video.offSmall.slice(1),
-    audioOnS:ButtonImageList.audio.onSmall.slice(1),
-    audioOffS:ButtonImageList.audio.offSmall.slice(1),
-    videoOnM:ButtonImageList.video.onMedium.slice(1),
-    videoOffM:ButtonImageList.video.offMedium.slice(1),
-    audioOnM:ButtonImageList.audio.onMedium.slice(1),
-    audioOffM:ButtonImageList.audio.offMedium.slice(1),
-  }
-
+  const image = {
+    videoOnS: ButtonImageList.video.onSmall.slice(1),
+    videoOffS: ButtonImageList.video.offSmall.slice(1),
+    audioOnS: ButtonImageList.audio.onSmall.slice(1),
+    audioOffS: ButtonImageList.audio.offSmall.slice(1),
+    videoOnM: ButtonImageList.video.onMedium.slice(1),
+    videoOffM: ButtonImageList.video.offMedium.slice(1),
+    audioOnM: ButtonImageList.audio.onMedium.slice(1),
+    audioOffM: ButtonImageList.audio.offMedium.slice(1),
+  };
 
   //방 정보 불러오기
   const fetchRoomInfoGet = useStoreRoomInfoGet(
@@ -96,8 +93,6 @@ function ChatRoom() {
   const [mainStreamManager, setMainStreamManager] = useState(undefined); // Main video of the page. Will be the 'publisher' or one of the 'subscribers'
   const [currentVideoDevice, setCurrentVideoDevice] = useState(undefined);
   const [publisherConnectionId, setPublisherConnectionId] = useState(undefined);
-
-  
 
   //오디오, 비디오 컨트롤
   const userVideoEnabled = localStorage.getItem("videoEnabled") === "true";
@@ -147,23 +142,20 @@ function ChatRoom() {
     };
   }, []);
 
-
-
-
   //프로필 이미지 불러오기
-  console.log("🎨MediaBackImageList : ", MediaBackImageList)
+  console.log("🎨MediaBackImageList : ", MediaBackImageList);
 
-  const userMediaBackImageFilter = MediaBackImageList.filter((MediaBackImage) => MediaBackImage.name === userInfo.mediaBackImage)
-  console.log("🎨🎨userMediaBackImageFilter : ", userMediaBackImageFilter)
-  
-  const userMediaBackImage = userMediaBackImageFilter[0]?.medium
-  console.log("🎨🎨🎨userMediaBackImage : ", userMediaBackImage)
+  const userMediaBackImageFilter = MediaBackImageList.filter(
+    (MediaBackImage) => MediaBackImage.name === userInfo.mediaBackImage
+  );
+  console.log("🎨🎨userMediaBackImageFilter : ", userMediaBackImageFilter);
 
-
+  const userMediaBackImage = userMediaBackImageFilter[0]?.medium;
+  console.log("🎨🎨🎨userMediaBackImage : ", userMediaBackImage);
 
   //방 정보 불러오기
   useEffect(() => {
-    fetchRoomInfoGet(userSessionId).then(async (res)  => {
+    fetchRoomInfoGet(userSessionId).then(async (res) => {
       if (res === undefined) {
         return navigate("/roomWaiting");
       }
@@ -171,23 +163,30 @@ function ChatRoom() {
       const nowUserFilter = res.data.data.chatRoomUserList.filter(
         (user) => user.nowUser === true
       );
-      console.log("nowUserFilter[0].enterRoomToken : ", nowUserFilter[0].enterRoomToken);
-      console.log("nowUserFilter[0].mediaBackImage : ", nowUserFilter[0].mediaBackImage);
-      await setUserInfo({...userInfo, mediaBackImage : String(nowUserFilter[0].mediaBackImage)})
+      console.log(
+        "nowUserFilter[0].enterRoomToken : ",
+        nowUserFilter[0].enterRoomToken
+      );
+      console.log(
+        "nowUserFilter[0].mediaBackImage : ",
+        nowUserFilter[0].mediaBackImage
+      );
+      await setUserInfo({
+        ...userInfo,
+        mediaBackImage: String(nowUserFilter[0].mediaBackImage),
+      });
       const userTokenData = nowUserFilter[0].enterRoomToken;
       const userNickNameData = nowUserFilter[0].nickname;
       setNewNickName(userNickNameData);
 
-
       //스트림 연결
-     connection(userTokenData, userNickNameData, String(nowUserFilter[0].mediaBackImage));
+      connection(
+        userTokenData,
+        userNickNameData,
+        String(nowUserFilter[0].mediaBackImage)
+      );
     });
   }, []);
-
-
-
-
-
 
   //메인 비디오(크게 보기)
   const onClickMainVideoStream = (stream) => {
@@ -229,8 +228,6 @@ function ChatRoom() {
       publisher.publishAudio(isPublisherAudio);
     }
   }, [isPublisherAudio]);
-
-
 
   //게시자 비디오 컨트롤
   const onClickPublisherVideoToggle = () => {
@@ -438,24 +435,30 @@ function ChatRoom() {
       console.warn(exception);
     });
 
+    //프로필 이미지 불러오기
+    console.log("🔥MediaBackImageList : ", MediaBackImageList);
 
-      //프로필 이미지 불러오기
-      console.log("🔥MediaBackImageList : ", MediaBackImageList)
+    const userMediaBackImageFilter = MediaBackImageList.filter(
+      (MediaBackImage) => MediaBackImage.name === userMediaBackImageNumber
+    );
+    console.log("🔥🔥userMediaBackImageFilter : ", userMediaBackImageFilter);
 
-      const userMediaBackImageFilter = MediaBackImageList.filter((MediaBackImage) => MediaBackImage.name === userMediaBackImageNumber)
-      console.log("🔥🔥userMediaBackImageFilter : ", userMediaBackImageFilter)
-      
-      const userMediaBackImageConnect = userMediaBackImageFilter[0]?.medium
-      console.log("🔥🔥🔥userMediaBackImage : ", userMediaBackImage)
-
+    const userMediaBackImageConnect = userMediaBackImageFilter[0]?.medium;
+    console.log("🔥🔥🔥userMediaBackImage : ", userMediaBackImage);
 
     //세션 연결
     mySession
-      .connect(userToken, { clientName: userNickName, userMediaBackImage : userMediaBackImageConnect })
+      .connect(userToken, {
+        clientName: userNickName,
+        userMediaBackImage: userMediaBackImageConnect,
+      })
       .then(() => {
         console.log("✨✨✨ 토큰 확인", userToken);
         console.log("✨✨✨✨✨ 유저 : ", userNickName);
-        console.log("✨✨✨✨✨ 유저 userMediaBackImage : ", userMediaBackImage);
+        console.log(
+          "✨✨✨✨✨ 유저 userMediaBackImage : ",
+          userMediaBackImage
+        );
 
         OV.getUserMedia({
           //디바이스 연결
@@ -575,11 +578,10 @@ function ChatRoom() {
     }
   };
 
-
-  const [isSwitchCamera, setIsSwitchCamera]=useState(false)
+  const [isSwitchCamera, setIsSwitchCamera] = useState(false);
   /*스위치 카메라*/
   const switchCamera = async () => {
-    setIsSwitchCamera(!isSwitchCamera)
+    setIsSwitchCamera(!isSwitchCamera);
     let OV = new OpenVidu();
     try {
       const devices = await OV.getDevices();
@@ -667,7 +669,7 @@ function ChatRoom() {
                       onClick={() => onClickMainVideoStream(publisher)}
                     >
                       <StStreamNickNamePublisher>나</StStreamNickNamePublisher>
-                      
+
                       {/*비디오*/}
                       <UserVideoComponent streamManager={publisher} />
 
@@ -677,30 +679,60 @@ function ChatRoom() {
                           width="150px"
                           fontColor="red"
                           onClick={onClickPublisherVideoToggle}
-                          bgColor={isPublisherVideo ? COLOR.greenButtonOn : COLOR.redButtonOff}
-                          color={isPublisherVideo ? COLOR.greenButtonOn2 : COLOR.redButtonOff2}
+                          bgColor={
+                            isPublisherVideo
+                              ? COLOR.greenButtonOn
+                              : COLOR.redButtonOff
+                          }
+                          color={
+                            isPublisherVideo
+                              ? COLOR.greenButtonOn2
+                              : COLOR.redButtonOff2
+                          }
                         >
-                          <StButtonIconImage src={isPublisherVideo ? image.videoOnS : image.videoOffS}/>
-                          
+                          <StButtonIconImage
+                            src={
+                              isPublisherVideo
+                                ? image.videoOnS
+                                : image.videoOffS
+                            }
+                          />
                         </StButtonDeviceOnOff>
                         <StButtonDeviceOnOff
                           width="150px"
                           fontColor="red"
-                          bgColor={isPublisherAudio ? COLOR.greenButtonOn : COLOR.redButtonOff}
-                          color={isPublisherAudio ? COLOR.greenButtonOn2 : COLOR.redButtonOff2}
+                          bgColor={
+                            isPublisherAudio
+                              ? COLOR.greenButtonOn
+                              : COLOR.redButtonOff
+                          }
+                          color={
+                            isPublisherAudio
+                              ? COLOR.greenButtonOn2
+                              : COLOR.redButtonOff2
+                          }
                           onClick={onClickPublisherAudioToggle}
                         >
-                          <StButtonIconImage src={isPublisherAudio ? image.audioOnS : image.audioOffS}/>
+                          <StButtonIconImage
+                            src={
+                              isPublisherAudio
+                                ? image.audioOnS
+                                : image.audioOffS
+                            }
+                          />
                         </StButtonDeviceOnOff>
                       </StStreamControlButtonBox>
                     </StSubscribersSessionStreamInnerBox>
-                    
+
                     {/*비디오 off 프로필 이미지*/}
-                    {!isPublisherVideo && 
+                    {!isPublisherVideo && (
                       <StRoomWaitingVideoBox>
-                        <UserMediaBackImage borderRadius="0" userMediaBackImage={userMediaBackImage.slice(1)}/>
+                        <UserMediaBackImage
+                          borderRadius="0"
+                          userMediaBackImage={userMediaBackImage.slice(1)}
+                        />
                       </StRoomWaitingVideoBox>
-                    }
+                    )}
                   </div>
                 )}
 
@@ -711,17 +743,33 @@ function ChatRoom() {
                       <SubscriberVideoItem
                         key={sub.id}
                         sub={sub}
-                        subscriberSpeakerConnectionId={subscriberSpeakerConnectionId}
-                        subStreamConnectionConnectionId={sub.stream.connection.connectionId}
-                        onClickMainVideo={() => {onClickMainVideoStream(sub);}}
-                        onClickSubscriberVideoToggle={() => {onClickSubscriberVideoToggle(sub.stream.connection.connectionId);}}
-                        onClickSubscriberAudioToggle={() => {onClickSubscriberAudioToggle(sub.stream.connection.connectionId);}}
-                        userMediaBackImage={JSON.parse(
-                          sub.stream.connection.data.substring(
-                            0,
-                            sub.stream.connection.data.indexOf("%")
-                          )
-                        ).userMediaBackImage}
+                        subscriberSpeakerConnectionId={
+                          subscriberSpeakerConnectionId
+                        }
+                        subStreamConnectionConnectionId={
+                          sub.stream.connection.connectionId
+                        }
+                        onClickMainVideo={() => {
+                          onClickMainVideoStream(sub);
+                        }}
+                        onClickSubscriberVideoToggle={() => {
+                          onClickSubscriberVideoToggle(
+                            sub.stream.connection.connectionId
+                          );
+                        }}
+                        onClickSubscriberAudioToggle={() => {
+                          onClickSubscriberAudioToggle(
+                            sub.stream.connection.connectionId
+                          );
+                        }}
+                        userMediaBackImage={
+                          JSON.parse(
+                            sub.stream.connection.data.substring(
+                              0,
+                              sub.stream.connection.data.indexOf("%")
+                            )
+                          ).userMediaBackImage
+                        }
                         userNickName={
                           JSON.parse(
                             sub.stream.connection.data.substring(
@@ -752,20 +800,33 @@ function ChatRoom() {
                 </StMyStreamNickNameBox>
 
                 {/*카메라 변경*/}
-                <StMyDeviceButton onClick={switchCamera} className={isSwitchCamera && "buttonOn"} title="카메라 변경">
-                  <GiCardExchange/>
+                <StMyDeviceButton
+                  onClick={switchCamera}
+                  className={isSwitchCamera && "buttonOn"}
+                  title="카메라 변경"
+                >
+                  <GiCardExchange />
                 </StMyDeviceButton>
-                
+
                 {/*디바이스 on off*/}
-                <StButtonMyDeviceOnOff title="카메라 on/off"
+                <StButtonMyDeviceOnOff
+                  title="카메라 on/off"
                   width="150px"
                   fontColor="red"
-                  bgColor={isPublisherVideo ? COLOR.greenButtonOn : COLOR.redButtonOff}
-                  color={isPublisherVideo ? COLOR.greenButtonOn2 : COLOR.redButtonOff2}
+                  bgColor={
+                    isPublisherVideo ? COLOR.greenButtonOn : COLOR.redButtonOff
+                  }
+                  color={
+                    isPublisherVideo
+                      ? COLOR.greenButtonOn2
+                      : COLOR.redButtonOff2
+                  }
                   onClick={onClickPublisherVideoToggle}
                 >
-                  <StButtonIconImage src={isPublisherVideo ? image.videoOnM : image.videoOffM}/>
-                    {/* 
+                  <StButtonIconImage
+                    src={isPublisherVideo ? image.videoOnM : image.videoOffM}
+                  />
+                  {/* 
                     {isPublisherVideo ? (
                       <BsFillCameraVideoFill />
                     ) : (
@@ -773,15 +834,24 @@ function ChatRoom() {
                     )}
                     */}
                 </StButtonMyDeviceOnOff>
-                <StButtonMyDeviceOnOff title="마이크 on/off"
+                <StButtonMyDeviceOnOff
+                  title="마이크 on/off"
                   width="150px"
                   fontColor="red"
-                  bgColor={isPublisherAudio ? COLOR.greenButtonOn : COLOR.redButtonOff}
-                  color={isPublisherAudio ? COLOR.greenButtonOn2 : COLOR.redButtonOff2}
+                  bgColor={
+                    isPublisherAudio ? COLOR.greenButtonOn : COLOR.redButtonOff
+                  }
+                  color={
+                    isPublisherAudio
+                      ? COLOR.greenButtonOn2
+                      : COLOR.redButtonOff2
+                  }
                   onClick={onClickPublisherAudioToggle}
                 >
-                  <StButtonIconImage src={isPublisherAudio ? image.audioOnM : image.audioOffM}/>
-                    {/* 
+                  <StButtonIconImage
+                    src={isPublisherAudio ? image.audioOnM : image.audioOffM}
+                  />
+                  {/* 
                     {isPublisherAudio ? (
                       <BsMicFill />
                     ) : (
@@ -791,7 +861,8 @@ function ChatRoom() {
                 </StButtonMyDeviceOnOff>
 
                 {/* 캔버스 버튼 */}
-                <StMyDeviceButton title="그림 그리기"
+                <StMyDeviceButton
+                  title="그림 그리기"
                   onClick={onClickCanvasToggle}
                   className={isCanvas && "buttonOn"}
                 >
@@ -799,13 +870,13 @@ function ChatRoom() {
                 </StMyDeviceButton>
 
                 {/* 화이트보드 버튼 */}
-                <StMyDeviceButton title="화이트보드"
+                <StMyDeviceButton
+                  title="화이트보드"
                   onClick={onClickWhiteBoardToggle}
                   className={isWhiteBoard && "buttonOn"}
                 >
                   <TfiBlackboard />
                 </StMyDeviceButton>
-
               </StMyStreamControlBoxLeft>
               <StMyStreamControlBoxRight>
                 <ButtonDefault
@@ -857,12 +928,7 @@ function ChatRoom() {
               className={isWhiteBoard ? "block" : "none"}
               isCapture={isCapture}
             />
-
-          
-
-
           </StSessionVideoBox>
-
 
           <Chat props={newNickName} />
         </StStreamWrap>
@@ -873,13 +939,11 @@ function ChatRoom() {
   );
 }
 
-
-
-const StButtonIconImage=styled.img`
-  src: ${(props)=>props.src};
+const StButtonIconImage = styled.img`
+  src: ${(props) => props.src};
   width: 30px;
   height: 30px;
-`
+`;
 
 const StCanvasContianer = styled.div`
   background-color: transparent;
@@ -949,10 +1013,10 @@ const StButtonMyDeviceOnOff = styled.button`
   align-items: center;
   padding: 0;
   border-radius: 50%;
-  background-color: ${(props)=>props.bgColor || "transparent"};
-  color:${(props)=>props.color};
+  background-color: ${(props) => props.bgColor || "transparent"};
+  color: ${(props) => props.color};
   cursor: pointer;
-  :hover{
+  :hover {
     background-color: ${COLOR.baseDefault};
   }
 `;
@@ -966,10 +1030,10 @@ const StButtonDeviceOnOff = styled.button`
   font-size: 22px;
   padding: 0;
   border-radius: 50%;
-  background-color: ${(props)=>props.bgColor || "transparent"};
-  color:${(props)=>props.color};
+  background-color: ${(props) => props.bgColor || "transparent"};
+  color: ${(props) => props.color};
   cursor: pointer;
-  :hover{
+  :hover {
     background-color: ${COLOR.baseDefault};
   }
 `;
@@ -1005,7 +1069,7 @@ const StSubscribersSessionStreamInnerBox = styled.div`
 const StMyStreamControlBox = styled.div`
   width: 100%;
   height: 80px;
-  display: ${(props)=>props.display};
+  display: ${(props) => props.display};
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
@@ -1022,7 +1086,7 @@ const StStreamControlButtonBox = styled.div`
   flex-direction: row;
   column-gap: 10px;
 `;
-const StRoomWaitingVideoBox=styled.div`
+const StRoomWaitingVideoBox = styled.div`
   width: 100%;
   max-width: 340px;
   height: 100%;
@@ -1035,7 +1099,7 @@ const StRoomWaitingVideoBox=styled.div`
   top: 0;
   left: 0;
   padding: 3px 3px 0 3px;
-`
+`;
 const StStreamNickNamePublisher = styled.span`
   display: inline-block;
   max-width: 92%;
