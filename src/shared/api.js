@@ -44,15 +44,8 @@ api.interceptors.request.use(
   api.interceptors.response.use(
     function (response) {
       //헤더에 담긴 토큰 다시 세팅
-      const accessToken = response.config.headers.authorization
-      const refreshToken = response.config.headers.refresh
-
-      console.log("😀😀😀 인터셉터 response 토큰 authorization: ", accessToken)
-      console.log("😀😀😀 인터셉터 response 토큰 refresh: ", refreshToken)
-      console.log("🧨 response 헤더 토큰 authorization get: ", response.headers.get("authorization"))
-      console.log("🧨 response 헤더 토큰 refresh get: ", response.headers.get("refresh"))
-      console.log("🧨🧨 response 헤더 토큰 authorization []: ", response.headers["authorization"])
-      console.log("🧨🧨response 헤더 토큰 refresh[]: ", response.headers["refresh"])
+      const accessToken = response.headers.get("authorization")
+      const refreshToken = response.headers.get("refresh")
       if(accessToken && refreshToken){
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
@@ -60,7 +53,7 @@ api.interceptors.request.use(
         alert("다시 로그인해주세요!")
         return window.location.href="/login"
       }
-      console.log("😀😀😀 인터셉터 response : ", response)
+      console.log("😀 인터셉터 response : ", response)
       
       return response;
     },
