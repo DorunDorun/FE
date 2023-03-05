@@ -1,7 +1,8 @@
 import { useState, useRef } from "react";
 import styled from "styled-components";
 import HorizonLine from "../horizon/HorizonLine";
-import Palette from "../Palette";
+import Palette from "../colorMenu/Palette";
+import Design from "../colorMenu/Design";
 
 const ChatRoomSideBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -76,7 +77,11 @@ const ChatRoomSideBar = () => {
               </StChoice>
             )}
 
-            {showDesign && <StChoice></StChoice>}
+            {showDesign && (
+              <StChoice>
+                <Design />
+              </StChoice>
+            )}
           </div>
         )}
         {sidebarContent.title === "명언" && (
@@ -87,7 +92,7 @@ const ChatRoomSideBar = () => {
         )}
         {sidebarContent.title === "오디오" && (
           <div>
-            <h3>오디오</h3>
+            <h3>음악</h3>
             <p>오디오 내용을 여기에 넣으세요.</p>
           </div>
         )}

@@ -5,7 +5,7 @@ const Wait = () => {
   return (
     <Container>
       <Stop>잠시만 기다려주세요 ...</Stop>
-      <img src={`${process.env.PUBLIC_URL}/asset/images/Loading.png`} />
+      {/* <img src={`${process.env.PUBLIC_URL}/asset/images/Loading.png`} /> */}
     </Container>
   );
 };

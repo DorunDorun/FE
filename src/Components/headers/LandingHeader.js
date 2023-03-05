@@ -30,13 +30,8 @@ const LandingHeader = () => {
   return (
     <HearderContainer>
       <Logo>
-        D<span>oo</span>Run
+        <span>두</span>런<span>두</span>런
       </Logo>
-      {/* <Room onClick={gotoRoom}> 개설된 라이브룸</Room> */}
-      {/* <Info onClick={gotoInfo}>종료된 라이브룸</Info> */}
-      {/* <History onClick={gotoNotice}>참가 히스토리</History> */}
-      {/* <Mypage onClick={gotoNotice}>마이페이지</Mypage> */}
-      {/* <Notice onClick={gotoNotice}>서비스소개</Notice> */}
       <Login onClick={gotoLogin}>로그인</Login>
     </HearderContainer>
   );

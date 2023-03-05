@@ -7,7 +7,7 @@ export const Landingstore = create((set) => ({
   data: [],
   loading: false,
   hasErrors: false,
-  fetchdata: async () => {
+  fetch: async () => {
     set(() => ({ loading: true }));
     try {
       const data = await api.get(`api/rooms/info`);

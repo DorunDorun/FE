@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { ColorPicker, useColor } from "react-color-palette";
 import "react-color-palette/lib/css/styles.css";
 import { AiFillCheckSquare } from "react-icons/ai";
-import { StorePalette } from "../zustand/storePalette";
+import { StorePalette } from "../../zustand/storePalette";
 
 const Palette = () => {
   const [color, setColor] = useColor("hex", "#F4E7FF");

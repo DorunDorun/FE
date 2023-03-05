@@ -15,13 +15,13 @@ const Landing = () => {
     setCount(receive.chatRoomCount);
   }
 
-  const Landing = Landingstore((state) => state.fetchdata);
+  const fetchData = Landingstore((state) => state.fetch);
+  const data = Landingstore((state) => state.data);
+  const loading = Landingstore((state) => state.loading);
 
   useEffect(() => {
-    Landing();
-  }, [Landing]);
-
-  console.log(Landing);
+    fetchData();
+  }, []);
 
   useLayoutEffect(() => {
     const sse = new EventSource("https://dorundorun.shop/api/sse");
@@ -48,12 +48,22 @@ const Landing = () => {
       navigate("/Login");
     }
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  const totalHour = data?.data?.totalHour;
+  const totalRoom = data?.data?.totalRoom;
   return (
     <>
       <Container>
         <LandingHeader />
+        <LandingImage />
         <Duruning>
-          <BsFillCircleFill color="#8600F0" />
+          <div>
+            <BsFillCircleFill color="#8600F0" />
+          </div>
           <span>{count}개의 꿈을 두런두런 중</span>
         </Duruning>
         <Main>
@@ -70,12 +80,12 @@ const Landing = () => {
           <span>방 둘러보기</span>
         </In>
         <Total>
-          <p>240+</p>
-          <span>그동안 240개 이상의 라이브 방이 개설되었어요</span>
+          <p>{totalRoom}+</p>
+          <span>그동안 {totalRoom}개 이상의 라이브 방이 개설되었어요</span>
         </Total>
         <Time>
-          <p>370+</p>
-          <span>그동안 370시간 이상의 라이브 시간이 누적되었어요</span>
+          <p>{totalHour}+</p>
+          <span>그동안 {totalHour}시간 이상의 라이브 시간이 누적되었어요</span>
         </Time>
       </Container>
       <StFooter></StFooter>
@@ -89,6 +99,19 @@ const Container = styled.div`
   background: transparent
     linear-gradient(116deg, #a74bef 0%, #8600f0 51%, #a74bef 100%) 0% 0%
     no-repeat padding-box;
+  opacity: 1;
+  width: 100%;
+  height: calc(100vh - 50px);
+`;
+
+const LandingImage = styled.div`
+  background: url("${process.env.PUBLIC_URL}/asset/images/Landing_Image.png");
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: 70%;
+  background-repeat: no-repeat;
+  background-position: left 140% top 25%;
   opacity: 1;
   width: 100%;
   height: calc(100vh - 50px);
@@ -111,6 +134,9 @@ const Duruning = styled.div`
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   opacity: 1;
+  div {
+    margin-left: 10px;
+  }
   span {
     display: flex;
     width: 250px;
