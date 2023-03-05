@@ -26,6 +26,7 @@ const Chat = ({ props }) => {
 
   const chatRef = useRef("");
   const imgRef = useRef("");
+  const sendButtonRef = useRef(null);
 
   const sock = new SockJS("https://dorundorun.shop/ws-stomp");
   const client = Stomp.over(sock);
@@ -81,6 +82,8 @@ const Chat = ({ props }) => {
     const msg = chatRef.current.value;
     const img = imgRef.current.files[0];
     const now = new Date();
+    if (sendButtonRef.current.disabled) return; // 전송 중일 경우 중복 전송 방지
+    sendButtonRef.current.disabled = true; // 전송 시작
     if (msg === "" && !img) {
       // 메시지와 이미지 둘 다 없을 경우
       return;
@@ -91,27 +94,6 @@ const Chat = ({ props }) => {
       reader.onload = (event) => {
         const imgDataUrl = reader.result;
         const imgDataStr = `data:image/jpeg;base64,${imgDataUrl.split(",")[1]}`;
-        setTimeout(() => {
-          client.send(
-            `/pub/chat/room`,
-            {},
-            JSON.stringify({
-              sessionId: sessionId,
-              socialUid: id,
-              nickname: name,
-              message: msg,
-              imgByteCode: imgDataStr, // 압축하지 않고 그대로 사용
-              createdAt: now,
-            })
-          );
-          // 이미지 미리보기 초기화
-          setImage(null);
-        }, 10000);
-      };
-      reader.readAsDataURL(img);
-    } else {
-      // 메시지만 있는 경우
-      setTimeout(() => {
         client.send(
           `/pub/chat/room`,
           {},
@@ -120,14 +102,35 @@ const Chat = ({ props }) => {
             socialUid: id,
             nickname: name,
             message: msg,
+            imgByteCode: imgDataStr, // 압축하지 않고 그대로 사용
             createdAt: now,
           })
         );
-      }, 10000);
+        // 이미지 미리보기 초기화
+        setImage(null);
+      };
+      reader.readAsDataURL(img);
+    } else {
+      // 메시지만 있는 경우
+      client.send(
+        `/pub/chat/room`,
+        {},
+        JSON.stringify({
+          sessionId: sessionId,
+          socialUid: id,
+          nickname: name,
+          message: msg,
+          createdAt: now,
+        })
+      );
     }
 
     chatRef.current.value = null;
     imgRef.current.value = null;
+    // 전송 완료 후
+    setTimeout(() => {
+      sendButtonRef.current.disabled = false; // 전송 종료
+    }, 3000);
   };
 
   const [image, setImage] = useState();
@@ -253,7 +256,9 @@ const Chat = ({ props }) => {
         </Select>
 
         <Input type="text" ref={chatRef} onKeyDown={handleEnterPress}></Input>
-        <Click onClick={sendChat}>전송</Click>
+        <Click ref={sendButtonRef} onClick={sendChat}>
+          전송
+        </Click>
       </Wirte>
     </Container>
   );
