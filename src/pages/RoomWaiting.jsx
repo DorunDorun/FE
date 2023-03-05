@@ -63,10 +63,10 @@ const RoomWaiting = () => {
 
   //버튼 이미지
   const image = {
-    videoOnS: ButtonImageList.video.onSmall,
-    videoOffS: ButtonImageList.video.offSmall,
-    audioOnS: ButtonImageList.audio.onSmall,
-    audioOffS: ButtonImageList.audio.offSmall,
+    videoOnS: process.env.PUBLIC_URL + ButtonImageList.video.onSmall,
+    videoOffS: process.env.PUBLIC_URL + ButtonImageList.video.offSmall,
+    audioOnS: process.env.PUBLIC_URL + ButtonImageList.audio.onSmall,
+    audioOffS: process.env.PUBLIC_URL + ButtonImageList.audio.offSmall,
   };
 
   //타겟

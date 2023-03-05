@@ -69,14 +69,14 @@ function ChatRoom() {
 
   //디바이스 on off 버튼
   const image = {
-    videoOnS: ButtonImageList.video.onSmall.slice(1),
-    videoOffS: ButtonImageList.video.offSmall.slice(1),
-    audioOnS: ButtonImageList.audio.onSmall.slice(1),
-    audioOffS: ButtonImageList.audio.offSmall.slice(1),
-    videoOnM: ButtonImageList.video.onMedium.slice(1),
-    videoOffM: ButtonImageList.video.offMedium.slice(1),
-    audioOnM: ButtonImageList.audio.onMedium.slice(1),
-    audioOffM: ButtonImageList.audio.offMedium.slice(1),
+    videoOnS: process.env.PUBLIC_URL + ButtonImageList.video.onSmall.slice(1),
+    videoOffS: process.env.PUBLIC_URL + ButtonImageList.video.offSmall.slice(1),
+    audioOnS: process.env.PUBLIC_URL + ButtonImageList.audio.onSmall.slice(1),
+    audioOffS: process.env.PUBLIC_URL + ButtonImageList.audio.offSmall.slice(1),
+    videoOnM: process.env.PUBLIC_URL + ButtonImageList.video.onMedium.slice(1),
+    videoOffM: process.env.PUBLIC_URL + ButtonImageList.video.offMedium.slice(1),
+    audioOnM: process.env.PUBLIC_URL + ButtonImageList.audio.onMedium.slice(1),
+    audioOffM: process.env.PUBLIC_URL + ButtonImageList.audio.offMedium.slice(1),
   };
 
   //방 정보 불러오기

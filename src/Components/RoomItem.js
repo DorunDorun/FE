@@ -116,7 +116,7 @@ const RoomItem = ({
       <StRoomItemMainInfo>
         {/*방 카테고리 이미지 영역*/}
         <StRoomItemMainInfoCategoryBox
-          backgroundImage={backgroundImage}
+          backgroundImage={process.env.PUBLIC_URL + backgroundImage}
           title={category}
         ></StRoomItemMainInfoCategoryBox>
 
