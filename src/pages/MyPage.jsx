@@ -15,7 +15,7 @@ const MyPage = () => {
     await localStorage.clear();
     navigate("/");
   };
-
+  // 연령대, 생일, 출생년도, 이메일, 성별,이름, 닉네임, 프로필 사진 네이버 유사페이지 사용시
   return (
     <>
       <Container>
