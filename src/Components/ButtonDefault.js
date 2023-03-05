@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 function ButtonDefault({
     width, height, bgColor, hoverBgColor, fontColor, fontSize, lineHeight, 
-    padding, margin, hoverFontColor, onClick, children, borderRadius, boxShadow}) {
+    padding, margin, hoverFontColor, onClick, children, borderRadius, boxShadow, title}) {
   return (
     <StButtonDefault 
     width={width} height={height} 
@@ -13,6 +13,7 @@ function ButtonDefault({
     borderRadius={borderRadius} padding={padding} margin={margin}
     lineHeight={lineHeight} boxShadow={boxShadow}
     onClick={onClick}
+    title={title}
     >{children}
     </StButtonDefault>
   )

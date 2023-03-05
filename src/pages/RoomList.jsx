@@ -322,12 +322,12 @@ const RoomList = () => {
     navigate("/roomCreate");
   };
 
-  if (loading) {
+  if (loading) { //첫 랜딩에서만 호출
     pageCount === 1 && <Wait />;
   }
 
   if (hasErrors) {
-    alert("다시 시도해주세요!");
+    //alert("다시 시도해주세요!");
     return navigate("/login");
   }
 
@@ -410,6 +410,7 @@ const RoomList = () => {
 
         {/*방 목록 영역*/}
         <StRoomListBox>
+
           {/*방 목록 위 타이틀*/}
           <StRoomListBoxInfo>
             <StRoomListBoxInfoH2>{message.welcome}</StRoomListBoxInfoH2>

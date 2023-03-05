@@ -1,6 +1,6 @@
 @import url("./fonts/Fonts.css");
 :root {
-  background: #ffe;
+  background: #fff;
   font-size: 16px;
   font-family: Pretendard;
   --color-baseDefault: #8500EF;
@@ -214,10 +214,7 @@ textarea {
 .isSpeaker{
 	border-color: var(--color-baseDefault) !important;
 }
-.UserVideoComponent{
-  width: 100%;
-  overflow: auto;
-}
+
 
 /*방 만들기*/
 #roomPasswordInput{
@@ -234,6 +231,15 @@ textarea {
 .buttonOn{
   background-color: var(--color-baseDefault) !important;
   color: #fff !important;
+}
+.UserVideoComponent{
+  height: 100%;
+  overflow: auto;
+  background-color: #A12AFF;
+}
+.UserVideoComponent video{
+  width: 100%;
+  height: 200px;
 }
 .sessionStreamBox{
   width: calc(100% / 3 - 14px);

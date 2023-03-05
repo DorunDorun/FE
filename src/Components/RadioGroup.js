@@ -11,7 +11,7 @@ const RadioGroup = ({
     <>
       <StRadioGroupBox width={width} height={height}>
         <StLabel htmlFor={categoryName} 
-          borderColor={checked ? `${COLOR.baseDefault}` : "transparent"}
+          borderColor={checked ? `${COLOR.baseDefaultBold}` : "transparent"}
           labelBg={labelBg} borderRadius={borderRadius}
         >
           <StCaterogyImg src={imageUrl}/>
@@ -81,6 +81,9 @@ const StRadioGroupBox=styled.div`
   min-width: ${(props)=>props.width || "100px"};
   display: inline-block;
   position: relative;
+  :hover{
+    transform: scale(1.2);
+  }
 `
 
 
