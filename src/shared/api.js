@@ -48,9 +48,6 @@ api.interceptors.request.use(
       if(accessToken && refreshToken){
         localStorage.setItem("accessToken");
         localStorage.setItem("refreshToken");
-      }else if(response.data.statusCode === "401"){ //토큰 만료일 경우 401
-        alert("다시 로그인해주세요!")
-        return window.location.href="/login"
       }
       console.log("😀 인터셉터 response : ", response)
       return response;
