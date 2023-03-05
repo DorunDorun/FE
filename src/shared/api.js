@@ -23,19 +23,20 @@ api.interceptors.request.use(
         if (accessToken && refreshToken) {
           config.headers.authorization = accessToken;
           config.headers.refresh = refreshToken;
-          return config;
         }
         else{
           //alert("로그인이 필요한 페이지입니다.")
           return window.location.href="/login"
         }
+        return config;
+
       } catch (error) {
         //alert("서버 요청 에러! 다시 시도해주세요!");
       }
       return config;
     },
+
     function (error) {
-      
       return Promise.reject(error);
     }
   );
@@ -48,7 +49,8 @@ api.interceptors.request.use(
 
       console.log("😀😀😀 인터셉터 response 토큰 authorization: ", accessToken)
       console.log("😀😀😀 인터셉터 response 토큰 refresh: ", refreshToken)
-
+      console.log("😀 response 헤더 토큰 accessToken: ", response.headers.get("accessToken"))
+      console.log("😀 response 헤더 토큰 refresh: ", response.headers.get("refreshToken"))
       if(accessToken && refreshToken){
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
