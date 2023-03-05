@@ -7,18 +7,8 @@ const LandingHeader = () => {
   const token = localStorage.getItem("accessToken");
   const refresh = localStorage.getItem("refreshToken");
   const navigate = useNavigate();
-  const gotoRoom = () => {
-    if (token && refresh) {
-      navigate("/RoomList");
-    } else {
-      navigate("/Login");
-    }
-  };
-  const gotoInfo = () => {
-    navigate("/Info");
-  };
-  const gotoNotice = () => {
-    navigate("/Notice");
+  const goToBack = () => {
+    navigate("/");
   };
   const gotoLogin = () => {
     if (token && refresh) {
@@ -29,7 +19,7 @@ const LandingHeader = () => {
   };
   return (
     <HearderContainer>
-      <Logo>
+      <Logo onClick={goToBack}>
         <span>두</span>런<span>두</span>런
       </Logo>
       <Login onClick={gotoLogin}>로그인</Login>
