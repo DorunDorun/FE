@@ -322,7 +322,7 @@ function ChatRoom() {
     const title = "두런두런에 초대합니다!"
     const description = roomTitle
     const imgFilter = MediaBackImageList.filter((img)=>img.name === "1") //두런두런 기본 이미지
-    const imgUrl = imgFilter.medium
+    const imgUrl = imgFilter[0].medium
     shareKakao(route, title, description, imgUrl)
   };
 
