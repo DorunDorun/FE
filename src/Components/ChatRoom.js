@@ -1042,11 +1042,11 @@ const StSideNav = styled.nav`
   height: calc(100vh - 120px);
   background-color: #fff;
   border-right: 1px solid ${COLOR.grayLight};
-  overflow-x: auto;
 `;
 const StStreamWrap = styled.div`
   display: flex;
   height: calc(100vh - 120px);
+  overflow-x: auto;
 `;
 const StFooter = styled.footer`
   height: 50px;
