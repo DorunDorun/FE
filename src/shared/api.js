@@ -49,8 +49,10 @@ api.interceptors.request.use(
 
       console.log("😀😀😀 인터셉터 response 토큰 authorization: ", accessToken)
       console.log("😀😀😀 인터셉터 response 토큰 refresh: ", refreshToken)
-      console.log("🧨 response 헤더 토큰 authorization: ", response.headers.get("authorization"))
-      console.log("🧨 response 헤더 토큰 refresh: ", response.headers.get("refresh"))
+      console.log("🧨 response 헤더 토큰 authorization get: ", response.headers.get("authorization"))
+      console.log("🧨 response 헤더 토큰 refresh get: ", response.headers.get("refresh"))
+      console.log("🧨🧨 response 헤더 토큰 authorization []: ", response.headers["authorization"])
+      console.log("🧨🧨response 헤더 토큰 refresh[]: ", response.headers["refresh"])
       if(accessToken && refreshToken){
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
