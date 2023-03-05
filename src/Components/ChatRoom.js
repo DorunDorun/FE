@@ -19,6 +19,11 @@ import UserMediaBackImage from "./UserMediaBackImage";
 import MediaBackImageList from "./lists/MediaBackImageList";
 import ButtonImageList from "./lists/ButtonImageList";
 
+/*유틸*/
+//카카오톡 공유하기
+import { shareKakao } from '../utils/shareKakaoLink';
+
+
 //아이콘
 import { BsCameraVideo } from "react-icons/bs";
 import { BsCameraVideoOff } from "react-icons/bs";
@@ -297,9 +302,28 @@ function ChatRoom() {
     }
   }, [isSubscriberVideo]);
 
+
+
+  //카카오톡 공유 sdk 추가
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://developers.kakao.com/sdk/js/kakao.js";
+    script.async = true;
+    document.body.appendChild(script);
+    return () => document.body.removeChild(script);
+  }, []);
+
+
+
   //초대하기
   const onClickInviteLink = () => {
-    alert("서비스 준비 중인 기능입니다.");
+    //alert("서비스 준비 중인 기능입니다.");
+    const route = window.location.href
+    const title = "두런두런에 초대합니다!"
+    const description = roomTitle
+    const imgFilter = MediaBackImageList.filter((img)=>img.nane === "1") //두런두런 기본 이미지
+    const imgUrl = imgFilter.medium
+    shareKakao(route, title, description, imgUrl)
   };
 
   //캔버스 컨트롤
