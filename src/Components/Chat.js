@@ -64,7 +64,7 @@ const Chat = ({ props }) => {
             // 채팅방 구독
             client.subscribe(`/sub/chat/room/${sessionId}`, (res) => {
               const receive = JSON.parse(res.body);
-              console.log(receive);
+
               fetchData(receive);
               // fetchdata로 보낼것들
             });
@@ -106,7 +106,7 @@ const Chat = ({ props }) => {
           );
           // 이미지 미리보기 초기화
           setImage(null);
-        }, 1000);
+        }, 10000);
       };
       reader.readAsDataURL(img);
     } else {
@@ -123,7 +123,7 @@ const Chat = ({ props }) => {
             createdAt: now,
           })
         );
-      }, 1000);
+      }, 10000);
     }
 
     chatRef.current.value = null;
