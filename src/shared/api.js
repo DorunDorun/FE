@@ -43,10 +43,20 @@ api.interceptors.request.use(
   api.interceptors.response.use(
     function (response) {
       //헤더에 담긴 토큰 다시 세팅
+      const accessToken = response.config.headers.authorization
+      const refreshToken = response.config.headers.refresh
 
+      console.log("😀 인터셉터 response 토큰 authorization: ", accessToken)
+      console.log("😀 인터셉터 response 토큰 refresh: ", refreshToken)
+
+      if(accessToken && refreshToken){
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+      }else if(response.data.statusCode === "401"){ //토큰 만료일 경우 401
+        alert("다시 로그인해주세요!")
+        return window.location.href="/login"
+      }
       console.log("😀 인터셉터 response : ", response)
-      console.log("😀 인터셉터 response 토큰 authorization: ", response.config.headers.authorization)
-      console.log("😀 인터셉터 response 토큰 refresh: ", response.config.headers.refresh)
       
       return response;
     },
