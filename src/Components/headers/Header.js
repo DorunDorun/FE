@@ -7,17 +7,7 @@ const Header = () => {
   const name = localStorage.getItem("name");
   const thumbnail = localStorage.getItem("thumbnail_image_url");
   const navigate = useNavigate();
-  const gotoLive = () => {
-    navigate("/RoomList");
-  };
 
-  const gotoMyPage = () => {
-    navigate("/MyPage");
-  };
-
-  const gotoInfo = () => {
-    navigate("/Info");
-  };
   return (
     <HearderContainer>
       <Logo>
@@ -45,6 +35,7 @@ const HearderContainer = styled.div`
   width: 100%;
   /* width: 100%; */
   height: 70px;
+  border-bottom: 3px solid #a12aff;
 `;
 
 const Logo = styled.div`

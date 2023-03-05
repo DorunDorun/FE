@@ -53,9 +53,6 @@ const PageName = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  top: 187px;
-  left: 784px;
   width: 352px;
   height: 52px;
   span {
@@ -73,9 +70,6 @@ const Myinfo = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  position: absolute;
-  top: 269px;
-  left: 784px;
   width: 352px;
   height: 408px;
   background: #ffffff 0% 0% no-repeat padding-box;
@@ -94,9 +88,6 @@ const Myinfo = styled.div`
 
 const Acount = styled.div`
   display: flex;
-  position: absolute;
-  top: 225px;
-  left: 50px;
   span {
     display: flex;
     text-align: left;
@@ -109,24 +100,6 @@ const Acount = styled.div`
 
 const Stsocial = styled.div`
   display: flex;
-  position: absolute;
-  top: 255px;
-  left: 50px;
-  span {
-    display: flex;
-    text-align: left;
-    font: normal 800 16px/19px Pretendard;
-    letter-spacing: 0px;
-    color: #171717;
-    opacity: 1;
-  }
-`;
-
-const User = styled.div`
-  display: flex;
-  position: absolute;
-  top: 285px;
-  left: 50px;
   span {
     display: flex;
     text-align: left;
@@ -141,9 +114,6 @@ const Bye = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  top: 315px;
-  left: 50px;
   width: 246px;
   height: 44px;
   background-color: #fff;
