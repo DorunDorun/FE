@@ -124,7 +124,7 @@ const StRoomWaitingVideoBox = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  padding: 3px 3px 0 3px;
+  border: 3px solid transparent;
 `;
 
 const StButtonDeviceOnOff = styled.button`
@@ -184,12 +184,13 @@ const StSubscribersSessionStreamInnerBox = styled.div`
 
   max-width: 340px;
   height: 100%;
-  min-height: 140px;
-  max-height: 200px;
+  //min-height: 140px;
+  height: 200px;
   border-radius: 5px;
   position: relative;
   border: 3px solid transparent;
   box-sizing: border-box;
+  overflow: hidden;
 `;
 
 export default SubscriberVideoItem;

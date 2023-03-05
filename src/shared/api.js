@@ -1,6 +1,6 @@
 import axios from "axios";
 
-
+export const PUBLIC_PATH = process.env.PUBLIC_URL
 export const server_url = process.env.REACT_APP_API_URL
 export const server_url_openvidu = process.env.REACT_APP_API_URL_OPENVIDU 
 
@@ -42,8 +42,14 @@ api.interceptors.request.use(
   
   api.interceptors.response.use(
     function (response) {
-      //토큰 만료 응답이 있으면
       //헤더에 담긴 토큰 다시 세팅
+      const accessToken = response.headers.authorization
+      const refreshToken = response.headers.refresh
+      if(accessToken && refreshToken){
+        localStorage.setItem("accessToken");
+        localStorage.setItem("refreshToken");
+      }
+      console.log("😀 인터셉터 response : ", response)
       return response;
     },
   
