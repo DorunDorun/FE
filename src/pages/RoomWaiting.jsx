@@ -8,13 +8,15 @@ import ButtonDefault from '../Components/ButtonDefault'
 import { regExpNickName } from '../Components/apis/RegExp'
 import MediaBackImageList from '../Components/lists/MediaBackImageList'
 import RadioGroup from '../Components/RadioGroup'
-
+import ButtonImageList from '../Components/lists/ButtonImageList'
+import UserMediaBackImage from '../Components/UserMediaBackImage'
 
 //아이콘
 import { BsMicFill } from "react-icons/bs";
 import { BsMicMuteFill } from "react-icons/bs";
 import { BsFillCameraVideoFill } from "react-icons/bs";
 import { BsFillCameraVideoOffFill } from "react-icons/bs";
+
 
 
 //스토어-방 입장
@@ -61,6 +63,15 @@ const RoomWaiting = () => {
   const [isPublisherVideo, setIsPublisherVideo]=useState(true)
   const [isPublisherAudio, setIsPublisherAudio]=useState(true)
 
+  //버튼 이미지
+  const image={
+    videoOnS:ButtonImageList.video.onSmall,
+    videoOffS:ButtonImageList.video.offSmall,
+    audioOnS:ButtonImageList.audio.onSmall,
+    audioOffS:ButtonImageList.audio.offSmall,
+  }
+
+  //타겟
   const nickNameRef = useRef()
   const videoRef = useRef()
 
@@ -70,7 +81,7 @@ const RoomWaiting = () => {
 
 
   //프로필 이미지
-  const [mediaBackImage, setMediaBackImage]=useState(undefined)
+  const [mediaBackImageChecked, setMediaBackImageChecked]=useState("1")
 
 
   useEffect(()=>{
@@ -80,8 +91,8 @@ const RoomWaiting = () => {
 
 
   useEffect(()=>{
-    console.log("setMediaBackImage : ", mediaBackImage)
-  },[mediaBackImage])
+    console.log("setMediaBackImage : ", mediaBackImageChecked)
+  },[mediaBackImageChecked])
 
 
 
@@ -97,7 +108,7 @@ const RoomWaiting = () => {
   
   //비디오, 오디오 불러오기
   const getUserMedia= async ()=>{
-    const CONSTRAINTS = { video: isPublisherVideo, audio: isPublisherAudio };
+    const CONSTRAINTS = { video: {isPublisherVideo, width:340, height:200}, audio: isPublisherAudio };
     await navigator.mediaDevices.getUserMedia(CONSTRAINTS)
     .then((media)=>{
       const video = media.getVideoTracks()[0]
@@ -152,13 +163,13 @@ const RoomWaiting = () => {
   }
 
   
+  //선택한 프로필 이미지 video off 상태에 반영
+  const userMediaBackImageFilter = MediaBackImageList.filter((MediaBackImage) => MediaBackImage.name === mediaBackImageChecked)
+  const userMediaBackImage = userMediaBackImageFilter[0].medium
 
-
-
-  
   //프로필 이미지 선택
   const onChangeRadioMediaBackImage=(value)=>{
-    setMediaBackImage(value)
+    setMediaBackImageChecked(value)
   }
 
 
@@ -190,7 +201,7 @@ const RoomWaiting = () => {
       const roomJoinPayloadOpen={ //공개 방 정보
         sessionId:sessionId,
         nickName:nickName,
-        mediaBackImage:mediaBackImage
+        mediaBackImage:mediaBackImageChecked
       }
       fetchPostRoomJoin(roomJoinPayloadOpen)
       .then((res)=>{
@@ -207,7 +218,7 @@ const RoomWaiting = () => {
       const roomJoinPayloadPrivate={ //비공개 방 정보
         sessionId:sessionId,
         nickName:nickName,
-        mediaBackImage:mediaBackImage,
+        mediaBackImage:mediaBackImageChecked,
         password:localStorage.getItem("password")
         
       }
@@ -235,30 +246,31 @@ const RoomWaiting = () => {
 
               {/* 디바이스 컨트롤 */}
               <StRoomWaitingSettingBoxStream>
-                <StRoomWaitingVideo autoPlay ref={videoRef}></StRoomWaitingVideo>
+                <StRoomWaitingVideoBox>
+                  {isPublisherVideo
+                  ? <StRoomWaitingVideo autoPlay ref={videoRef}></StRoomWaitingVideo>
+                  : <UserMediaBackImage userMediaBackImage={userMediaBackImage}/>
+                  }
+                </StRoomWaitingVideoBox>
               
                 <StRoomWaitingControllBox>
                   <StButtonMyDeviceOnOff
                     width="150px"
                     fontColor="red"
+                    bgColor={isPublisherVideo ? COLOR.greenButtonOn : COLOR.redButtonOff}
+                    color={isPublisherVideo ? COLOR.greenButtonOn2 : COLOR.redButtonOff2}
                     onClick={onClickPublisherVideoToggle}
                   >
-                    {isPublisherVideo ? (
-                      <BsFillCameraVideoFill />
-                    ) : (
-                      <BsFillCameraVideoOffFill className="off" />
-                    )}
+                    <StButtonIconImage src={isPublisherVideo ? image.videoOnS : image.videoOffS}/>
                   </StButtonMyDeviceOnOff>
                   <StButtonMyDeviceOnOff
                     width="150px"
                     fontColor="red"
+                    bgColor={isPublisherAudio ? COLOR.greenButtonOn : COLOR.redButtonOff}
+                    color={isPublisherAudio ? COLOR.greenButtonOn2 : COLOR.redButtonOff2}
                     onClick={onClickPublisherAudioToggle}
                   >
-                    {isPublisherAudio ? (
-                      <BsMicFill />
-                    ) : (
-                      <BsMicMuteFill className="off" />
-                    )}
+                    <StButtonIconImage src={isPublisherAudio ? image.audioOnS : image.audioOffS}/>
                   </StButtonMyDeviceOnOff>
                 </StRoomWaitingControllBox>
               </StRoomWaitingSettingBoxStream>
@@ -276,6 +288,7 @@ const RoomWaiting = () => {
                     maxlength="20"
                     ref={nickNameRef}
                     autoFocus />
+                    {validMessageNickName && <StValidMessage>{validMessageNickName}</StValidMessage>}
                 </StRoomWaitingInputBoxTop>
 
 
@@ -286,7 +299,7 @@ const RoomWaiting = () => {
                       <RadioGroup
                         key={nanoid()}
                         categoryName={`mediaBackImage-${MediaBackImage.name}`}
-                        checked={MediaBackImage.name === mediaBackImage}
+                        checked={MediaBackImage.name === mediaBackImageChecked}
                         value={MediaBackImage.name}
                         imageUrl={MediaBackImage.small}
                         onChange={(e) => {
@@ -295,7 +308,7 @@ const RoomWaiting = () => {
                         
                         labelBg={COLOR.pinkLight2}
                         width="72px"
-                        height="72px"
+                        height="auto"
                         borderRadius="20px"
                         textDisplayNone="none"
                       />
@@ -303,19 +316,16 @@ const RoomWaiting = () => {
                   })}
                 </StMediaBackImageListBox>
 
-
-
               </StRoomWaitingInputBox>
-              {validMessageNickName && <StValidMessage>{validMessageNickName}</StValidMessage>}
-
-
-
-
 
             </StRoomWaitingSettingBox>
 
 
-            <ButtonDefault onClick={onClickJoinRoom} width="120px" height="50px" bgColor="#CB8AFE" fontColor="#fff" hoverBgColor="#8500EF" hoverFontColor="#fff">참여하기</ButtonDefault>
+            <ButtonDefault onClick={onClickJoinRoom} 
+              width="474px" height="56px" 
+              bgColor={COLOR.baseDefault} fontColor="#fff" hoverBgColor={COLOR.greenDefault} hoverFontColor="#000" 
+              borderRadius="8px" boxShadow="0px 3px 4px #8600F01A"
+            >참여하기</ButtonDefault>
 
         </StRoomWaitingContainer>
     </StRoomWaitingWrap>
@@ -339,32 +349,63 @@ const StRoomWaitingInputBoxTitle=styled.span`
 `
 const StRoomWaitingInputBoxTop=styled.div`
   text-align: center;
+  position: relative;
 `
-const StButtonMyDeviceOnOff=styled.button``
+
+const StButtonIconImage=styled.img`
+  src: ${(props)=>props.src};
+  width: 30px;
+  height: 30px;
+`
+const StButtonMyDeviceOnOff=styled.button`
+  width: 48px;
+  height: 48px;
+  font-size: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 50%;
+  background-color: ${(props)=>props.bgColor || "transparent"};
+  color:${(props)=>props.color};
+  cursor: pointer;
+  :hover{
+    background-color: ${COLOR.baseDefault};
+  }
+`
 
 const StRoomWaitingControllBox=styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  column-gap: 16px;
 `
 
 const StValidMessage=styled.span`
-  color: red;
+  color: #fff;
   position: absolute;
-  bottom: -35px;
-  left: 0;
+  bottom: -23px;
+  left: 11px;
+  text-shadow: 1px 1px red;
   font-weight: bold;
 `
+
 const StRoomWaitingVideo=styled.video`
-  background-color: #000;
-  width: 500px;
-  border: 2px solid #510090;
+  width: 100%;
+  height: 100%;
   border-radius: 14px;
 `
-
+const StRoomWaitingVideoBox=styled.div`
+  width: 500px;
+  height: 295px;
+  //background-color: #000;
+  border: 2px solid #BF6DFF;
+  border-radius: 14px;
+`
 const StRoomWaitingSettingBoxStream=styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
+  row-gap: 18px;
 `
 const StRoomWaitingInput=styled.input.attrs({
   type:"text"
@@ -392,6 +433,7 @@ const StRoomWaitingSettingBox=styled.div`
   column-gap: 50px;
   row-gap: 20px;
   position: relative;
+  margin-bottom: 60px;
 `
 const StRoomWaitingWelcome=styled.h3`
   margin-bottom: 82px;
@@ -410,13 +452,13 @@ const StRoomWaitingContainer=styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin-top: -200px;
+  margin-top: -30px;
 `
 const StRoomWaitingWrap=styled.div`
   width: 100vw;
   min-width: 800px;
   height: 100vh;
-  background: transparent linear-gradient(0deg, ${COLOR.baseLight} 0%, ${COLOR.baseDefault} 95%, ${COLOR.baseLight} 120%) 0% 0% no-repeat;
+  background: transparent linear-gradient(0deg, ${COLOR.baseLight} 0%, ${COLOR.baseDefault} 100%, ${COLOR.baseLight} 0%) 0% 0% no-repeat;
   display: flex;
   justify-content: center;
   align-items: center;
