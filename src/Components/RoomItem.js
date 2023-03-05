@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { FcLock } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 
+
 //컴포넌트
 import ButtonDefault from "./ButtonDefault";
 import CategoryImageList from "./lists/CategoryImageList";
@@ -116,7 +117,7 @@ const RoomItem = ({
       <StRoomItemMainInfo>
         {/*방 카테고리 이미지 영역*/}
         <StRoomItemMainInfoCategoryBox
-          backgroundImage={backgroundImage}
+          backgroundImage={process.env.PUBLIC_URL+backgroundImage}
           title={category}
         ></StRoomItemMainInfoCategoryBox>
 
