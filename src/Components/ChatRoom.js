@@ -321,7 +321,7 @@ function ChatRoom() {
     const route = window.location.href
     const title = "두런두런에 초대합니다!"
     const description = roomTitle
-    const imgFilter = MediaBackImageList.filter((img)=>img.nane === "1") //두런두런 기본 이미지
+    const imgFilter = MediaBackImageList.filter((img)=>img.name === "1") //두런두런 기본 이미지
     const imgUrl = imgFilter.medium
     shareKakao(route, title, description, imgUrl)
   };
