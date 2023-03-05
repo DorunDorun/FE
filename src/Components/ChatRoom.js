@@ -1060,12 +1060,13 @@ const StFooter = styled.footer`
 const StSubscribersSessionStreamInnerBox = styled.div`
   max-width: 340px;
   height: 100%;
-  min-height: 140px;
-  max-height: 200px;
+  //min-height: 140px;
+  height: 200px;
   border-radius: 5px;
   position: relative;
   border: 3px solid transparent;
   box-sizing: border-box;
+  overflow: hidden;
 `;
 
 const StMyStreamControlBox = styled.div`
