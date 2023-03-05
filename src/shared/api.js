@@ -49,6 +49,7 @@ api.interceptors.request.use(
         localStorage.setItem("accessToken");
         localStorage.setItem("refreshToken");
       }
+      console.log("😀 인터셉터 response : ", response)
       return response;
     },
   
