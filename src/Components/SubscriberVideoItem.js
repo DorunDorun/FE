@@ -124,7 +124,7 @@ const StRoomWaitingVideoBox = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  padding: 3px 3px 0 3px;
+  border: 3px solid transparent;
 `;
 
 const StButtonDeviceOnOff = styled.button`
