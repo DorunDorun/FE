@@ -7,7 +7,7 @@ export const shareKakao = (route, title, description, imgUrl) => { // route: 연
         imgUrl : imgUrl,
     }
 
-    console.log("카카오톡 공유하기 실행😎 : ", kakao)
+    console.log("카카오톡 공유하기 실행 😎😎 : ", kakao)
 
 
     if (window.Kakao) {
