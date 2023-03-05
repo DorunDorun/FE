@@ -1046,8 +1046,10 @@ const StSideNav = styled.nav`
 const StStreamWrap = styled.div`
   display: flex;
   height: calc(100vh - 120px);
+  overflow-x: auto;
 `;
 const StFooter = styled.footer`
+  width: 100%;
   height: 50px;
   display: flex;
   justify-content: center;
@@ -1144,7 +1146,7 @@ const StSessionVideoBox = styled.div`
   //min-width: 900px;
   max-width: 1272px;
   width: 1272px;
-  min-width: 1150px;
+  //min-width: 1150px;
   margin: 0 auto;
   position: relative;
   background-color: ${COLOR.pinkLight};
@@ -1190,7 +1192,7 @@ const StSessionWrap = styled.div`
   margin: 0 auto;
 `;
 const StWrap = styled.div`
-  overflow: hidden;
+min-width: 1600px;
   background-color: #fff;
   ::-webkit-scrollbar {
     /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
