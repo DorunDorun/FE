@@ -23,16 +23,32 @@ const Landing = () => {
     fetchData();
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const sse = new EventSource("https://dorundorun.shop/api/sse");
 
     sse.addEventListener("connect", (e) => {
-      console.log("e : ", e);
+      // console.log("e : ", e);
       let receive = JSON.parse(e.data);
-      console.log("연결 현재 채팅방 수 :", receive); // "connected!"
+      // console.log("연결 현재 채팅방 수 :", receive); // "connected!"
       handleCountEvent(receive);
     });
 
+    sse.onerror = function (event) {
+      if (event.readyState == EventSource.CLOSED) {
+        // console.log("SSE 연결이 종료되었습니다.");
+      } else {
+        // console.log("SSE 연결이 에러로 인해 종료되었습니다.");
+      }
+    };
+
+    sse.addEventListener("count", (e) => {
+      // console.log("e : ", e);
+      let receive = JSON.parse(e.data);
+      // console.log("현재 채팅방 수 : ", receive);
+      handleCountEvent(receive);
+    });
+
+    // cleanup function
     return () => {
       sse.close();
     };
