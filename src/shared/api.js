@@ -43,12 +43,7 @@ api.interceptors.request.use(
   api.interceptors.response.use(
     function (response) {
       //헤더에 담긴 토큰 다시 세팅
-      const accessToken = response.config.headers.authorization
-      const refreshToken = response.config.headers.refresh
-      if(accessToken && refreshToken){
-        localStorage.setItem("accessToken");
-        localStorage.setItem("refreshToken");
-      }
+
       console.log("😀 인터셉터 response : ", response)
       return response;
     },
