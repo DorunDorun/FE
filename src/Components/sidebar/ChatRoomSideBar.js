@@ -67,8 +67,12 @@ const ChatRoomSideBar = () => {
         {sidebarContent.title === "프레임" && (
           <div>
             <Stmenu>
-              <StColor onClick={handleColorClick}>컬러</StColor>
-              <StDesign onClick={handleDesignClick}>디자인</StDesign>
+              <StColor active={showColor} onClick={handleColorClick}>
+                컬러
+              </StColor>
+              <StDesign active={showDesign} onClick={handleDesignClick}>
+                디자인
+              </StDesign>
             </Stmenu>
             <HorizonLine />
             {showColor && (
@@ -157,6 +161,7 @@ const StColor = styled.button`
   color: #8e00ff;
   opacity: 1;
   margin-left: 10px;
+  border-bottom: ${(props) => (props.active ? "2px solid black" : "none")};
 `;
 
 const StDesign = styled.button`
@@ -167,6 +172,7 @@ const StDesign = styled.button`
   letter-spacing: 0px;
   color: #8e00ff;
   opacity: 1;
+  border-bottom: ${(props) => (props.active ? "2px solid black" : "none")};
 `;
 
 const StChoice = styled.div`

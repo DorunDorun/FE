@@ -185,6 +185,7 @@ const Main = styled.div`
     color: #fbfbfb;
   }
   div {
+    display: flex;
     width: 600px;
     height: 180px;
   }
