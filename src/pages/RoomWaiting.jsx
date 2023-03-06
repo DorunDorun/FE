@@ -24,9 +24,18 @@ import { COLOR } from "../Components/style/style";
 const RoomWaiting = () => {
   const navigate = useNavigate();
 
+
+
   //유저 미디어 정보 불러오기
   useEffect(() => {
+
+    const accessToken = localStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+    
+    //로그인 토큰 체크
+    if (!accessToken && !refreshToken) return window.location.href="/login"
     getUserMedia();
+    
   }, []);
 
   const message = {

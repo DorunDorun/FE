@@ -161,36 +161,24 @@ function ChatRoom() {
   //방 정보 불러오기
   useEffect(() => {
     fetchRoomInfoGet(userSessionId).then(async (res) => {
-      if (res === undefined) {
-        return navigate("/roomWaiting");
-      }
+      
+      if (res === undefined) return navigate("/roomWaiting")
+      
       console.log("방 정보 불러옴 !! 🤸‍♂️ res : ", res);
-      const nowUserFilter = res.data.data.chatRoomUserList.filter(
-        (user) => user.nowUser === true
-      );
-      console.log(
-        "nowUserFilter[0].enterRoomToken : ",
-        nowUserFilter[0].enterRoomToken
-      );
-      console.log(
-        "nowUserFilter[0].mediaBackImage : ",
-        nowUserFilter[0].mediaBackImage
-      );
-      await setUserInfo({
-        ...userInfo,
-        mediaBackImage: String(nowUserFilter[0].mediaBackImage),
-      });
-      const userTokenData = nowUserFilter[0].enterRoomToken;
-      const userNickNameData = nowUserFilter[0].nickname;
-      setNewNickName(userNickNameData);
+      
+      //현재 유저 필터링
+      const nowUserFilter = res.data.data.chatRoomUserList.filter((user) => user.nowUser === true)
+      console.log("nowUserFilter[0].enterRoomToken : ", nowUserFilter[0].enterRoomToken)
+      console.log("nowUserFilter[0].mediaBackImage : ", nowUserFilter[0].mediaBackImage)
+
+      await setUserInfo({...userInfo, mediaBackImage: String(nowUserFilter[0].mediaBackImage),});
+      const userTokenData = nowUserFilter[0].enterRoomToken
+      const userNickNameData = nowUserFilter[0].nickname
+      setNewNickName(userNickNameData)
 
       //스트림 연결
-      connection(
-        userTokenData,
-        userNickNameData,
-        String(nowUserFilter[0].mediaBackImage)
-      );
-    });
+      connection(userTokenData, userNickNameData, String(nowUserFilter[0].mediaBackImage))
+    })
   }, []);
 
   //메인 비디오(크게 보기)
