@@ -26,6 +26,7 @@ const Chat = ({ props }) => {
 
   const chatRef = useRef("");
   const imgRef = useRef("");
+  const sendButtonRef = useRef(null);
 
   const sock = new SockJS("https://dorundorun.shop/ws-stomp");
   const client = Stomp.over(sock);
@@ -64,7 +65,7 @@ const Chat = ({ props }) => {
             // 채팅방 구독
             client.subscribe(`/sub/chat/room/${sessionId}`, (res) => {
               const receive = JSON.parse(res.body);
-              console.log(receive);
+
               fetchData(receive);
               // fetchdata로 보낼것들
             });
@@ -81,6 +82,8 @@ const Chat = ({ props }) => {
     const msg = chatRef.current.value;
     const img = imgRef.current.files[0];
     const now = new Date();
+    if (sendButtonRef.current.disabled) return; // 전송 중일 경우 중복 전송 방지
+    sendButtonRef.current.disabled = true; // 전송 시작
     if (msg === "" && !img) {
       // 메시지와 이미지 둘 다 없을 경우
       return;
@@ -124,6 +127,10 @@ const Chat = ({ props }) => {
 
     chatRef.current.value = null;
     imgRef.current.value = null;
+    // 전송 완료 후
+    setTimeout(() => {
+      sendButtonRef.current.disabled = false; // 전송 종료
+    }, 3000);
   };
 
   const [image, setImage] = useState();
@@ -249,7 +256,9 @@ const Chat = ({ props }) => {
         </Select>
 
         <Input type="text" ref={chatRef} onKeyDown={handleEnterPress}></Input>
-        <Click onClick={sendChat}>전송</Click>
+        <Click ref={sendButtonRef} onClick={sendChat}>
+          전송
+        </Click>
       </Wirte>
     </Container>
   );

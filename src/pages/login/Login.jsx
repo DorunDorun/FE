@@ -16,7 +16,8 @@ const Login = () => {
     window.location.href = GOOGLE_AUTH_URL;
   };
   const goToNaver = () => {
-    window.location.href = NAVER_AUTH_URL;
+    alert("준비중인 소셜 로그인입니다");
+    // window.location.href = NAVER_AUTH_URL;
   };
 
   return (
@@ -51,6 +52,8 @@ const Login = () => {
 export default Login;
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
+  align-items: center;
   background-color: #fff;
   width: 100%;
   height: calc(100vh - 50px);
@@ -58,9 +61,7 @@ const Container = styled.div`
 
 const Text = styled.text`
   display: flex;
-  position: absolute;
-  top: 197px;
-  left: 692px;
+  margin-top: 150px;
   /* border: 1px solid black; */
   width: 536px;
   height: 52px;
@@ -77,9 +78,8 @@ const Text = styled.text`
 
 const KakaoBtn = styled.button`
   display: flex;
-  position: absolute;
-  top: 307px;
-  left: 692px;
+  margin-top: 50px;
+  margin-bottom: 10px;
   background: #ffe900 0% 0% no-repeat padding-box;
   border: none;
   border-radius: 8px;
@@ -98,10 +98,8 @@ const KakaoBtn = styled.button`
 
 const GoogleBtn = styled.button`
   display: flex;
-  display: flex;
-  position: absolute;
-  top: 451px;
-  left: 692px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   background-color: #fff;
   border: 2px solid #c1c1c1;
   border-radius: 8px;
@@ -120,9 +118,8 @@ const GoogleBtn = styled.button`
 
 const NaverBtn = styled.button`
   display: flex;
-  position: absolute;
-  top: 379px;
-  left: 692px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   border: 1px solid black;
   width: 536px;
   height: 56px;
@@ -141,9 +138,7 @@ const NaverBtn = styled.button`
 `;
 
 const Inner = styled.div`
-  position: absolute;
-  top: 550px;
-  left: 692px;
+  margin-top: 50px;
   width: 536px;
   height: 56px;
   justify-content: center;

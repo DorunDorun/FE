@@ -1,6 +1,6 @@
 import axios from "axios";
 
-
+export const PUBLIC_PATH = process.env.PUBLIC_URL
 export const server_url = process.env.REACT_APP_API_URL
 export const server_url_openvidu = process.env.REACT_APP_API_URL_OPENVIDU 
 
@@ -23,27 +23,38 @@ api.interceptors.request.use(
         if (accessToken && refreshToken) {
           config.headers.authorization = accessToken;
           config.headers.refresh = refreshToken;
-          return config;
         }
         else{
           //alert("로그인이 필요한 페이지입니다.")
           return window.location.href="/login"
         }
+        return config;
+
       } catch (error) {
         //alert("서버 요청 에러! 다시 시도해주세요!");
       }
       return config;
     },
+
     function (error) {
-      
       return Promise.reject(error);
     }
   );
   
   api.interceptors.response.use(
     function (response) {
-      //토큰 만료 응답이 있으면
       //헤더에 담긴 토큰 다시 세팅
+      const accessToken = response.headers.get("authorization")
+      const refreshToken = response.headers.get("refresh")
+      if(accessToken && refreshToken){
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+      }else if(response.data.statusCode === 401){ //토큰 만료일 경우 401
+        alert("다시 로그인해주세요!")
+        return window.location.href="/login"
+      }
+      console.log("😀 인터셉터 response : ", response)
+      
       return response;
     },
   

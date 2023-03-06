@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { FcLock } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 
+
 //컴포넌트
 import ButtonDefault from "./ButtonDefault";
 import CategoryImageList from "./lists/CategoryImageList";

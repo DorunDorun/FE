@@ -23,16 +23,32 @@ const Landing = () => {
     fetchData();
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const sse = new EventSource("https://dorundorun.shop/api/sse");
 
     sse.addEventListener("connect", (e) => {
-      console.log("e : ", e);
+      // console.log("e : ", e);
       let receive = JSON.parse(e.data);
-      console.log("연결 현재 채팅방 수 :", receive); // "connected!"
+      // console.log("연결 현재 채팅방 수 :", receive); // "connected!"
       handleCountEvent(receive);
     });
 
+    sse.onerror = function (event) {
+      if (event.readyState == EventSource.CLOSED) {
+        // console.log("SSE 연결이 종료되었습니다.");
+      } else {
+        // console.log("SSE 연결이 에러로 인해 종료되었습니다.");
+      }
+    };
+
+    sse.addEventListener("count", (e) => {
+      // console.log("e : ", e);
+      let receive = JSON.parse(e.data);
+      // console.log("현재 채팅방 수 : ", receive);
+      handleCountEvent(receive);
+    });
+
+    // cleanup function
     return () => {
       sse.close();
     };
@@ -105,16 +121,19 @@ const Container = styled.div`
 `;
 
 const LandingImage = styled.div`
+  display: flex;
   background: url("${process.env.PUBLIC_URL}/asset/images/Landing_Image.png");
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: 70%;
+  background-attachment: fixed;
   background-repeat: no-repeat;
   background-position: left 140% top 25%;
+  position: absolute;
   opacity: 1;
   width: 100%;
-  height: calc(100vh - 50px);
+  height: calc(100vh - 100px);
 `;
 
 const Duruning = styled.div`

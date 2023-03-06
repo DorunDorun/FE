@@ -25,24 +25,19 @@ export default LoginHeader;
 
 const HearderContainer = styled.div`
   display: flex;
+  justify-content: center;
   align-items: center;
   background: #ffffff;
-  position: absolute;
-  width: 1920px;
-  height: 70px;
-  left: 0px;
   box-shadow: 0px 2px 8px #0000000f;
+  width: 100%;
+  height: 70px;
 `;
 
 const Text = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  left: 929px;
-  width: 80px;
-  height: 29px;
-
+  margin-left: 250px;
   /* UI Properties */
   text-align: center;
   font: normal normal 600 24px/29px Pretendard;
@@ -55,8 +50,7 @@ const BackPage = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  left: 1208px;
+  margin-left: 250px;
   width: 20px;
   height: 20px;
   transform: matrix(0, 1, -1, 0, 0, 0);

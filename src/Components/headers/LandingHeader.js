@@ -7,18 +7,8 @@ const LandingHeader = () => {
   const token = localStorage.getItem("accessToken");
   const refresh = localStorage.getItem("refreshToken");
   const navigate = useNavigate();
-  const gotoRoom = () => {
-    if (token && refresh) {
-      navigate("/RoomList");
-    } else {
-      navigate("/Login");
-    }
-  };
-  const gotoInfo = () => {
-    navigate("/Info");
-  };
-  const gotoNotice = () => {
-    navigate("/Notice");
+  const goToBack = () => {
+    navigate("/");
   };
   const gotoLogin = () => {
     if (token && refresh) {
@@ -29,7 +19,7 @@ const LandingHeader = () => {
   };
   return (
     <HearderContainer>
-      <Logo>
+      <Logo onClick={goToBack}>
         <span>두</span>런<span>두</span>런
       </Logo>
       <Login onClick={gotoLogin}>로그인</Login>
@@ -42,26 +32,22 @@ export default LandingHeader;
 const HearderContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   background: #ffffff;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-  position: absolute;
-  width: 1920px;
+  width: 100%;
+  /* width: 100%; */
   height: 70px;
-  left: 0px;
 `;
 
 const Logo = styled.div`
-  position: absolute;
-  width: 115px;
-  height: 40px;
-  left: 25px;
-  align-items: center;
+  display: flex;
+  text-align: center;
+  margin-left: 20px;
   font-family: "LottriaChab";
   font-style: normal;
-  font-size: 30px;
   font-weight: 400;
-  font-size: 28px;
-  line-height: 40px;
+  font-size: 30px;
   span {
     color: #8600f0;
   }
@@ -159,10 +145,10 @@ const Login = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
+  margin-right: 20px;
   width: 115px;
   height: 40px;
-  left: 1748px;
+
   /* UI Properties */
   background: #a74bef 0% 0% no-repeat padding-box;
   border-radius: 16px;
