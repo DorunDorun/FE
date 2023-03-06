@@ -4,7 +4,7 @@ import OpenViduVideoComponent from "./OvVideo";
 
 const UserVideoComponent = (props) => {
     return (
-        <div class="UserVideoComponent">
+        <div className="UserVideoComponent">
             {props.streamManager !== undefined ? (
                 <OpenViduVideoComponent streamManager={props.streamManager} />
             ) : null}
