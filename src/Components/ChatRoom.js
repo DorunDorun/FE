@@ -374,8 +374,11 @@ function ChatRoom() {
     /*공유링크 썸네일*/
     //const imgFilter = MediaBackImageList.filter((img) => img.name === "1"); //두런두런 기본 이미지 필터링
     //const imgUrl = imgFilter[0].medium; //이미지 경로 가져오기 .제거
-    const imgFilter = ShareImages.filter((img) => img.name == "1")
+    console.log("ShareImages : ", ShareImages)
+    const imgFilter = ShareImages.filter((img) => img.name === "1")
     const imgUrl = imgFilter[0].imageUrl; //이미지 경로 가져오기 .제거
+    console.log("imgFilter:",imgFilter)
+    console.log("imgUrl:",imgUrl)
 
     if (status) {
       //공개방

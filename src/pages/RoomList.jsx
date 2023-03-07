@@ -84,6 +84,7 @@ const RoomList = () => {
   const pageCountReset=()=>{
     console.log("👋 pageCountReset!!!")
     setPageCount(1)
+    setRoomData([])
   }
 
   //무한 스크롤 옵션
@@ -319,6 +320,7 @@ const RoomList = () => {
       localStorage.setItem("sessionId", sessionId);
       localStorage.setItem("status", status);
       pageCountReset()
+
       return navigate(`/roomWaiting`);
     }
   };
@@ -326,6 +328,7 @@ const RoomList = () => {
   //방 만들기 클릭
   const onClickRoomCreate = () => {
     pageCountReset()
+    
     navigate("/roomCreate");
   };
 
