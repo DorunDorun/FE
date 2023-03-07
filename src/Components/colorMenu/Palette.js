@@ -19,9 +19,10 @@ const Palette = () => {
   };
 
   const handleClick = () => {
-    console.log("선택된 색상 데이터:", color.hex);
-    setColorData(color.hex);
-    setColorInStore(color.hex);
+    alert("준비중인 기능입니다");
+    // console.log("선택된 색상 데이터:", color.hex);
+    // setColorData(color.hex);
+    // setColorInStore(color.hex);
   };
 
   const handleBoxClick = (index) => {
@@ -43,8 +44,9 @@ const Palette = () => {
       });
       const selectedColor =
         menuItem.colors[selectedColorIndex - menuItem.startIndex];
-      console.log(selectedColor);
-      setColorInStore(selectedColor);
+      alert("준비중인 기능입니다");
+      // console.log(selectedColor);
+      // setColorInStore(selectedColor);
       setSelectedBox(null);
     }
   };
