@@ -29,8 +29,9 @@ const StButtonNormal=styled.button`
   border: none;
   font-size: 30px;
   position: absolute;
-  left: -5px;
-  top: -60px;
+  left: -55px;
+  top: 0;
+  color: ${COLOR.grayLight};
   cursor: pointer;
   :hover{
     color: ${COLOR.baseDefault};

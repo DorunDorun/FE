@@ -366,14 +366,17 @@ const RoomList = () => {
               </StRoomListSearchButton>
             </StRoomListSearchBox>
             <ButtonDefault
-              width="17%"
-              height="40px"
+              width="auto"
+              height="auto"
+              padding="12px 44px"
               bgColor={COLOR.baseDefault}
               fontColor="#fff"
               hoverBgColor={COLOR.greenDefault}
               hoverFontColor="#000"
               onClick={onClickRoomCreate}
               boxShadow="0px 3px 4px #8600F01A"
+              fontFamily="Pretendard"
+              fontWeight="normal"
             >
               라이브룸 만들기
             </ButtonDefault>
@@ -508,7 +511,7 @@ const StNoRooms = styled.p`
 `;
 
 const StRoomListSideNav = styled.div`
-  width: 300px;
+  width: 340px;
   height: 100vh;
 `;
 
@@ -591,7 +594,7 @@ const StRoomListSearchButton = styled.button`
   right: 1px;
   bottom: 1px;
   width: 80px;
-  height: 36px;
+  height: 43px;
   border-radius: 0 8px 8px 0;
   border: none;
   border-left: 1px solid #c1c1c1;
@@ -607,10 +610,14 @@ const StRoomListSearchInput = styled.input.attrs((props) => ({
   type: props.type || "text",
 }))`
   width: 600px;
-  height: 38px;
+  height: 45px;
   border: 1px solid ${COLOR.grayLight};
   border-radius: 8px;
   padding: 8px 85px 10px 10px;
+  ::placeholder{
+    font-size: 16px;
+    font-family: "Pretendard";
+  }
 `;
 const StRoomListSearchBox = styled.form`
   position: relative;
@@ -620,7 +627,7 @@ const StRoomListHeader = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 32px;
+  margin-bottom: 30px;
 `;
 
 const StRoomListTopContainer = styled.div`

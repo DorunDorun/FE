@@ -12,7 +12,6 @@ import InputWithLabelDefault from "../Components/InputWithLabelDefault";
 import { categoryList } from "../Components/lists/CategoryList"; //카테고리 목록
 import LinkPrev from '../Components/apis/LinkPrev';
 
-
 //유효성 검사
 import { regExpTitle, regExpSubTitle, regExpPassword,} from "../Components/apis/RegExp";
 
@@ -222,7 +221,6 @@ function RoomCreate() {
   };
 
 
-
   if (loading) {
     return <p>Loading</p>;
   }
@@ -334,7 +332,9 @@ function RoomCreate() {
           {/* 카테고리 */}
           <StRoomCreateInputDiv>
             <StRoomCreateInputDivCategory>
-              <StSpanNormal>카테고리</StSpanNormal>
+              <StSpanNormalCategoryBox>
+                <StSpanNormal>카테고리</StSpanNormal>
+              </StSpanNormalCategoryBox>
               <StCategoryBox>
                 <StCategoryBoxContainer>
                   {categoryList.map((category) => {
@@ -345,6 +345,7 @@ function RoomCreate() {
                         checked={category.categoryValue === roomCategory}
                         value={category.categoryValue}
                         imageUrl={category.categoryImage}
+                        room="roomCreate"
                         onChange={(e) => {
                           onChangeRadioCategory(e.target.value);
                         }}
@@ -381,8 +382,9 @@ function RoomCreate() {
           <StRoomCreateButtonBox>
             <ButtonDefault
               width="100%"
-              height="40px"
-              bgColor={COLOR.baseLight}
+              height="56px"
+              bgColor={COLOR.grayLight}
+              fontSize="20px"
               fontColor="#fff"
               hoverBgColor={COLOR.baseDefault}
             >
@@ -463,10 +465,20 @@ const StLabel = styled.label`
   //margin-bottom: 10px;
 `;
 
+const StSpanNormalCategoryBox=styled.div`
+  display: flex;
+  align-items: flex-start;
+  flex-basis: 15%;
+  padding-top: 15px;
+  span{
+    flex-basis: 100%;
+  }
+`
+
 const StRoomCreateInputDivCategory=styled.div`
   width: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
   border-top: 1px solid #dfdfdf;
   border-bottom: 1px solid #dfdfdf;
