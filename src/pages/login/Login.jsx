@@ -80,6 +80,7 @@ const KakaoBtn = styled.button`
   display: flex;
   margin-top: 50px;
   margin-bottom: 10px;
+  cursor: pointer;
   background: #ffe900 0% 0% no-repeat padding-box;
   border: none;
   border-radius: 8px;
@@ -100,6 +101,7 @@ const GoogleBtn = styled.button`
   display: flex;
   margin-top: 10px;
   margin-bottom: 10px;
+  cursor: pointer;
   background-color: #fff;
   border: 2px solid #c1c1c1;
   border-radius: 8px;
@@ -120,6 +122,7 @@ const NaverBtn = styled.button`
   display: flex;
   margin-top: 10px;
   margin-bottom: 10px;
+  cursor: pointer;
   border: 1px solid black;
   width: 536px;
   height: 56px;
