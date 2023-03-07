@@ -21,8 +21,8 @@ const Palette = () => {
   const handleClick = () => {
     alert("준비중인 기능입니다");
     // console.log("선택된 색상 데이터:", color.hex);
-    // setColorData(color.hex);
-    // setColorInStore(color.hex);
+    setColorData(color.hex);
+    setColorInStore(color.hex);
   };
 
   const handleBoxClick = (index) => {
@@ -46,7 +46,7 @@ const Palette = () => {
         menuItem.colors[selectedColorIndex - menuItem.startIndex];
       alert("준비중인 기능입니다");
       // console.log(selectedColor);
-      // setColorInStore(selectedColor);
+      setColorInStore(selectedColor);
       setSelectedBox(null);
     }
   };
