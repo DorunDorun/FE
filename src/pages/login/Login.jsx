@@ -16,8 +16,8 @@ const Login = () => {
     window.location.href = GOOGLE_AUTH_URL;
   };
   const goToNaver = () => {
-    alert("준비중인 소셜 로그인입니다");
-    // window.location.href = NAVER_AUTH_URL;
+    // alert("준비중인 소셜 로그인입니다");
+    window.location.href = NAVER_AUTH_URL;
   };
 
   return (
