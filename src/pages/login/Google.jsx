@@ -3,9 +3,6 @@ import Wait from "../../Components/Wait";
 import { LoginStore } from "../../zustand/Store";
 
 const Google = () => {
-  //   window.location.href;
-  //   let code = new URL(window.location.href).searchParams.get("code");
-
   //   구글
   const accessToken = new URL(window.location.href).searchParams.get(
     "Authorization"
@@ -22,15 +19,6 @@ const Google = () => {
   const name = JSON.parse(user_Info[0]).name;
   const social = JSON.parse(user_Info[0]).social;
   const profile = JSON.parse(user_Info[0]).profile;
-
-  // console.log(accessToken);
-  // console.log(refreshToken);
-  // console.log(user_Info);
-  // console.log("id", id);
-  // console.log("email", email);
-  // console.log("name", name);
-  // console.log("social", social);
-  // console.log("profile", profile);
 
   //방 생성 데이터
   const data = LoginStore((state) => state.data);

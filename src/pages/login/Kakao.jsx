@@ -22,18 +22,6 @@ const Kakao = () => {
   const profile = JSON.parse(user_Info[0]).profile;
   const thumbnail_image_url = JSON.parse(user_Info[0]).thumbnail_image_url;
 
-  // console.log(typeof user_Info);
-  // console.log("accessToken", accessToken);
-  // console.log("refreshToken", refreshToken);
-  // console.log("Info", Info);
-  // console.log("user_Info", user_Info[0]);
-  // console.log("id", id);
-  // console.log("email", email);
-  // console.log("name", name);
-  console.log("social", social);
-  // console.log("profile", profile);
-  // console.log("thumbnail_image_url", thumbnail_image_url);
-
   //방 생성 데이터
   const data = LoginStore((state) => state.data);
   const loading = LoginStore((state) => state.loading);
