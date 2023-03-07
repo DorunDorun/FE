@@ -46,20 +46,31 @@ const ChatRoomSideBar = () => {
             toggleSidebar("프레임", "프레임 내용을 여기에 넣으세요.")
           }
         >
+          <img
+            src={process.env.PUBLIC_URL + "/asset/images/side/leftside_01.png"}
+          />
           프레임
         </Button>
         <Button
           active={activeButton === "명언"}
-          onClick={() => toggleSidebar("명언", "명언 내용을 여기에 넣으세요.")}
+          onClick={() => alert("준비중입니다.")}
+          // onClick={() => toggleSidebar("명언", "명언 내용을 여기에 넣으세요.")}
         >
+          <img
+            src={process.env.PUBLIC_URL + "/asset/images/side/leftside_02.png"}
+          />
           명언
         </Button>
         <Button
           active={activeButton === "오디오"}
-          onClick={() =>
-            toggleSidebar("오디오", "오디오 내용을 여기에 넣으세요.")
-          }
+          onClick={() => alert("준비중입니다.")}
+          // onClick={() =>
+          //   toggleSidebar("오디오", "오디오 내용을 여기에 넣으세요.")
+          // }
         >
+          <img
+            src={process.env.PUBLIC_URL + "/asset/images/side/leftside_03.png"}
+          />
           오디오
         </Button>
       </Btns>
@@ -123,6 +134,8 @@ const Btns = styled.div`
 
 const Button = styled.button`
   display: flex;
+  cursor: pointer;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: ${(props) => (props.active ? "#F4E7FF" : "#fff")};
@@ -130,6 +143,13 @@ const Button = styled.button`
   width: 69.1px;
   height: 60px;
   z-index: 1;
+  span {
+    text-align: center;
+    font: bold 10px/12px Pretendard;
+    letter-spacing: 0px;
+    color: #fbfbfb;
+    opacity: 1;
+  }
 `;
 
 const Openbar = styled.div`
@@ -153,6 +173,8 @@ const Stmenu = styled.div`
 `;
 
 const StColor = styled.button`
+  display: flex;
+  cursor: pointer;
   background-color: #fff;
   border: none;
   text-align: left;
@@ -161,10 +183,13 @@ const StColor = styled.button`
   color: #8e00ff;
   opacity: 1;
   margin-left: 10px;
-  border-bottom: ${(props) => (props.active ? "2px solid black" : "none")};
+  width: 55px;
+  height: 25px;
+  text-decoration: ${(props) => (props.active ? "underline #8E00FF;" : "none")};
 `;
 
 const StDesign = styled.button`
+  cursor: pointer;
   background-color: #fff;
   border: none;
   text-align: left;
@@ -172,7 +197,10 @@ const StDesign = styled.button`
   letter-spacing: 0px;
   color: #8e00ff;
   opacity: 1;
-  border-bottom: ${(props) => (props.active ? "2px solid black" : "none")};
+  margin-left: 10px;
+  width: 55px;
+  height: 25px;
+  text-decoration: ${(props) => (props.active ? "underline #8E00FF;" : "none")};
 `;
 
 const StChoice = styled.div`

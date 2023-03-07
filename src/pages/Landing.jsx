@@ -83,26 +83,36 @@ const Landing = () => {
           <span>{count}개의 꿈을 두런두런 중</span>
         </Duruning>
         <Main>
-          <span>Do</span> Your
+          <div>
+            <span>Do</span> Your
+          </div>
           <div>
             <span>Run</span>ning for Goal
           </div>
         </Main>
         <Text>
-          [두런두런]은 같은 취향, 관심사, 목표를 가진 사람들과 두런두런 이야기를
-          나누고, 그 순간을 사진으로 기록할 수 있는 공간입니다.
+          <div>
+            [두런두런]은 같은 취향, 관심사, 목표를 가진 사람들과 두런두런
+          </div>
+          <div>
+            이야기를 나누고, 그 순간을 사진으로 기록할 수 있는 공간입니다.
+          </div>
         </Text>
         <In onClick={gotoRoom}>
           <span>방 둘러보기</span>
         </In>
-        <Total>
-          <p>{totalRoom}+</p>
-          <span>그동안 {totalRoom}개 이상의 라이브 방이 개설되었어요</span>
-        </Total>
-        <Time>
-          <p>{totalHour}+</p>
-          <span>그동안 {totalHour}시간 이상의 라이브 시간이 누적되었어요</span>
-        </Time>
+        <StBottom>
+          <Total>
+            <p>{totalRoom}+</p>
+            <div>그동안 {totalRoom}개 이상의 라이브</div>
+            <div>방이 개설되었어요</div>
+          </Total>
+          <Time>
+            <p>{totalHour}+</p>
+            <div>그동안 {totalHour}시간 이상의 라이브</div>
+            <div>시간이 누적되었어요</div>
+          </Time>
+        </StBottom>
       </Container>
       <StFooter></StFooter>
     </>
@@ -133,7 +143,7 @@ const LandingImage = styled.div`
   position: absolute;
   opacity: 1;
   width: 100%;
-  height: calc(100vh - 100px);
+  height: calc(100vh - 120px);
 `;
 
 const Duruning = styled.div`
@@ -141,9 +151,9 @@ const Duruning = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  top: 227px;
-  left: 140px;
+  cursor: default;
+  margin-top: 120px;
+  margin-left: 140px;
   width: 270px;
   height: 44px;
   /* UI Properties */
@@ -170,11 +180,12 @@ const Duruning = styled.div`
 `;
 
 const Main = styled.div`
-  position: absolute;
-  top: 290px;
-  left: 140px;
-  width: 461px;
-  height: 180px;
+  display: flex;
+  flex-direction: column;
+  cursor: default;
+  margin-left: 140px;
+  margin-top: 20px;
+  white-space: pre-wrap;
   /* UI Properties */
   text-align: left;
   font: 64px/84px LottriaChab;
@@ -184,18 +195,13 @@ const Main = styled.div`
   span {
     color: #fbfbfb;
   }
-  div {
-    display: flex;
-    width: 600px;
-    height: 180px;
-  }
 `;
 
 const Text = styled.div`
-  position: absolute;
-  top: 497px;
-  left: 140px;
-  width: 470px;
+  display: flex;
+  flex-direction: column;
+  margin-left: 140px;
+  margin-top: 20px;
   height: 58px;
   line-height: 25px;
   text-align: left;
@@ -208,16 +214,16 @@ const Text = styled.div`
 const In = styled.div`
   /* Layout Properties */
   display: flex;
+  margin-left: 140px;
+  margin-top: 40px;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  top: 591px;
-  left: 140px;
+  cursor: pointer;
   width: 244px;
   height: 56px;
   /* UI Properties */
   background: #171717 0% 0% no-repeat padding-box;
-  border-radius: 16px;
+  border-radius: 7px;
   opacity: 1;
   span {
     /* Layout Properties */
@@ -233,13 +239,18 @@ const In = styled.div`
   }
 `;
 
+const StBottom = styled.div`
+  display: flex;
+`;
+
 const Total = styled.div`
+  cursor: default;
   p {
     /* Layout Properties */
-    position: absolute;
-    top: 717px;
-    left: 140px;
-    width: 121px;
+    display: flex;
+    margin-left: 140px;
+    margin-top: 20px;
+    margin-bottom: 20px;
     height: 58px;
     /* UI Properties */
     text-align: left;
@@ -248,14 +259,11 @@ const Total = styled.div`
     color: #ffffff;
     opacity: 1;
   }
-  span {
+  div {
     /* Layout Properties */
-    position: absolute;
-    top: 780px;
-    left: 140px;
-    width: 190px;
+    display: flex;
+    margin-left: 140px;
     height: 24px;
-    margin-top: 17px;
     text-align: left;
     line-height: 25px;
     font: medium 16px/26px Pretendard;
@@ -266,12 +274,13 @@ const Total = styled.div`
 `;
 
 const Time = styled.div`
+  cursor: default;
   p {
     /* Layout Properties */
-    position: absolute;
-    top: 717px;
-    left: 384px;
-    width: 121px;
+    display: flex;
+    margin-left: 50px;
+    margin-top: 20px;
+    margin-bottom: 20px;
     height: 58px;
     /* UI Properties */
     text-align: left;
@@ -280,14 +289,11 @@ const Time = styled.div`
     color: #ffffff;
     opacity: 1;
   }
-  span {
+  div {
     /* Layout Properties */
-    position: absolute;
-    top: 780px;
-    left: 384px;
-    width: 204px;
+    display: flex;
+    margin-left: 50px;
     height: 24px;
-    margin-top: 17px;
     text-align: left;
     line-height: 25px;
     font: medium 16px/26px Pretendard;

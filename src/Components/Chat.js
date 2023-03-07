@@ -99,7 +99,9 @@ const Chat = ({ props }) => {
           JSON.stringify({
             sessionId: sessionId,
             socialUid: id,
-            nickname: name,
+            name: name,
+            nickname: nickId,
+            profile: profile,
             message: msg,
             imgByteCode: imgDataStr,
             createdAt: now,
@@ -115,7 +117,9 @@ const Chat = ({ props }) => {
         JSON.stringify({
           sessionId: sessionId,
           socialUid: id,
-          nickname: name,
+          name: name,
+          nickname: nickId,
+          profile: profile,
           message: msg,
           createdAt: now,
         })
@@ -127,7 +131,7 @@ const Chat = ({ props }) => {
     setTimeout(() => {
       sendButtonRef.current.disabled = false;
       sendButtonRef.current.innerText = "전송"; // 버튼 텍스트 변경
-    }, 3000);
+    }, 1000);
   };
 
   const [image, setImage] = useState();
@@ -184,11 +188,12 @@ const Chat = ({ props }) => {
             .slice(0)
             .reverse()
             .map((chating) =>
-              chating.receive.nickname === name ? (
+              chating.receive.name === name ? (
                 <SendMessage
                   key={chating.receive.messageId || chating.receive.fileId}
                 >
                   <SendSet>
+                    <img src={profile} />
                     <p>{nickId}</p>
                   </SendSet>
                   <SendBox>
@@ -213,6 +218,7 @@ const Chat = ({ props }) => {
               ) : (
                 <ReceivedMessage>
                   <Set>
+                    <img src={chating.receive.profile} />
                     <p>{chating.receive.nickname}</p>
                   </Set>
                   <Box>
@@ -240,7 +246,10 @@ const Chat = ({ props }) => {
       <Wirte>
         <Select>
           <label htmlFor="ex_file">
-            <AiOutlinePlusSquare size="38px" />
+            <img
+              src={process.env.PUBLIC_URL + "/asset/images/button/pic.png"}
+            />
+            {/* <AiOutlinePlusSquare size="38px" /> */}
           </label>
           <input
             type="file"
@@ -260,8 +269,6 @@ const Chat = ({ props }) => {
     </Container>
   );
 };
-
-export default Chat;
 
 const Container = styled.div`
   background-color: #ffffff;
@@ -308,6 +315,15 @@ const SendSet = styled.div`
   justify-content: flex-end;
   align-self: flex-end;
   align-items: center;
+  img {
+    display: flex;
+    /* object-fit: cover;
+    margin-bottom: 30px; */
+    width: 30px;
+    height: 30px;
+
+    border-radius: 100px;
+  }
 `;
 
 const Set = styled.div`
@@ -315,6 +331,15 @@ const Set = styled.div`
   flex-direction: column-reverse;
   justify-content: center;
   align-items: flex-start;
+  img {
+    display: flex;
+    /* object-fit: cover;
+    margin-bottom: 30px; */
+    width: 30px;
+    height: 30px;
+
+    border-radius: 100px;
+  }
 `;
 
 const SendBox = styled.div`
@@ -404,6 +429,7 @@ const Input = styled.input`
 
 const Click = styled.button`
   display: flex;
+  cursor: pointer;
   padding: auto;
   width: 50px;
   background-color: #8600f0;
@@ -413,3 +439,5 @@ const Click = styled.button`
   justify-content: center;
   align-items: center;
 `;
+
+export default React.memo(Chat);

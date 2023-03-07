@@ -70,12 +70,14 @@ const StMenu = styled.div`
 
 const Stselect = styled.select`
   display: flex;
+  cursor: pointer;
   width: 200px;
   height: 35px;
 `;
 
 const StDesign = styled.div`
   display: flex;
+  cursor: pointer;
   flex-direction: column;
   align-items: center;
   div {
