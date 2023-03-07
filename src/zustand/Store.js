@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
-import { devtools } from "zustand/middleware";
+import { server_url } from "../shared/api";
 
 /* const store = (set) => ({
   data: [],
@@ -29,7 +29,7 @@ export const LoginStore = create((set) => ({
     set(() => ({ loading: true }));
     try {
       console.log("fetch data : ", token);
-      const data = await axios.post("https://dorundorun.shop", token);
+      const data = await axios.post(`${server_url}`, token);
       set((state) => ({ data: (state.data = data.data), loading: false }));
     } catch (err) {
       console.log(err);
