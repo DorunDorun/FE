@@ -98,12 +98,9 @@ const Landing = () => {
             이야기를 나누고, 그 순간을 사진으로 기록할 수 있는 공간입니다.
           </div>
         </Text>
-        <div>
-          <In onClick={gotoRoom}>
-            <span>방 둘러보기</span>
-          </In>
-        </div>
-
+        <In onClick={gotoRoom}>
+          <div>방 둘러보기</div>
+        </In>
         <StBottom>
           <Total>
             <p>{totalRoom}+</p>
@@ -160,13 +157,11 @@ const Duruning = styled.div`
   height: 44px;
   /* UI Properties */
   background: #0000004d 0% 0% no-repeat padding-box;
-  /* border: 1px solid #fbfbfb; */
   border-radius: 20px;
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   opacity: 1;
   div {
-    /* box-shadow: 0px 0px 8px #ffffff80; */
     margin-left: 20px;
   }
   span {
@@ -174,7 +169,7 @@ const Duruning = styled.div`
     justify-content: center;
     width: 250px;
     height: 24px;
-    margin-right: 28px;
+    margin-right: 15px;
     text-align: left;
     font: 20px/24px Pretendard;
     letter-spacing: 0px;
@@ -215,7 +210,7 @@ const Text = styled.div`
   opacity: 1;
 `;
 
-const In = styled.button`
+const In = styled.div`
   /* Layout Properties */
   display: flex;
   margin-left: 140px;
@@ -229,13 +224,12 @@ const In = styled.button`
   background: #171717 0% 0% no-repeat padding-box;
   border-radius: 7px;
   opacity: 1;
-
-  span {
-    /* Layout Properties */
-    position: absolute;
-    width: 92px;
-    height: 24px;
+  div {
     /* UI Properties */
+    display: flex;
+    position: absolute;
+    width: 244px;
+    height: 56px;
     text-align: center;
     font: 20px/24px Pretendard;
     letter-spacing: 0px;
