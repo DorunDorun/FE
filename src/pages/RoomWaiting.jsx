@@ -63,6 +63,8 @@ const RoomWaiting = () => {
   const statusString = localStorage.getItem("status");
   const status = statusString === "true";
 
+
+
   //디바이스 상태
   const [selectDevice, setSelectDevice] = useState(false);
 
@@ -203,42 +205,48 @@ const RoomWaiting = () => {
       setValidMessageNickName("");
     }
     console.log("status : ", status);
-    if (status) {
-      //공개 방
+
+    if (status) { //공개 방
+
       const roomJoinPayloadOpen = {
-        //공개 방 정보
         sessionId: sessionId,
         nickName: nickName,
         mediaBackImage: mediaBackImageChecked,
-      };
-      fetchPostRoomJoin(roomJoinPayloadOpen).then((res) => {
+      }
+
+      fetchPostRoomJoin(roomJoinPayloadOpen).then((res) => { //공개방 입장
         console.log("공개 방 입장!! res : ", res);
         if (res.data.statusCode === "200") {
-          return navigate(`/room/${sessionId}`);
+          return navigate(`/room/join?sessionId=${sessionId}`);
         } else {
-          alert("다시 시도해주세요!");
+          return alert("다시 시도해주세요!");
         }
-      });
-    } else {
-      //비공개 방
+      })
+
+    } else { //비공개 방
+      
       const roomJoinPayloadPrivate = {
-        //비공개 방 정보
         sessionId: sessionId,
         nickName: nickName,
         mediaBackImage: mediaBackImageChecked,
         password: localStorage.getItem("password"),
       };
+      
       console.log("roomJoinPayloadPrivate : ", roomJoinPayloadPrivate);
-      fetchPostRoomJoinPassword(roomJoinPayloadPrivate).then((res) => {
+      
+      fetchPostRoomJoinPassword(roomJoinPayloadPrivate).then((res) => { //비공개방 입장
         console.log("비공개 방 입장! ", res);
         if (res.data.statusCode === "200") {
-          return navigate(`/room/${sessionId}`);
+          return navigate(`/room/join?sessionId=${sessionId}`);
         } else {
-          alert("다시 시도해주세요!");
+          return alert("다시 시도해주세요!");
         }
       });
+      
     }
   };
+
+
 
   return (
     <StRoomWaitingWrap>
@@ -255,7 +263,13 @@ const RoomWaiting = () => {
                   ref={videoRef}
                 ></StRoomWaitingVideo>
               ) : (
-                <UserMediaBackImage userMediaBackImage={userMediaBackImage} />
+                <>
+                  <StRoomWaitingVideo
+                    autoPlay
+                    ref={videoRef}
+                  ></StRoomWaitingVideo>
+                  <UserMediaBackImage userMediaBackImage={userMediaBackImage} position="absolute"/>
+                </>
               )}
             </StRoomWaitingVideoBox>
 
@@ -426,6 +440,7 @@ const StRoomWaitingVideoBox = styled.div`
   //background-color: #000;
   border: 2px solid #bf6dff;
   border-radius: 14px;
+  position: relative;
 `;
 const StRoomWaitingSettingBoxStream = styled.div`
   display: flex;
