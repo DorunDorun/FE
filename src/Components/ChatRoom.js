@@ -21,6 +21,7 @@ import UserMediaBackImage from "./UserMediaBackImage";
 import MediaBackImageList from "./lists/MediaBackImageList";
 import ButtonImageList from "./lists/ButtonImageList";
 import { server_url } from "../shared/api";
+import ShareImages from './lists/Share';
 
 /*유틸*/
 //카카오톡 공유하기
@@ -371,19 +372,21 @@ function ChatRoom() {
     const description = roomTitle;
 
     /*공유링크 썸네일*/
-    const imgFilter = MediaBackImageList.filter((img) => img.name === "1"); //두런두런 기본 이미지 필터링
-    const imgUrl = imgFilter[0].medium; //이미지 경로 가져오기 .제거
+    //const imgFilter = MediaBackImageList.filter((img) => img.name === "1"); //두런두런 기본 이미지 필터링
+    //const imgUrl = imgFilter[0].medium; //이미지 경로 가져오기 .제거
+    const imgFilter = ShareImages.filter((img) => img.name == "1")
+    const imgUrl = imgFilter[0].imageUrl; //이미지 경로 가져오기 .제거
 
     if (status) {
       //공개방
       const routeOpen = route + `&title=${description}&status=${status}`;
-      shareKakao(routeOpen, title, description, imgUrl);
+      return shareKakao(routeOpen, title, description, imgUrl);
     } else {
       //비공개방
       const password = localStorage.getItem("password");
       const routePrivate =
         route + `&title=${description}&status=${status}&password=${password}`;
-      shareKakao(routePrivate, title, description, imgUrl);
+      return shareKakao(routePrivate, title, description, imgUrl);
     }
   };
 
