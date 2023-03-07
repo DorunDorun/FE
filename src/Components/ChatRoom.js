@@ -20,6 +20,8 @@ import ChatRoomSideBar from "./sidebar/ChatRoomSideBar";
 import UserMediaBackImage from "./UserMediaBackImage";
 import MediaBackImageList from "./lists/MediaBackImageList";
 import ButtonImageList from "./lists/ButtonImageList";
+import { server_url } from '../shared/api';
+
 
 /*유틸*/
 //카카오톡 공유하기
@@ -39,13 +41,17 @@ import useStoreRoomDelete from "../zustand/storeRoomDelete";
 
 //스토어-방 정보 불러오기
 import useStoreRoomInfoGet from "../zustand/storeRoomInfoGet";
+//sse 실시간 감지
+import useStoreSseListener from '../zustand/storeSseListener';
 
 function ChatRoom() {
   useEffect(() => {
-    //토큰 없으면 로그인 페이지로 이동
+
     console.log("ChatRoom 시작!");
     
-    //초대받은 유저 입장일 경우 세션, 타이틀 저장, 비번 있을 경우 비번도 저장
+    /*초대받은 유저 입장일 경우 
+    url query string [세션, 타이틀] 저장. 
+    비밀번호 있을 경우 비밀번호도 저장*/
 
     const searchParams = window.location.search
     const query = queryString.parse(searchParams)
@@ -73,7 +79,6 @@ function ChatRoom() {
     //로그인(토큰) 검증
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
-      deleteSession() //방삭제
       return navigate("/login");
     }
   }, []);
@@ -98,14 +103,14 @@ function ChatRoom() {
 
   //디바이스 on off 버튼
   const image = {
-    videoOnS: ButtonImageList.video.onSmall.slice(1),
-    videoOffS: ButtonImageList.video.offSmall.slice(1),
-    audioOnS: ButtonImageList.audio.onSmall.slice(1),
-    audioOffS: ButtonImageList.audio.offSmall.slice(1),
-    videoOnM: ButtonImageList.video.onMedium.slice(1),
-    videoOffM: ButtonImageList.video.offMedium.slice(1),
-    audioOnM: ButtonImageList.audio.onMedium.slice(1),
-    audioOffM: ButtonImageList.audio.offMedium.slice(1),
+    videoOnS: ButtonImageList.video.onSmall,
+    videoOffS: ButtonImageList.video.offSmall,
+    audioOnS: ButtonImageList.audio.onSmall,
+    audioOffS: ButtonImageList.audio.offSmall,
+    videoOnM: ButtonImageList.video.onMedium,
+    videoOffM: ButtonImageList.video.offMedium,
+    audioOnM: ButtonImageList.audio.onMedium,
+    audioOffM: ButtonImageList.audio.offMedium,
   };
 
   //방 정보 불러오기
@@ -150,25 +155,42 @@ function ChatRoom() {
   //화이트보드
   const [isWhiteBoard, setIsWhiteBoard] = useState(false);
 
-  //새로고침 시
-  const deleteSession = (e) => {
-    fetchDeleteRoom(userSessionId);
+  //브라우저 새로고침, 종료 시 실행
+  const deleteSession = async (e) => {
+    //await fetchDeleteRoom(userSessionId);
     //setIsRefresh(true);
+
+    const headers = {
+      type : 'application/json; charset=UTF-8',
+      authorization : localStorage.getItem("accessToken"),
+      refresh : localStorage.getItem("refreshToken")
+    }
+    console.log("❌ 방 삭제 navigator.sendBeacon 실행!")
+
+    await navigator.sendBeacon(`${server_url}api/rooms/${userSessionId}/delete`, JSON.stringify(headers))
+    await navigator.sendBeacon(`${server_url}api/count`) //sse 실시간 감지
+
     resetSession();
-    navigate("/roomWaiting");
+    return navigate("/roomWaiting");
   };
 
+  //새로고침 감지 경고창
   useBeforeunload((event) => {
     event.preventDefault();
+    
   });
 
-  //브라우저 새로고침, 종료 시 실행
 
+  //sse 실시간 감지
+  const sseListener = useStoreSseListener((state) => state.sseListener);
+
+
+  //브라우저 새로고침, 종료 시 실행
   useEffect(() => {
     window.addEventListener("unload", deleteSession);
-    return () => {
-      window.removeEventListener("unload", deleteSession);
-    };
+    return()=>{
+      window.addEventListener("unload", deleteSession);
+    }
   }, []);
 
   //프로필 이미지 불러오기
@@ -332,7 +354,7 @@ function ChatRoom() {
   //초대하기
   const onClickInviteLink = () => {
     
-    const status = localStorage.getItem("status") //방 상태
+    const status = localStorage.getItem("status") === "true" //방 상태
     
     /*기본 공통 정보*/
     const route = window.location.href
@@ -341,7 +363,7 @@ function ChatRoom() {
 
     /*공유링크 썸네일*/
     const imgFilter = MediaBackImageList.filter((img)=>img.name === "1") //두런두런 기본 이미지 필터링
-    const imgUrl = imgFilter[0].medium.slice(1) //이미지 경로 가져오기 .제거
+    const imgUrl = imgFilter[0].medium //이미지 경로 가져오기 .제거
 
     if(status){ //공개방
       const routeOpen = route + `&title=${title}&status=${status}`
@@ -600,6 +622,7 @@ function ChatRoom() {
     //캔버스 초기화
     setIsCanvas(false);
     setIsCanvasDefault(true);
+    
     console.log("방 삭제 , 초기화 완료!");
   };
 
@@ -616,10 +639,12 @@ function ChatRoom() {
       console.log("방 삭제 res ", res);
       //api 삭제 요청
       if (res.status === 200) {
+        sseListener() //sse 실시간 감지
         resetSession();
-        navigate("/roomList");
+        return navigate("/roomList");
       }
     });
+    
   };
 
   //나가기 버튼 클릭
@@ -772,7 +797,7 @@ function ChatRoom() {
                       <StRoomWaitingVideoBox>
                         <UserMediaBackImage
                           borderRadius="0"
-                          userMediaBackImage={userMediaBackImage.slice(1)}
+                          userMediaBackImage={userMediaBackImage}
                         />
                       </StRoomWaitingVideoBox>
                     )}
@@ -784,7 +809,7 @@ function ChatRoom() {
                   subscribers?.map((sub) => {
                     return (
                       <SubscriberVideoItem
-                        key={nanoid()}
+                        key={sub.id}
                         sub={sub}
                         subscriberSpeakerConnectionId={
                           subscriberSpeakerConnectionId
