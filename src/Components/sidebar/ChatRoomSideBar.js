@@ -33,8 +33,9 @@ const ChatRoomSideBar = () => {
   };
 
   const handleDesignClick = () => {
-    setShowDesign(true);
-    setShowColor(false);
+    alert("준비중인 기능입니다");
+    // setShowDesign(true);
+    // setShowColor(false);
   };
 
   return (
