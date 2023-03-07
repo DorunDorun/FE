@@ -72,7 +72,7 @@ const ChatRoomSideBar = () => {
           <img
             src={process.env.PUBLIC_URL + "/asset/images/side/leftside_03.png"}
           />
-          오디오
+          음악
         </Button>
       </Btns>
       <Openbar isOpen={isOpen}>
