@@ -21,6 +21,7 @@ import UserMediaBackImage from "./UserMediaBackImage";
 import MediaBackImageList from "./lists/MediaBackImageList";
 import ButtonImageList from "./lists/ButtonImageList";
 import { server_url } from "../shared/api";
+import ShareImages from './lists/Share';
 
 /*유틸*/
 //카카오톡 공유하기
@@ -371,19 +372,24 @@ function ChatRoom() {
     const description = roomTitle;
 
     /*공유링크 썸네일*/
-    const imgFilter = MediaBackImageList.filter((img) => img.name === "1"); //두런두런 기본 이미지 필터링
-    const imgUrl = imgFilter[0].medium; //이미지 경로 가져오기 .제거
+    //const imgFilter = MediaBackImageList.filter((img) => img.name === "1"); //두런두런 기본 이미지 필터링
+    //const imgUrl = imgFilter[0].medium; //이미지 경로 가져오기 .제거
+    console.log("ShareImages : ", ShareImages)
+    const imgFilter = ShareImages.filter((img) => img.name === "1")
+    const imgUrl = imgFilter[0].imageUrl; //이미지 경로 가져오기 .제거
+    console.log("imgFilter:",imgFilter)
+    console.log("imgUrl:",imgUrl)
 
     if (status) {
       //공개방
-      const routeOpen = route + `&title=${title}&status=${status}`;
-      shareKakao(routeOpen, title, description, imgUrl);
+      const routeOpen = route + `&title=${description}&status=${status}`;
+      return shareKakao(routeOpen, title, description, imgUrl);
     } else {
       //비공개방
       const password = localStorage.getItem("password");
       const routePrivate =
-        route + `&title=${title}&status=${status}&password=${password}`;
-      shareKakao(routePrivate, title, description, imgUrl);
+        route + `&title=${description}&status=${status}&password=${password}`;
+      return shareKakao(routePrivate, title, description, imgUrl);
     }
   };
 
@@ -707,6 +713,18 @@ function ChatRoom() {
     }
   };
 
+  const cameraSwtichImage={
+    default:process.env.PUBLIC_URL+"/asset/images/button/cameraSwtich.png"
+  }
+
+  const canvasImage={
+    default:process.env.PUBLIC_URL+"/asset/images/button/canvas.png"
+  }
+
+  const whiteBoardImage={
+    default:process.env.PUBLIC_URL+"/asset/images/button/whiteBoard.png"
+  }
+
   // if (loading) {
   //     return <p>Loading</p>;
   //   }
@@ -732,13 +750,13 @@ function ChatRoom() {
 
                 <StSessionUserBox visibility={isCapture ? "hidden" : "visible"}>
                   <ButtonDefault
-                    height="48px"
+                    height="42px"
                     padding="0 30px"
-                    borderRadius="24px"
-                    bgColor={COLOR.baseDefault}
-                    fontColor="#fff"
-                    hoverBgColor={COLOR.kakaoDefault}
-                    hoverFontColor="#000"
+                    borderRadius="4px"
+                    bgColor={COLOR.silverLight}
+                    fontColor="#000"
+                    hoverBgColor={COLOR.basePinkBold}
+                    hoverFontColor="#fff"
                     onClick={onClickInviteLink}
                   >
                     초대하기
@@ -892,7 +910,7 @@ function ChatRoom() {
                   className={isSwitchCamera && "buttonOn"}
                   title="카메라 변경"
                 >
-                  <GiCardExchange />
+                  <MyControllButtonImg src={cameraSwtichImage.default}/>
                 </StMyDeviceButton>
 
                 {/*디바이스 on off*/}
@@ -947,13 +965,16 @@ function ChatRoom() {
                   */}
                 </StButtonMyDeviceOnOff>
 
+                
+
                 {/* 캔버스 버튼 */}
                 <StMyDeviceButton
                   title="그림 그리기"
                   onClick={onClickCanvasToggle}
                   className={isCanvas && "buttonOn"}
                 >
-                  <BsPalette />
+                  {/* <BsPalette /> */}
+                  <MyControllButtonImg src={canvasImage.default}/>
                 </StMyDeviceButton>
 
                 {/* 화이트보드 버튼 */}
@@ -962,20 +983,24 @@ function ChatRoom() {
                   onClick={onClickWhiteBoardToggle}
                   className={isWhiteBoard && "buttonOn"}
                 >
-                  <TfiBlackboard />
+                  {/* <TfiBlackboard /> */}
+                  <MyControllButtonImg src={whiteBoardImage.default}/>
                 </StMyDeviceButton>
               </StMyStreamControlBoxLeft>
               <StMyStreamControlBoxRight>
                 <ButtonDefault
                   width="auto"
                   height="48px"
-                  padding="0 20px"
+                  padding="0 28px"
                   fontSize="18px"
                   fontColor="#fff"
-                  bgColor={COLOR.baseLight}
-                  hoverBgColor={COLOR.baseDefault}
+                  fontFamily="Pretendard"
+                  fontWeight="normal"
+                  bgColor={COLOR.basePinkRegular}
+                  hoverBgColor={COLOR.basePinkDeep}
                   hoverFontColor="#fff"
                   borderRadius="8px"
+                  borderNormal={`1px solid ${COLOR.basePinkDeep}`}
                   boxShadow="0px 3px 4px #8600F01A"
                   onClick={onClickCaptureRoom}
                 >
@@ -985,13 +1010,16 @@ function ChatRoom() {
                 <ButtonDefault
                   width="auto"
                   height="48px"
-                  padding="0 20px"
-                  bgColor="#fff"
+                  padding="0 28px"
+                  bgColor={COLOR.baseRedRagular}
                   fontSize="18px"
-                  fontColor={COLOR.redPoint}
-                  hoverBgColor={COLOR.redPoint}
+                  fontColor="#fff"
+                  fontFamily="Pretendard"
+                  fontWeight="normal"
+                  hoverBgColor={COLOR.baseRedDeep}
                   hoverFontColor="#fff"
                   borderRadius="8px"
+                  borderNormal={`1px solid ${COLOR.baseRedDeep}`}
                   boxShadow="0px 3px 4px #8600F01A"
                   onClick={onClickLeaveSession}
                 >
@@ -1020,16 +1048,20 @@ function ChatRoom() {
           <Chat props={newNickName} />
         </StStreamWrap>
 
-        <StFooter></StFooter>
+        {/* <StFooter></StFooter> */}
       </StSessionWrap>
     </StWrap>
   );
 }
 
+
+
+const MyControllButtonImg=styled.img`
+  src: ${(props) => props.src};
+`
+
 const StButtonIconImage = styled.img`
   src: ${(props) => props.src};
-  width: 30px;
-  height: 30px;
 `;
 
 const StCanvasContianer = styled.div`
@@ -1075,7 +1107,7 @@ const StMyDeviceButton = styled.button`
   width: 48px;
   height: 48px;
   border: 1px solid transparent;
-  background-color: ${COLOR.grayLight2};
+  background-color: ${COLOR.grayBold};
   border-radius: 50%;
   font-size: 30px;
   display: flex;
@@ -1132,7 +1164,7 @@ const StSideNav = styled.nav`
 `;
 const StStreamWrap = styled.div`
   display: flex;
-  height: calc(100vh - 120px);
+  height: calc(100vh - 70px);
   overflow-x: auto;
 `;
 const StFooter = styled.footer`
@@ -1164,7 +1196,7 @@ const StMyStreamControlBox = styled.div`
   align-items: center;
   flex-direction: row;
   column-gap: 10px;
-  background-color: ${COLOR.boxGrayLight};
+  background: transparent linear-gradient(180deg, #4E4E4E 0%, #2C2C2C 100%) 0% 0% no-repeat;
   padding: 0 60px;
 `;
 const StStreamControlButtonBox = styled.div`
@@ -1237,7 +1269,7 @@ const StSessionVideoBox = styled.div`
   //min-width: 1150px;
   margin: 0 auto;
   position: relative;
-  background-color: ${COLOR.pinkLight};
+  background: transparent linear-gradient( 0deg, #D699FF 7%, #831FC5 101%, #D699FF 50% ) 0% 0% no-repeat;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1248,7 +1280,7 @@ const StSessionMainVideo = styled.div`
 `;
 
 const StSessionH1 = styled.h1`
-  color: #000;
+  color: #fff;
   font-size: 26px;
   font-weight: bold;
   display: inline;
@@ -1268,7 +1300,7 @@ const StSessionHeaderContainer = styled.div`
 `;
 const StSessionHeader = styled.div`
   width: calc(100% - 120px);
-  border-bottom: 1px solid ${COLOR.baseDefault};
+  border-bottom: 1px solid #fff;
   display: flex;
   justify-content: center;
   padding: 30px 0 25px;
