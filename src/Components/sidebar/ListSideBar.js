@@ -46,9 +46,13 @@ const ListSideBar = () => {
     navigate("/RoomList");
   };
 
+  const goToLanding = () => {
+    navigate("/");
+  };
+
   return (
     <Container>
-      <Logo>
+      <Logo onClick={goToLanding}>
         <img src={process.env.PUBLIC_URL + "/asset/images/Logo.png"} />
         {/* <span>두</span>런<span>두</span>런 */}
       </Logo>
@@ -126,7 +130,7 @@ const Logo = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: default;
+  cursor: pointer;
   width: 100%;
   height: 40px;
   margin-top: 35px;
