@@ -239,9 +239,10 @@ const StRoomItemPeopleConutBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 15px 20px;
   background: ${COLOR.pinkLight2};
   border-radius: 0 0 10px 10px;
+  position: relative;
 `;
 const StRoomItemMainInfoRoomInfoSubTitle = styled.span`
   display: inline-block;
@@ -286,7 +287,10 @@ const StInputPassword = styled.input.attrs({
 const StRoomItemMainInfoRoomInfoLock = styled.i`
   display: flex;
   align-items: center;
-  font-size: 24px;
+  font-size: 25px;
+  position: absolute;
+  bottom: 23%;
+  right: 15px;
   svg path:nth-child(2) {
     fill: ${COLOR.grayLight};
   }
