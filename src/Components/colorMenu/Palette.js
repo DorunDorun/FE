@@ -158,8 +158,12 @@ const Palette = () => {
               </div>
             </React.Fragment>
           ))}
-          <button disabled={selectedBox === null} onClick={boxClick}>
-            선택 완료
+          <button
+            disabled={selectedBox === null}
+            onClick={boxClick}
+            style={{ cursor: selectedBox !== null ? "pointer" : "default" }}
+          >
+            버튼
           </button>
         </StMenu>
       </Stpalette>
@@ -176,14 +180,19 @@ const Container = styled.div`
 
 const Stpalette = styled.div`
   display: flex;
+  cursor: pointer;
   margin-left: 10px;
 `;
 
 const Stpicker = styled.div`
   display: flex;
+  cursor: pointer;
   flex-direction: column;
   margin: auto;
   padding: auto;
+  button {
+    cursor: pointer;
+  }
 `;
 
 const StMenu = styled.div`

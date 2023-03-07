@@ -82,14 +82,13 @@ const Chat = ({ props }) => {
     const msg = chatRef.current.value;
     const img = imgRef.current.files[0];
     const now = new Date();
-    if (sendButtonRef.current.disabled) return; // 전송 중일 경우 중복 전송 방지
-    sendButtonRef.current.disabled = true; // 전송 시작
+    if (sendButtonRef.current.disabled) return;
+    sendButtonRef.current.disabled = true;
+    sendButtonRef.current.innerText = "전송 중..."; // 버튼 텍스트 변경
     if (msg === "" && !img) {
-      // 메시지와 이미지 둘 다 없을 경우
       return;
     }
     if (img) {
-      // 이미지 파일이 있는 경우
       const reader = new FileReader();
       reader.onload = (event) => {
         const imgDataUrl = reader.result;
@@ -100,25 +99,27 @@ const Chat = ({ props }) => {
           JSON.stringify({
             sessionId: sessionId,
             socialUid: id,
-            nickname: name,
+            name: name,
+            nickname: nickId,
+            profile: profile,
             message: msg,
-            imgByteCode: imgDataStr, // 압축하지 않고 그대로 사용
+            imgByteCode: imgDataStr,
             createdAt: now,
           })
         );
-        // 이미지 미리보기 초기화
         setImage(null);
       };
       reader.readAsDataURL(img);
     } else {
-      // 메시지만 있는 경우
       client.send(
         `/pub/chat/room`,
         {},
         JSON.stringify({
           sessionId: sessionId,
           socialUid: id,
-          nickname: name,
+          name: name,
+          nickname: nickId,
+          profile: profile,
           message: msg,
           createdAt: now,
         })
@@ -127,10 +128,10 @@ const Chat = ({ props }) => {
 
     chatRef.current.value = null;
     imgRef.current.value = null;
-    // 전송 완료 후
     setTimeout(() => {
-      sendButtonRef.current.disabled = false; // 전송 종료
-    }, 3000);
+      sendButtonRef.current.disabled = false;
+      sendButtonRef.current.innerText = "전송"; // 버튼 텍스트 변경
+    }, 1000);
   };
 
   const [image, setImage] = useState();
@@ -187,11 +188,12 @@ const Chat = ({ props }) => {
             .slice(0)
             .reverse()
             .map((chating) =>
-              chating.receive.nickname === name ? (
+              chating.receive.name === name ? (
                 <SendMessage
                   key={chating.receive.messageId || chating.receive.fileId}
                 >
                   <SendSet>
+                    <img src={profile} />
                     <p>{nickId}</p>
                   </SendSet>
                   <SendBox>
@@ -216,6 +218,7 @@ const Chat = ({ props }) => {
               ) : (
                 <ReceivedMessage>
                   <Set>
+                    <img src={chating.receive.profile} />
                     <p>{chating.receive.nickname}</p>
                   </Set>
                   <Box>
@@ -243,7 +246,10 @@ const Chat = ({ props }) => {
       <Wirte>
         <Select>
           <label htmlFor="ex_file">
-            <AiOutlinePlusSquare size="38px" />
+            <img
+              src={process.env.PUBLIC_URL + "/asset/images/button/pic.png"}
+            />
+            {/* <AiOutlinePlusSquare size="38px" /> */}
           </label>
           <input
             type="file"
@@ -263,8 +269,6 @@ const Chat = ({ props }) => {
     </Container>
   );
 };
-
-export default Chat;
 
 const Container = styled.div`
   background-color: #ffffff;
@@ -311,6 +315,15 @@ const SendSet = styled.div`
   justify-content: flex-end;
   align-self: flex-end;
   align-items: center;
+  img {
+    display: flex;
+    /* object-fit: cover;
+    margin-bottom: 30px; */
+    width: 30px;
+    height: 30px;
+
+    border-radius: 100px;
+  }
 `;
 
 const Set = styled.div`
@@ -318,6 +331,15 @@ const Set = styled.div`
   flex-direction: column-reverse;
   justify-content: center;
   align-items: flex-start;
+  img {
+    display: flex;
+    /* object-fit: cover;
+    margin-bottom: 30px; */
+    width: 30px;
+    height: 30px;
+
+    border-radius: 100px;
+  }
 `;
 
 const SendBox = styled.div`
@@ -407,6 +429,7 @@ const Input = styled.input`
 
 const Click = styled.button`
   display: flex;
+  cursor: pointer;
   padding: auto;
   width: 50px;
   background-color: #8600f0;
@@ -416,3 +439,5 @@ const Click = styled.button`
   justify-content: center;
   align-items: center;
 `;
+
+export default React.memo(Chat);

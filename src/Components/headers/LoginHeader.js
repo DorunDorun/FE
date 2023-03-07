@@ -37,6 +37,7 @@ const Text = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: default;
   margin-left: 250px;
   /* UI Properties */
   text-align: center;
@@ -50,6 +51,7 @@ const BackPage = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
   margin-left: 250px;
   width: 20px;
   height: 20px;
