@@ -14,8 +14,9 @@ const MyPage = () => {
 
   const logOut = async () => {
     await localStorage.clear();
-    navigate("/");
+    return navigate("/");
   };
+
   // 연령대, 생일, 출생년도, 이메일, 성별,이름, 닉네임, 프로필 사진 네이버 유사페이지 사용시
   return (
     <>
@@ -82,7 +83,6 @@ const Myinfo = styled.div`
   height: 500px;
   background: #fbfbfb 0% 0% no-repeat padding-box;
   border-radius: 16px;
-
   opacity: 1;
   span {
     display: flex;
@@ -106,6 +106,7 @@ const Myinfo = styled.div`
 const Acount = styled.div`
   display: flex;
   justify-content: flex-start;
+  width: 250px;
   span {
     display: flex;
     text-align: left;
@@ -119,8 +120,7 @@ const Acount = styled.div`
 const Stsocial = styled.div`
   display: flex;
   justify-content: flex-start;
-  margin-right: 150px;
-  margin-bottom: 50px;
+  width: 250px;
   span {
     display: flex;
     text-align: left;

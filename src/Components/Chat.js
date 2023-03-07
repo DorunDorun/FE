@@ -328,9 +328,9 @@ const SendSet = styled.div`
 
 const Set = styled.div`
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: row;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   img {
     display: flex;
     /* object-fit: cover;
