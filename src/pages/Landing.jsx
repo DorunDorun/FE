@@ -169,7 +169,7 @@ const Duruning = styled.div`
     justify-content: center;
     width: 250px;
     height: 24px;
-    margin-right: 15px;
+    margin-right: 28px;
     text-align: left;
     font: 20px/24px Pretendard;
     letter-spacing: 0px;
@@ -228,6 +228,8 @@ const In = styled.div`
     /* UI Properties */
     display: flex;
     position: absolute;
+    justify-content: center;
+    align-items: center;
     width: 244px;
     height: 56px;
     text-align: center;
