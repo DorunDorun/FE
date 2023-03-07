@@ -19,6 +19,7 @@ const RoomItem = ({
   status,
   password,
   userCount,
+  pageCountReset,
   onClick,
 }) => {
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ const RoomItem = ({
       localStorage.setItem("sessionId", sessionId);
       localStorage.setItem("status", status);
       localStorage.setItem("password", password);
-
+      pageCountReset()
       return navigate(`/roomWaiting`);
     } else {
       return alert("입장 비밀번호가 다릅니다!");

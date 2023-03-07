@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect} from "react";
 import styled from "styled-components";
 
 import UserVideoComponent from "./UserVideoComponent";
@@ -22,9 +22,6 @@ const SubscriberVideoItem = ({
   userNickName,
   userMediaBackImage,
 }) => {
-  useEffect(() => {
-    console.log("😀 list map userNickName: ", userNickName);
-  }, []);
 
   const [isVideoStatus, setIsVideoStatus] = useState(true);
   const [isAudioStatus, setIsAudioStatus] = useState(true);
@@ -32,11 +29,13 @@ const SubscriberVideoItem = ({
   const onClickSubscriberItemVideoToggle = () => {
     onClickSubscriberVideoToggle();
     setIsVideoStatus(!isVideoStatus);
+    console.log("💥❌❌isVideoStatus : ", isVideoStatus)
   };
 
   const onClickSubscriberItemAudioToggle = () => {
     onClickSubscriberAudioToggle();
     setIsAudioStatus(!isAudioStatus);
+    console.log("isAudioStatus : ", isAudioStatus)
   };
 
   //디바이스 on off 버튼
@@ -53,7 +52,6 @@ const SubscriberVideoItem = ({
 
   return (
     <div className="sessionStreamBox">
-      {console.log("✔✔✔ subscribers : ", sub)}
       <StSubscribersSessionStreamInnerBox
         className={
           subscriberSpeakerConnectionId === subStreamConnectionConnectionId &&
@@ -193,4 +191,4 @@ const StSubscribersSessionStreamInnerBox = styled.div`
   overflow: hidden;
 `;
 
-export default SubscriberVideoItem;
+export default React.memo(SubscriberVideoItem)

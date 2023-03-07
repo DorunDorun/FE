@@ -2,9 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { COLOR } from './style/style'
 
-const UserMediaBackImage = ({userMediaBackImage, borderRadius}) => {
+const UserMediaBackImage = ({userMediaBackImage, borderRadius, position}) => {
   return (
-    <StRoomWaitingVideoOff borderRadius={borderRadius}>
+    <StRoomWaitingVideoOff borderRadius={borderRadius} position={position}>
         <StUserMediaBackImage src={userMediaBackImage}/>
     </StRoomWaitingVideoOff>
   )
@@ -28,6 +28,7 @@ const StRoomWaitingVideoOff=styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  position: ${(props)=>props.position || "static"};
 `
 
-export default UserMediaBackImage
+export default React.memo(UserMediaBackImage)

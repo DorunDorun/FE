@@ -1,10 +1,12 @@
 /*기본*/
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import styled from "styled-components";
 import { OpenVidu } from "openvidu-browser";
 import { useNavigate } from "react-router-dom";
 import { useBeforeunload } from "react-beforeunload";
 import html2canvas from "html2canvas";
+import { nanoid } from 'nanoid';
+import queryString from "query-string";
 
 /*컴포넌트*/
 import UserVideoComponent from "./UserVideoComponent";
@@ -18,22 +20,16 @@ import ChatRoomSideBar from "./sidebar/ChatRoomSideBar";
 import UserMediaBackImage from "./UserMediaBackImage";
 import MediaBackImageList from "./lists/MediaBackImageList";
 import ButtonImageList from "./lists/ButtonImageList";
+import { server_url } from '../shared/api';
+
 
 /*유틸*/
 //카카오톡 공유하기
 import { shareKakao } from "../utils/shareKakaoLink";
 
 //아이콘
-import { BsCameraVideo } from "react-icons/bs";
-import { BsCameraVideoOff } from "react-icons/bs";
-import { BsMic } from "react-icons/bs";
-import { BsMicMute } from "react-icons/bs";
 import { BsPalette } from "react-icons/bs";
 import { TfiBlackboard } from "react-icons/tfi";
-import { BsMicFill } from "react-icons/bs";
-import { BsMicMuteFill } from "react-icons/bs";
-import { BsFillCameraVideoFill } from "react-icons/bs";
-import { BsFillCameraVideoOffFill } from "react-icons/bs";
 import { GiCardExchange } from "react-icons/gi";
 
 //css
@@ -44,26 +40,59 @@ import useStoreRoomDelete from "../zustand/storeRoomDelete";
 
 //스토어-방 정보 불러오기
 import useStoreRoomInfoGet from "../zustand/storeRoomInfoGet";
+//sse 실시간 감지
+import useStoreSseListener from '../zustand/storeSseListener';
 
 function ChatRoom() {
   useEffect(() => {
-    //토큰 없으면 로그인 페이지로 이동
+
     console.log("ChatRoom 시작!");
+    
+    /*초대받은 유저 입장일 경우 
+    url query string [세션, 타이틀] 저장. 
+    비밀번호 있을 경우 비밀번호도 저장*/
+
+    const searchParams = window.location.search
+    const query = queryString.parse(searchParams)
+    
+    const qSessionId = query.sessionId
+    const qTitle = query.title
+    const qStatus = query.status
+    const qPassword = query.password
+
+
+    if(qStatus !== undefined){ //초대 받은 유저일 경우 params가 있음
+      console.log("🙋‍♂️ query : ", query)
+      console.log("🙋‍♂️ query.sessionId : ", query.sessionId)
+      console.log("🙋‍♂️ query.title : ", query.title)
+      console.log("🙋‍♂️ query.password : ", query.password)
+      console.log("🙋‍♂️ query.status : ", query.status)
+
+      localStorage.setItem("sessionId", qSessionId)
+      localStorage.setItem("title", qTitle)
+      localStorage.setItem("status", qStatus)
+    
+      if(qPassword) localStorage.setItem("password", qPassword)
+    }
+    
+    //로그인(토큰) 검증
     const accessToken = localStorage.getItem("accessToken");
-    if (!accessToken) return navigate("/login");
+    if (!accessToken) {
+      return navigate("/login");
+    }
   }, []);
 
+  
   //roomTitle, userSessionId, userToken, userNickName, loading, hasErrors
   const roomTitle = localStorage.getItem("title");
   const userSessionId = localStorage.getItem("sessionId");
 
-  //링크 접속(초대링크) 상황을 위한 session id local 저장
-  const sessionIdPath = window.location.pathname.substring(6);
-  localStorage.setItem("sessionId", sessionIdPath);
+  const [roomStatus, setRoomStatus]=useState(null)
 
   const userProfileImage = localStorage.getItem("profile");
   const userNickName = localStorage.getItem("name");
   const [newNickName, setNewNickName] = useState(userNickName);
+
 
   //유저 프로필 이미지
   const [userInfo, setUserInfo] = useState({
@@ -73,14 +102,14 @@ function ChatRoom() {
 
   //디바이스 on off 버튼
   const image = {
-    videoOnS: ButtonImageList.video.onSmall.slice(1),
-    videoOffS: ButtonImageList.video.offSmall.slice(1),
-    audioOnS: ButtonImageList.audio.onSmall.slice(1),
-    audioOffS: ButtonImageList.audio.offSmall.slice(1),
-    videoOnM: ButtonImageList.video.onMedium.slice(1),
-    videoOffM: ButtonImageList.video.offMedium.slice(1),
-    audioOnM: ButtonImageList.audio.onMedium.slice(1),
-    audioOffM: ButtonImageList.audio.offMedium.slice(1),
+    videoOnS: ButtonImageList.video.onSmall,
+    videoOffS: ButtonImageList.video.offSmall,
+    audioOnS: ButtonImageList.audio.onSmall,
+    audioOffS: ButtonImageList.audio.offSmall,
+    videoOnM: ButtonImageList.video.onMedium,
+    videoOffM: ButtonImageList.video.offMedium,
+    audioOnM: ButtonImageList.audio.onMedium,
+    audioOffM: ButtonImageList.audio.offMedium,
   };
 
   //방 정보 불러오기
@@ -125,42 +154,60 @@ function ChatRoom() {
   //화이트보드
   const [isWhiteBoard, setIsWhiteBoard] = useState(false);
 
-  //새로고침 시
-  const refreshSession = (e) => {
-    fetchDeleteRoom(userSessionId);
+  //브라우저 새로고침, 종료 시 실행
+  const deleteSession = async (e) => {
+    //await fetchDeleteRoom(userSessionId);
     //setIsRefresh(true);
+
+    const headers = {
+      type : 'application/json; charset=UTF-8',
+      authorization : localStorage.getItem("accessToken"),
+      refresh : localStorage.getItem("refreshToken")
+    }
+    console.log("❌ 방 삭제 navigator.sendBeacon 실행!")
+
+    await navigator.sendBeacon(`${server_url}api/rooms/${userSessionId}/delete`, JSON.stringify(headers))
+    await navigator.sendBeacon(`${server_url}api/count`) //sse 실시간 감지
+
     resetSession();
-    navigate("/roomWaiting");
+    return navigate("/roomWaiting");
   };
 
+  //새로고침 감지 경고창
   useBeforeunload((event) => {
     event.preventDefault();
+    
   });
 
-  //브라우저 새로고침, 종료 시 실행
 
+  //sse 실시간 감지
+  const sseListener = useStoreSseListener((state) => state.sseListener);
+
+
+  //브라우저 새로고침, 종료 시 실행
   useEffect(() => {
-    window.addEventListener("unload", refreshSession);
-    return () => {
-      window.removeEventListener("unload", refreshSession);
-    };
+    window.addEventListener("unload", deleteSession);
+    return()=>{
+      window.addEventListener("unload", deleteSession);
+    }
   }, []);
 
   //프로필 이미지 불러오기
-  console.log("🎨MediaBackImageList : ", MediaBackImageList);
+  //console.log("🎨MediaBackImageList : ", MediaBackImageList);
 
-  const userMediaBackImageFilter = MediaBackImageList.filter(
+  const userMediaBackImageFilter = useMemo(()=> MediaBackImageList.filter(
     (MediaBackImage) => MediaBackImage.name === userInfo.mediaBackImage
-  );
-  console.log("🎨🎨userMediaBackImageFilter : ", userMediaBackImageFilter);
-
-  const userMediaBackImage = userMediaBackImageFilter[0]?.medium;
-  console.log("🎨🎨🎨userMediaBackImage : ", userMediaBackImage);
+  ),[userInfo.mediaBackImage]) 
+  //console.log("🎨🎨userMediaBackImageFilter : ", userMediaBackImageFilter);
+  
+  const userMediaBackImage = useMemo(()=>userMediaBackImageFilter[0]?.medium,[userMediaBackImageFilter]) 
+  //console.log("🎨🎨🎨userMediaBackImage : ", userMediaBackImage)
 
   //방 정보 불러오기
   useEffect(() => {
     fetchRoomInfoGet(userSessionId).then(async (res) => {
-      if (res === undefined) return navigate("/roomWaiting");
+      
+      if (res === undefined) return navigate("/roomWaiting")
 
       console.log("방 정보 불러옴 !! 🤸‍♂️ res : ", res);
 
@@ -314,13 +361,27 @@ function ChatRoom() {
 
   //초대하기
   const onClickInviteLink = () => {
-    //alert("서비스 준비 중인 기능입니다.");
-    const route = window.location.href;
-    const title = "두런두런에 초대합니다!";
-    const description = roomTitle;
-    const imgFilter = MediaBackImageList.filter((img) => img.name === "1"); //두런두런 기본 이미지
-    const imgUrl = imgFilter[0].medium.slice(1);
-    shareKakao(route, title, description, imgUrl);
+    
+    const status = localStorage.getItem("status") === "true" //방 상태
+    
+    /*기본 공통 정보*/
+    const route = window.location.href
+    const title = "두런두런에 초대합니다!"
+    const description = roomTitle
+
+    /*공유링크 썸네일*/
+    const imgFilter = MediaBackImageList.filter((img)=>img.name === "1") //두런두런 기본 이미지 필터링
+    const imgUrl = imgFilter[0].medium //이미지 경로 가져오기 .제거
+
+    if(status){ //공개방
+      const routeOpen = route + `&title=${title}&status=${status}`
+      shareKakao(routeOpen, title, description, imgUrl)
+    }else{ //비공개방
+      const password = localStorage.getItem("password")
+      const routePrivate = route + `&title=${title}&status=${status}&password=${password}`
+      shareKakao(routePrivate, title, description, imgUrl)
+    }
+
   };
 
   //캔버스 컨트롤
@@ -570,6 +631,7 @@ function ChatRoom() {
     //캔버스 초기화
     setIsCanvas(false);
     setIsCanvasDefault(true);
+    
     console.log("방 삭제 , 초기화 완료!");
   };
 
@@ -586,10 +648,12 @@ function ChatRoom() {
       console.log("방 삭제 res ", res);
       //api 삭제 요청
       if (res.status === 200) {
+        sseListener() //sse 실시간 감지
         resetSession();
-        navigate("/roomList");
+        return navigate("/roomList");
       }
     });
+    
   };
 
   //나가기 버튼 클릭
@@ -700,16 +764,8 @@ function ChatRoom() {
                           width="150px"
                           fontColor="red"
                           onClick={onClickPublisherVideoToggle}
-                          bgColor={
-                            isPublisherVideo
-                              ? COLOR.greenButtonOn
-                              : COLOR.redButtonOff
-                          }
-                          color={
-                            isPublisherVideo
-                              ? COLOR.greenButtonOn2
-                              : COLOR.redButtonOff2
-                          }
+                          bgColor={isPublisherVideo ? COLOR.greenButtonOn : COLOR.redButtonOff}
+                          color={isPublisherVideo ? COLOR.greenButtonOn2 : COLOR.redButtonOff2}
                         >
                           <StButtonIconImage
                             src={
@@ -750,7 +806,7 @@ function ChatRoom() {
                       <StRoomWaitingVideoBox>
                         <UserMediaBackImage
                           borderRadius="0"
-                          userMediaBackImage={userMediaBackImage.slice(1)}
+                          userMediaBackImage={userMediaBackImage}
                         />
                       </StRoomWaitingVideoBox>
                     )}
@@ -776,12 +832,12 @@ function ChatRoom() {
                         onClickSubscriberVideoToggle={() => {
                           onClickSubscriberVideoToggle(
                             sub.stream.connection.connectionId
-                          );
+                          )
                         }}
                         onClickSubscriberAudioToggle={() => {
                           onClickSubscriberAudioToggle(
                             sub.stream.connection.connectionId
-                          );
+                          )
                         }}
                         userMediaBackImage={
                           JSON.parse(
