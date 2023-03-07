@@ -106,7 +106,8 @@ const Myinfo = styled.div`
 const Acount = styled.div`
   display: flex;
   justify-content: flex-start;
-  width: 250px;
+  width: 100%;
+  margin-left: 100px;
   span {
     display: flex;
     text-align: left;
@@ -120,7 +121,8 @@ const Acount = styled.div`
 const Stsocial = styled.div`
   display: flex;
   justify-content: flex-start;
-  width: 250px;
+  width: 100%;
+  margin-left: 100px;
   span {
     display: flex;
     text-align: left;

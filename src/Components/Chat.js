@@ -14,7 +14,6 @@ import { sendMessage } from "../zustand/storeSendMessage";
 
 const Chat = ({ props }) => {
   const nickId = props;
-  console.log(nickId);
   const sessionId = localStorage.getItem("sessionId");
   const accessToken = localStorage.getItem("accessToken");
   const refreshToken = localStorage.getItem("refreshToken");
@@ -50,6 +49,17 @@ const Chat = ({ props }) => {
     }
   };
 
+  const disconnect = () => {
+    try {
+      client.debug = null;
+      client.disconnect(() => {
+        client.unsubscribe("sub-0");
+      }, headers);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   // 화상방정보 가져오기
   useEffect(() => {
     if (!sessionId) {
@@ -77,6 +87,13 @@ const Chat = ({ props }) => {
       }
     }
   }, [sessionId]);
+
+  useEffect(() => {
+    window.addEventListener("unload", disconnect);
+    return () => {
+      window.removeEventListener("unload", disconnect);
+    };
+  }, []);
 
   const sendChat = () => {
     const msg = chatRef.current.value;
