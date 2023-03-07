@@ -202,6 +202,17 @@ const Chat = ({ props }) => {
         <img src={image} onClick={remove} />
         {sessionId &&
           msg
+            .filter((item, index, self) => {
+              const existingIndex = self.findIndex((t) => {
+                if (item.messageId) {
+                  return t.messageId === item.messageId;
+                } else if (item.fileId) {
+                  return t.fileId === item.fileId;
+                }
+                return false;
+              });
+              return existingIndex === index;
+            })
             .slice(0)
             .reverse()
             .map((chating) =>
