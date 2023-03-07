@@ -376,13 +376,13 @@ function ChatRoom() {
 
     if (status) {
       //공개방
-      const routeOpen = route + `&title=${title}&status=${status}`;
+      const routeOpen = route + `&title=${description}&status=${status}`;
       shareKakao(routeOpen, title, description, imgUrl);
     } else {
       //비공개방
       const password = localStorage.getItem("password");
       const routePrivate =
-        route + `&title=${title}&status=${status}&password=${password}`;
+        route + `&title=${description}&status=${status}&password=${password}`;
       shareKakao(routePrivate, title, description, imgUrl);
     }
   };
