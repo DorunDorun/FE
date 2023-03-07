@@ -40,7 +40,6 @@ const MyPage = () => {
           </Myinfo>
         </InContainer>
       </Container>
-      <StFooter></StFooter>
     </>
   );
 };
@@ -54,12 +53,12 @@ const Container = styled.div`
   width: 1800px;
   background: #ffffff 0% 0% no-repeat padding-box;
   opacity: 1;
-  height: calc(100vh - 50px);
+  height: 100vh;
 `;
 
 const StRoomListSideNav = styled.div`
   width: 300px;
-  height: calc(100vh - 50px);
+  height: 100vh;
   border-right: 1px solid #dfdfdf;
 `;
 
@@ -69,7 +68,7 @@ const InContainer = styled.div`
   padding: 36px 85px 36px 40px;
   margin: 0;
   font-size: 0;
-  height: calc(100vh - 50px);
+  height: 100vh;
 `;
 
 const Myinfo = styled.div`
@@ -147,12 +146,4 @@ const Bye = styled.button`
   letter-spacing: 0px;
   color: #8600f0;
   opacity: 1;
-`;
-
-const StFooter = styled.footer`
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #c1c1c1 0% 0% no-repeat padding-box;
 `;
