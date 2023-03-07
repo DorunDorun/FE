@@ -43,6 +43,7 @@ const HearderContainer = styled.div`
 const Logo = styled.div`
   display: flex;
   text-align: center;
+  cursor: default;
   margin-left: 20px;
   font-family: "LottriaChab";
   font-style: normal;
@@ -145,18 +146,19 @@ const Login = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
   margin-right: 20px;
   width: 115px;
   height: 40px;
 
   /* UI Properties */
-  background: #a74bef 0% 0% no-repeat padding-box;
-  border-radius: 16px;
+  background: #ebccff 0% 0% no-repeat padding-box;
+  border-radius: 7px;
   opacity: 1;
   border: none;
   text-align: center;
   font: normal 20px/24px Pretendard;
   letter-spacing: 0px;
-  color: #ffffff;
+  color: #8e00ff;
   opacity: 1;
 `;

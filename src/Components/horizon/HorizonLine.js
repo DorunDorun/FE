@@ -4,6 +4,7 @@ const HorizonLine = ({ text }) => {
   return (
     <div
       style={{
+        display: "flex",
         width: "100%",
         textAlign: "center",
         borderBottom: "1px solid gray",

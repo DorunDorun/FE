@@ -5,7 +5,7 @@ import "../../css/fonts/Fonts.css";
 
 const Header = () => {
   const name = localStorage.getItem("name");
-  const thumbnail = localStorage.getItem("thumbnail_image_url");
+  const thumbnail = localStorage.getItem("profile");
   const navigate = useNavigate();
 
   return (
@@ -41,6 +41,7 @@ const HearderContainer = styled.div`
 const Logo = styled.div`
   display: flex;
   text-align: center;
+  cursor: default;
   margin-left: 20px;
   font-family: "LottriaChab";
   font-style: normal;
@@ -104,6 +105,7 @@ const Info = styled.div`
 const Thumbnail = styled.div`
   display: flex;
   align-items: center;
+  cursor: default;
   margin-right: 20px;
   border: none;
   background: url(thumbnail);
