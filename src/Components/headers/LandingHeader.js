@@ -17,12 +17,22 @@ const LandingHeader = () => {
       navigate("/Login");
     }
   };
+
+  const logout = async () => {
+    await localStorage.clear();
+    navigate("/");
+  };
+
   return (
     <HearderContainer>
       <Logo onClick={goToBack}>
         <span>두</span>런<span>두</span>런
       </Logo>
-      <Login onClick={gotoLogin}>로그인</Login>
+      {token && refresh ? (
+        <Logout onClick={logout}>로그아웃</Logout>
+      ) : (
+        <Login onClick={gotoLogin}>로그인</Login>
+      )}
     </HearderContainer>
   );
 };
@@ -143,6 +153,27 @@ const Notice = styled.div`
 `;
 
 const Login = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin-right: 20px;
+  width: 115px;
+  height: 40px;
+
+  /* UI Properties */
+  background: #ebccff 0% 0% no-repeat padding-box;
+  border-radius: 7px;
+  opacity: 1;
+  border: none;
+  text-align: center;
+  font: normal 20px/24px Pretendard;
+  letter-spacing: 0px;
+  color: #8e00ff;
+  opacity: 1;
+`;
+
+const Logout = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
