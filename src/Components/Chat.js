@@ -6,6 +6,7 @@ import Stomp from "stompjs";
 import styled from "styled-components";
 import { AiOutlinePlusSquare } from "react-icons/ai";
 import Wait from "./Wait";
+import { TiDeleteOutline } from "react-icons/ti";
 
 // 스토어
 import useStoreRoomCreate from "../zustand/storeRoomCreate";
@@ -158,6 +159,11 @@ const Chat = ({ props }) => {
     setImage(null);
   };
 
+  // X 버튼 클릭 이벤트 핸들러
+  const handleImageRemove = () => {
+    setImage(null);
+  };
+
   if (loading) {
     return <Wait />;
   }
@@ -182,7 +188,16 @@ const Chat = ({ props }) => {
   return (
     <Container>
       <ChatHistory>
-        <img src={image} onClick={remove} />
+        {image && (
+          <StImg>
+            <TiDeleteOutline
+              onClick={handleImageRemove}
+              className="cross"
+              size="small"
+            />
+            <img src={image} />
+          </StImg>
+        )}
         {sessionId &&
           msg
             .slice(0)
@@ -283,10 +298,32 @@ const ChatHistory = styled.div`
   flex-direction: column-reverse;
   height: calc(100% - 80px);
   overflow-y: scroll;
+  ::-webkit-scrollbar {
+    //스크롤바 비활성화
+    /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
+    display: none;
+  }
+  -ms-overflow-style: none; /* 인터넷 익스플로러 */
+  scrollbar-width: none; /* 파이어폭스 */
   padding: 10px;
+`;
+
+const StImg = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 320px;
+  height: 250px;
+  .cross {
+    display: flex;
+    position: relative;
+    top: 40px;
+    left: 150px;
+    cursor: pointer;
+  }
   img {
-    width: auto;
-    height: auto;
+    width: 300px;
+    height: 200px;
     object-fit: cover;
   }
 `;
