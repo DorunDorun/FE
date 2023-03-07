@@ -78,7 +78,7 @@ const Landing = () => {
         <LandingImage />
         <Duruning>
           <div>
-            <BsFillCircleFill color="#8600F0" />
+            <BsFillCircleFill color="#D699FF" />
           </div>
           <span>{count}개의 꿈을 두런두런 중</span>
         </Duruning>
@@ -99,7 +99,7 @@ const Landing = () => {
           </div>
         </Text>
         <In onClick={gotoRoom}>
-          <span>방 둘러보기</span>
+          <div>방 둘러보기</div>
         </In>
         <StBottom>
           <Total>
@@ -114,7 +114,6 @@ const Landing = () => {
           </Time>
         </StBottom>
       </Container>
-      <StFooter></StFooter>
     </>
   );
 };
@@ -127,7 +126,7 @@ const Container = styled.div`
     no-repeat padding-box;
   opacity: 1;
   width: 100%;
-  height: calc(100vh - 50px);
+  height: 100vh;
 `;
 
 const LandingImage = styled.div`
@@ -143,7 +142,7 @@ const LandingImage = styled.div`
   position: absolute;
   opacity: 1;
   width: 100%;
-  height: calc(100vh - 120px);
+  height: calc(100vh - 70px);
 `;
 
 const Duruning = styled.div`
@@ -157,20 +156,20 @@ const Duruning = styled.div`
   width: 270px;
   height: 44px;
   /* UI Properties */
-  background-color: #fbfbfb 0% 0% no-repeat padding-box;
-  border: 1px solid #fbfbfb;
+  background: #0000004d 0% 0% no-repeat padding-box;
   border-radius: 20px;
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   opacity: 1;
   div {
-    margin-left: 10px;
+    margin-left: 20px;
   }
   span {
     display: flex;
+    justify-content: center;
     width: 250px;
     height: 24px;
-    margin-left: 10px;
+    margin-right: 28px;
     text-align: left;
     font: 20px/24px Pretendard;
     letter-spacing: 0px;
@@ -225,12 +224,14 @@ const In = styled.div`
   background: #171717 0% 0% no-repeat padding-box;
   border-radius: 7px;
   opacity: 1;
-  span {
-    /* Layout Properties */
-    position: absolute;
-    width: 92px;
-    height: 24px;
+  div {
     /* UI Properties */
+    display: flex;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    width: 244px;
+    height: 56px;
     text-align: center;
     font: 20px/24px Pretendard;
     letter-spacing: 0px;

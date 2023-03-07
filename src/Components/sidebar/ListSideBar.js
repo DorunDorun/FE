@@ -123,7 +123,6 @@ export default ListSideBar;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  /* border-right: 1px solid #dfdfdf; */
 `;
 
 const Logo = styled.div`
@@ -173,8 +172,7 @@ const Room = styled.div`
   padding: 8px 10px;
   /* UI Properties */
   text-align: left;
-  font: normal 800 20px/24px Pretendard;
-  letter-spacing: 0px;
+  font: bold 16px/24px Pretendard;
   opacity: 1;
   span {
     margin-left: 10px;
@@ -194,7 +192,7 @@ const History = styled.div`
 
   /* UI Properties */
   text-align: left;
-  font: normal 800 20px/24px Pretendard;
+  font: bold 16px/24px Pretendard;
   letter-spacing: 0px;
   opacity: 1;
   span {
@@ -215,7 +213,7 @@ const Mypage = styled.div`
 
   /* UI Properties */
   text-align: left;
-  font: normal 800 20px/24px Pretendard;
+  font: bold 16px/24px Pretendard;
   letter-spacing: 0px;
   opacity: 1;
   span {
@@ -236,7 +234,7 @@ const Info = styled.div`
 
   /* UI Properties */
   text-align: left;
-  font: normal 800 20px/24px Pretendard;
+  font: bold 16px/24px Pretendard;
   letter-spacing: 0px;
   opacity: 1;
   span {

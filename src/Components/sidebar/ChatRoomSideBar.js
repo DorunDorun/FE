@@ -72,7 +72,7 @@ const ChatRoomSideBar = () => {
           <img
             src={process.env.PUBLIC_URL + "/asset/images/side/leftside_03.png"}
           />
-          오디오
+          음악
         </Button>
       </Btns>
       <Openbar isOpen={isOpen}>
@@ -129,7 +129,7 @@ const Btns = styled.div`
   background-color: #fff;
   border-right: 1px solid gray;
   width: 70px;
-  height: 100%;
+  height: calc(100vh - 70px);
   align-items: flex-start;
 `;
 
@@ -158,7 +158,7 @@ const Openbar = styled.div`
   top: 0;
   left: 70px;
   width: 228.5px;
-  height: 100%;
+  height: calc(100vh - 70px);
   border-right: 1px solid gray;
   background-color: #fff;
   transform: translateX(${(props) => (props.isOpen ? "0" : "-100%")});

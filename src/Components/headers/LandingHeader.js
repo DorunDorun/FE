@@ -167,7 +167,7 @@ const Login = styled.button`
   opacity: 1;
   border: none;
   text-align: center;
-  font: normal 20px/24px Pretendard;
+  font: bold 16px/16px Pretendard;
   letter-spacing: 0px;
   color: #8e00ff;
   opacity: 1;
@@ -188,7 +188,7 @@ const Logout = styled.button`
   opacity: 1;
   border: none;
   text-align: center;
-  font: normal 20px/24px Pretendard;
+  font: bold 16px/16px Pretendard;
   letter-spacing: 0px;
   color: #8e00ff;
   opacity: 1;
