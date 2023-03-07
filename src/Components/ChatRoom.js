@@ -1048,7 +1048,7 @@ function ChatRoom() {
           <Chat props={newNickName} />
         </StStreamWrap>
 
-        <StFooter></StFooter>
+        {/* <StFooter></StFooter> */}
       </StSessionWrap>
     </StWrap>
   );
