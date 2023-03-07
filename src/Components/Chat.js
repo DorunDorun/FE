@@ -297,7 +297,7 @@ const SendMessage = styled.div`
   width: 100%;
   justify-content: center;
   align-items: flex-end;
-  margin-bottom: 7px;
+  margin-bottom: 15px;
 `;
 
 const ReceivedMessage = styled.div`
