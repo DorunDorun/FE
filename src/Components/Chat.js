@@ -347,9 +347,9 @@ const SendBox = styled.div`
   max-width: 70%;
   justify-content: flex-end;
   background: #8600f0 0% 0% no-repeat padding-box;
-  border-radius: 8px;
+  border-radius: 8px 0px 8px 8px;
   opacity: 1;
-  margin-left: 70px;
+  margin-right: 30px;
   img {
     /* Layout Properties */
     width: 188px;
@@ -372,8 +372,9 @@ const Box = styled.div`
   display: flex;
   max-width: 70%;
   background: #000000 0% 0% no-repeat padding-box;
-  border-radius: 8px;
+  border-radius: 0px 8px 8px 8px;
   opacity: 1;
+  margin-left: 30px;
   img {
     /* Layout Properties */
     width: 188px;

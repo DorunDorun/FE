@@ -21,8 +21,7 @@ import ButtonImageList from "./lists/ButtonImageList";
 
 /*유틸*/
 //카카오톡 공유하기
-import { shareKakao } from '../utils/shareKakaoLink';
-
+import { shareKakao } from "../utils/shareKakaoLink";
 
 //아이콘
 import { BsCameraVideo } from "react-icons/bs";
@@ -161,24 +160,38 @@ function ChatRoom() {
   //방 정보 불러오기
   useEffect(() => {
     fetchRoomInfoGet(userSessionId).then(async (res) => {
-      
-      if (res === undefined) return navigate("/roomWaiting")
-      
-      console.log("방 정보 불러옴 !! 🤸‍♂️ res : ", res);
-      
-      //현재 유저 필터링
-      const nowUserFilter = res.data.data.chatRoomUserList.filter((user) => user.nowUser === true)
-      console.log("nowUserFilter[0].enterRoomToken : ", nowUserFilter[0].enterRoomToken)
-      console.log("nowUserFilter[0].mediaBackImage : ", nowUserFilter[0].mediaBackImage)
+      if (res === undefined) return navigate("/roomWaiting");
 
-      await setUserInfo({...userInfo, mediaBackImage: String(nowUserFilter[0].mediaBackImage),});
-      const userTokenData = nowUserFilter[0].enterRoomToken
-      const userNickNameData = nowUserFilter[0].nickname
-      setNewNickName(userNickNameData)
+      console.log("방 정보 불러옴 !! 🤸‍♂️ res : ", res);
+
+      //현재 유저 필터링
+      const nowUserFilter = res.data.data.chatRoomUserList.filter(
+        (user) => user.nowUser === true
+      );
+      console.log(
+        "nowUserFilter[0].enterRoomToken : ",
+        nowUserFilter[0].enterRoomToken
+      );
+      console.log(
+        "nowUserFilter[0].mediaBackImage : ",
+        nowUserFilter[0].mediaBackImage
+      );
+
+      await setUserInfo({
+        ...userInfo,
+        mediaBackImage: String(nowUserFilter[0].mediaBackImage),
+      });
+      const userTokenData = nowUserFilter[0].enterRoomToken;
+      const userNickNameData = nowUserFilter[0].nickname;
+      setNewNickName(userNickNameData);
 
       //스트림 연결
-      connection(userTokenData, userNickNameData, String(nowUserFilter[0].mediaBackImage))
-    })
+      connection(
+        userTokenData,
+        userNickNameData,
+        String(nowUserFilter[0].mediaBackImage)
+      );
+    });
   }, []);
 
   //메인 비디오(크게 보기)
@@ -290,8 +303,6 @@ function ChatRoom() {
     }
   }, [isSubscriberVideo]);
 
-
-
   //카카오톡 공유 sdk 추가
   useEffect(() => {
     const script = document.createElement("script");
@@ -301,17 +312,15 @@ function ChatRoom() {
     return () => document.body.removeChild(script);
   }, []);
 
-
-
   //초대하기
   const onClickInviteLink = () => {
     //alert("서비스 준비 중인 기능입니다.");
-    const route = window.location.href
-    const title = "두런두런에 초대합니다!"
-    const description = roomTitle
-    const imgFilter = MediaBackImageList.filter((img)=>img.name === "1") //두런두런 기본 이미지
-    const imgUrl = imgFilter[0].medium.slice(1)
-    shareKakao(route, title, description, imgUrl)
+    const route = window.location.href;
+    const title = "두런두런에 초대합니다!";
+    const description = roomTitle;
+    const imgFilter = MediaBackImageList.filter((img) => img.name === "1"); //두런두런 기본 이미지
+    const imgUrl = imgFilter[0].medium.slice(1);
+    shareKakao(route, title, description, imgUrl);
   };
 
   //캔버스 컨트롤
@@ -1205,7 +1214,7 @@ const StSessionWrap = styled.div`
   margin: 0 auto;
 `;
 const StWrap = styled.div`
-min-width: 1600px;
+  min-width: 1600px;
   background-color: #fff;
   ::-webkit-scrollbar {
     /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
