@@ -78,8 +78,13 @@ const RoomList = () => {
   //무한스크롤
   const [pageCount, setPageCount] = useState(1); //페이지 카운터
   const [isLoading, setIsLoading] = useState(false); //observer target el 컨트롤
-  const [roomData, setRoomData] = useState(roomList); //방 목록 추가
+  const [roomData, setRoomData] = useState([]); //방 목록 추가
   const [isRoomEnd, setIsRoomEnd] = useState(false); //마지막 목록 체크
+
+  const pageCountReset=()=>{
+    console.log("👋 pageCountReset!!!")
+    setPageCount(1)
+  }
 
   //무한 스크롤 옵션
   const [target, inView] = useInView({
@@ -300,8 +305,8 @@ const RoomList = () => {
     setIsCategorySearch(false);
   };
 
+  //방 입장하기
   const onClickRoomJoin = (title, sessionId, status) => {
-    //방 입장
     const info = {
       title: title,
       sessionId: sessionId,
@@ -313,12 +318,14 @@ const RoomList = () => {
       localStorage.setItem("title", title);
       localStorage.setItem("sessionId", sessionId);
       localStorage.setItem("status", status);
+      pageCountReset()
       return navigate(`/roomWaiting`);
     }
   };
 
   //방 만들기 클릭
   const onClickRoomCreate = () => {
+    pageCountReset()
     navigate("/roomCreate");
   };
 
@@ -436,6 +443,7 @@ const RoomList = () => {
                     status={room.status}
                     userCount={room.cntUser}
                     password={room.password}
+                    pageCountReset={pageCountReset}
                     onClick={() => {
                       onClickRoomJoin(
                         room.title,

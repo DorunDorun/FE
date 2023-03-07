@@ -18,12 +18,12 @@ const Test = () => {
   const birthyear = localStorage.getItem("birthyear");
   const age_range = localStorage.getItem("age_range");
 
-  console.log("id", id);
-  console.log("name", name);
-  console.log("gender", gender);
-  console.log("birthday", birthday);
-  console.log("birthyear", birthyear);
-  console.log("age_range", age_range);
+  // console.log("id", id);
+  // console.log("name", name);
+  // console.log("gender", gender);
+  // console.log("birthday", birthday);
+  // console.log("birthyear", birthyear);
+  // console.log("age_range", age_range);
   // 연령대, 생일, 출생년도, 이메일, 성별,이름, 닉네임, 프로필 사진 네이버 유사페이지 사용시
   return (
     <>

@@ -24,7 +24,8 @@ import { COLOR } from "../Components/style/style";
 import useStoreRoomCreate from "../zustand/storeRoomCreate";
 //스토어 방장 상태
 import useStoreRoomMasterCheck from "../zustand/stoerRoomMasterCheck";
-
+//sse 실시간 감지
+import useStoreSseListener from '../zustand/storeSseListener';
 
 function RoomCreate() {
 
@@ -150,6 +151,12 @@ function RoomCreate() {
   const hasErrors = useStoreRoomCreate((state) => state.hasErrors);
   const fetchData = useStoreRoomCreate((state) => state.fetch);
 
+
+  //sse 실시간 감지
+  const sseListener = useStoreSseListener((state) => state.sseListener);
+
+
+
   //방 생성
   const roomCreate = (e) => {
     e.preventDefault();
@@ -207,6 +214,7 @@ function RoomCreate() {
             localStorage.setItem("password", roomPassword);
           }
         }
+        sseListener()
         return navigate(`/roomWaiting`);
 
       });

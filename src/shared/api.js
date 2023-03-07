@@ -19,14 +19,17 @@ api.interceptors.request.use(
     function (config) {
       const accessToken = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
+
+      const pathname = window.location.pathname
+      console.log("searchParams", pathname)
+
       try { //토큰 체크
-        if (accessToken && refreshToken) {
+        if (accessToken && refreshToken) { //랜딩페이지 제외
           config.headers.authorization = accessToken;
           config.headers.refresh = refreshToken;
         }
         else{
-          //alert("로그인이 필요한 페이지입니다.")
-          return window.location.href="/login"
+          if(pathname !== "/") return window.location.href="/login"
         }
         return config;
 
@@ -46,12 +49,9 @@ api.interceptors.request.use(
       //헤더에 담긴 토큰 다시 세팅
       const accessToken = response.headers.get("authorization")
       const refreshToken = response.headers.get("refresh")
-      if(accessToken && refreshToken){
+      if(accessToken && refreshToken){ //토큰이 만료되었을 경우에만 headers에 토큰이 담겨 옴
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
-      }else if(response.data.statusCode === 401){ //토큰 만료일 경우 401
-        alert("다시 로그인해주세요!")
-        return window.location.href="/login"
       }
       console.log("😀 인터셉터 response : ", response)
       
@@ -60,6 +60,11 @@ api.interceptors.request.use(
   
     function (error) {
       //alert("서버 응답 에러! 다시 시도해주세요!");
+      console.log("😀 인터셉터 에러 !! : ", error)
+      if(error.response.data.statusCode === 401){ //토큰 만료 에러 401
+        alert("다시 로그인해주세요!")
+        return window.location.href="/login"
+      }
       return Promise.reject(error);
     }
   );
