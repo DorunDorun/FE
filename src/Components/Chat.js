@@ -83,9 +83,17 @@ const Chat = ({ props }) => {
     const msg = chatRef.current.value;
     const img = imgRef.current.files[0];
     const now = new Date();
-    if (sendButtonRef.current.disabled) return;
+    if (sendButtonRef.current.disabled) {
+      // 전송 버튼이 이미 비활성화된 경우
+      return;
+    } else if (msg === "" && !img) {
+      // 메시지와 이미지가 모두 없는 경우
+      sendButtonRef.current.disabled = false; // 전송 버튼을 다시 활성화
+      return;
+    }
+    // 메시지나 이미지가 있을 때
     sendButtonRef.current.disabled = true;
-    sendButtonRef.current.innerText = "전송 중..."; // 버튼 텍스트 변경
+    sendButtonRef.current.innerText = "전송 중...";
     if (msg === "" && !img) {
       return;
     }
@@ -155,13 +163,10 @@ const Chat = ({ props }) => {
     });
   };
 
-  const remove = () => {
-    setImage(null);
-  };
-
   // X 버튼 클릭 이벤트 핸들러
   const handleImageRemove = () => {
     setImage(null);
+    imgRef.current.value = null;
   };
 
   if (loading) {
