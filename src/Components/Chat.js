@@ -231,18 +231,6 @@ const Chat = ({ props }) => {
           msg
             .slice(0)
             .reverse()
-            .reduce((accumulator, currentValue) => {
-              const lastItem = accumulator[accumulator.length - 1];
-              if (
-                currentValue.receive.name === lastItem.receive.name &&
-                currentValue.receive.fileId === lastItem.receive.fileId &&
-                currentValue.receive.messageId === lastItem.receive.messageId
-              ) {
-                return accumulator;
-              }
-              return [...accumulator, currentValue];
-            }, [])
-            .reverse()
             .map((chating) =>
               chating.receive.name === name ? (
                 <SendMessage
