@@ -51,16 +51,16 @@ const Chat = ({ props }) => {
     }
   };
 
-  // const disConnect = () => {
-  //   try {
-  //     client.debug = null;
-  //     client.disconnect(() => {
-  //       client.unsubscribe("sub-0");
-  //     }, headers);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+  const disConnect = () => {
+    try {
+      client.debug = null;
+      client.disconnect(() => {
+        client.unsubscribe("sub-0");
+      }, headers);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   // 화상방정보 가져오기
   useEffect(() => {
@@ -88,8 +88,8 @@ const Chat = ({ props }) => {
       }
     }
     return () => {
-      // disConnect();
-      // console.log("소켓연결 해제");
+      disConnect();
+      console.log("소켓연결 해제");
     };
   }, [sessionId]);
 
@@ -230,18 +230,6 @@ const Chat = ({ props }) => {
         {sessionId &&
           msg
             .slice(0)
-            .reverse()
-            .reduce((accumulator, currentValue) => {
-              const lastItem = accumulator[accumulator.length - 1];
-              if (
-                currentValue.receive.name === lastItem.receive.name &&
-                currentValue.receive.fileId === lastItem.receive.fileId &&
-                currentValue.receive.messageId === lastItem.receive.messageId
-              ) {
-                return accumulator;
-              }
-              return [...accumulator, currentValue];
-            }, [])
             .reverse()
             .map((chating) =>
               chating.receive.name === name ? (
