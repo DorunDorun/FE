@@ -21,7 +21,7 @@ import UserMediaBackImage from "./UserMediaBackImage";
 import MediaBackImageList from "./lists/MediaBackImageList";
 import ButtonImageList from "./lists/ButtonImageList";
 import { server_url } from "../shared/api";
-import ShareImages from './lists/Share';
+import ShareImages from "./lists/Share";
 
 /*유틸*/
 //카카오톡 공유하기
@@ -374,11 +374,11 @@ function ChatRoom() {
     /*공유링크 썸네일*/
     //const imgFilter = MediaBackImageList.filter((img) => img.name === "1"); //두런두런 기본 이미지 필터링
     //const imgUrl = imgFilter[0].medium; //이미지 경로 가져오기 .제거
-    console.log("ShareImages : ", ShareImages)
-    const imgFilter = ShareImages.filter((img) => img.name === "1")
+    console.log("ShareImages : ", ShareImages);
+    const imgFilter = ShareImages.filter((img) => img.name === "1");
     const imgUrl = imgFilter[0].imageUrl; //이미지 경로 가져오기 .제거
-    console.log("imgFilter:",imgFilter)
-    console.log("imgUrl:",imgUrl)
+    console.log("imgFilter:", imgFilter);
+    console.log("imgUrl:", imgUrl);
 
     if (status) {
       //공개방
@@ -713,17 +713,17 @@ function ChatRoom() {
     }
   };
 
-  const cameraSwtichImage={
-    default:process.env.PUBLIC_URL+"/asset/images/button/cameraSwtich.png"
-  }
+  const cameraSwtichImage = {
+    default: process.env.PUBLIC_URL + "/asset/images/button/cameraSwtich.png",
+  };
 
-  const canvasImage={
-    default:process.env.PUBLIC_URL+"/asset/images/button/canvas.png"
-  }
+  const canvasImage = {
+    default: process.env.PUBLIC_URL + "/asset/images/button/canvas.png",
+  };
 
-  const whiteBoardImage={
-    default:process.env.PUBLIC_URL+"/asset/images/button/whiteBoard.png"
-  }
+  const whiteBoardImage = {
+    default: process.env.PUBLIC_URL + "/asset/images/button/whiteBoard.png",
+  };
 
   // if (loading) {
   //     return <p>Loading</p>;
@@ -910,7 +910,7 @@ function ChatRoom() {
                   className={isSwitchCamera && "buttonOn"}
                   title="카메라 변경"
                 >
-                  <MyControllButtonImg src={cameraSwtichImage.default}/>
+                  <MyControllButtonImg src={cameraSwtichImage.default} />
                 </StMyDeviceButton>
 
                 {/*디바이스 on off*/}
@@ -965,8 +965,6 @@ function ChatRoom() {
                   */}
                 </StButtonMyDeviceOnOff>
 
-                
-
                 {/* 캔버스 버튼 */}
                 <StMyDeviceButton
                   title="그림 그리기"
@@ -974,7 +972,7 @@ function ChatRoom() {
                   className={isCanvas && "buttonOn"}
                 >
                   {/* <BsPalette /> */}
-                  <MyControllButtonImg src={canvasImage.default}/>
+                  <MyControllButtonImg src={canvasImage.default} />
                 </StMyDeviceButton>
 
                 {/* 화이트보드 버튼 */}
@@ -984,7 +982,7 @@ function ChatRoom() {
                   className={isWhiteBoard && "buttonOn"}
                 >
                   {/* <TfiBlackboard /> */}
-                  <MyControllButtonImg src={whiteBoardImage.default}/>
+                  <MyControllButtonImg src={whiteBoardImage.default} />
                 </StMyDeviceButton>
               </StMyStreamControlBoxLeft>
               <StMyStreamControlBoxRight>
@@ -1054,11 +1052,9 @@ function ChatRoom() {
   );
 }
 
-
-
-const MyControllButtonImg=styled.img`
+const MyControllButtonImg = styled.img`
   src: ${(props) => props.src};
-`
+`;
 
 const StButtonIconImage = styled.img`
   src: ${(props) => props.src};
@@ -1196,7 +1192,8 @@ const StMyStreamControlBox = styled.div`
   align-items: center;
   flex-direction: row;
   column-gap: 10px;
-  background: transparent linear-gradient(180deg, #4E4E4E 0%, #2C2C2C 100%) 0% 0% no-repeat;
+  background: transparent linear-gradient(180deg, #4e4e4e 0%, #2c2c2c 100%) 0%
+    0% no-repeat;
   padding: 0 60px;
 `;
 const StStreamControlButtonBox = styled.div`
@@ -1269,7 +1266,8 @@ const StSessionVideoBox = styled.div`
   //min-width: 1150px;
   margin: 0 auto;
   position: relative;
-  background: transparent linear-gradient( 0deg, #D699FF 7%, #831FC5 101%, #D699FF 50% ) 0% 0% no-repeat;
+  background: transparent
+    linear-gradient(0deg, #d699ff 7%, #831fc5 101%, #d699ff 50%) 0% 0% no-repeat;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
