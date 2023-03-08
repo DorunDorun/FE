@@ -51,6 +51,17 @@ const Chat = ({ props }) => {
     }
   };
 
+  const disConnect = () => {
+    try {
+      client.debug = null;
+      client.disconnect(() => {
+        client.unsubscribe("sub-0");
+      }, headers);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   // 화상방정보 가져오기
   useEffect(() => {
     if (!sessionId) {
@@ -66,7 +77,6 @@ const Chat = ({ props }) => {
             // 채팅방 구독
             client.subscribe(`/sub/chat/room/${sessionId}`, (res) => {
               const receive = JSON.parse(res.body);
-
               fetchData(receive);
               // fetchdata로 보낼것들
             });
@@ -77,6 +87,10 @@ const Chat = ({ props }) => {
         console.log(e);
       }
     }
+    return () => {
+      disConnect();
+      console.log("소켓연결 해제");
+    };
   }, [sessionId]);
 
   const sendChat = () => {
@@ -178,6 +192,16 @@ const Chat = ({ props }) => {
 
   // console.log("주스탠드 타고와", msg);
 
+  // const chatlog = msg.map((chatting) => {
+  //   console.log(1234, chatting.receive.message);
+  //   console.log(9875, chatting.receive);
+  // return (
+  //   <div>
+  //     <span>{chatting.message}</span>
+  //   </div>
+  // );
+  // });
+
   // const chatlog = msg.map(
   //   (chating) => console.log(1234, chating.receive.message)
   // console.log(9875, chating.message)
@@ -206,6 +230,18 @@ const Chat = ({ props }) => {
         {sessionId &&
           msg
             .slice(0)
+            .reverse()
+            .reduce((accumulator, currentValue) => {
+              const lastItem = accumulator[accumulator.length - 1];
+              if (
+                currentValue.receive.name === lastItem.receive.name &&
+                currentValue.receive.fileId === lastItem.receive.fileId &&
+                currentValue.receive.messageId === lastItem.receive.messageId
+              ) {
+                return accumulator;
+              }
+              return [...accumulator, currentValue];
+            }, [])
             .reverse()
             .map((chating) =>
               chating.receive.name === name ? (
