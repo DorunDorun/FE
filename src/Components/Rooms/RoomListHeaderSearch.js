@@ -1,41 +1,44 @@
-import React from 'react'
-import styled from 'styled-components';
-import {COLOR} from "../style/style"
-import { useNavigate } from 'react-router';
+import React from "react";
+import styled from "styled-components";
+import { COLOR } from "../style/style";
+import { useNavigate } from "react-router";
 
-import ButtonDefault from '../ButtonDefault';
+import ButtonDefault from "../ButtonDefault";
 
 import { IoIosSearch } from "react-icons/io";
 
 const RoomListHeaderSearch = ({
-    onSubmitGetRoomSerachList, searchInputRef, searchValue, onChangeSearchValue, pageCountReset
+  onSubmitGetRoomSerachList,
+  searchInputRef,
+  searchValue,
+  onChangeSearchValue,
+  pageCountReset,
 }) => {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate()
-
-    //방 만들기 클릭
-    const onClickRoomCreate = () => {
-    pageCountReset()
+  //방 만들기 클릭
+  const onClickRoomCreate = () => {
+    pageCountReset();
 
     navigate("/roomCreate");
-    };
+  };
 
   return (
     <StRoomListHeader>
-    {/*검색*/}
-    <StRoomListSearchBox onSubmit={(e) => onSubmitGetRoomSerachList(e)}>
+      {/*검색*/}
+      <StRoomListSearchBox onSubmit={(e) => onSubmitGetRoomSerachList(e)}>
         <StRoomListSearchInput
-        ref={searchInputRef}
-        value={searchValue}
-        onChange={(e) => onChangeSearchValue(e)}
-        placeholder="관심있는 키워드를 검색해보세요!"
-        maxLength={20}
+          ref={searchInputRef}
+          value={searchValue}
+          onChange={(e) => onChangeSearchValue(e)}
+          placeholder="관심있는 키워드를 검색해보세요!"
+          maxLength={20}
         />
         <StRoomListSearchButton>
-        <IoIosSearch className="iconSearch" />
+          <IoIosSearch className="iconSearch" />
         </StRoomListSearchButton>
-    </StRoomListSearchBox>
-    <ButtonDefault
+      </StRoomListSearchBox>
+      <ButtonDefault
         width="auto"
         height="auto"
         padding="12px 44px"
@@ -47,14 +50,12 @@ const RoomListHeaderSearch = ({
         boxShadow="0px 3px 4px #8600F01A"
         fontFamily="Pretendard"
         fontWeight="normal"
-    >
+      >
         라이브룸 만들기
-    </ButtonDefault>
+      </ButtonDefault>
     </StRoomListHeader>
-  )
-}
-
-
+  );
+};
 
 const StRoomListSearchButton = styled.button`
   display: flex;
@@ -85,7 +86,7 @@ const StRoomListSearchInput = styled.input.attrs((props) => ({
   border: 1px solid ${COLOR.grayLight};
   border-radius: 8px;
   padding: 8px 85px 10px 10px;
-  ::placeholder{
+  ::placeholder {
     font-size: 16px;
     font-family: "Pretendard";
   }
@@ -101,4 +102,4 @@ const StRoomListHeader = styled.div`
   margin-bottom: 30px;
 `;
 
-export default RoomListHeaderSearch
+export default RoomListHeaderSearch;
