@@ -4,6 +4,7 @@ import styled from "styled-components";
 import LandingHeader from "../Components/headers/LandingHeader";
 import "../css/fonts/Fonts.css";
 import { BsFillCircleFill } from "react-icons/bs";
+import { server_url } from "../shared/api";
 
 //스토어 랜딩
 import { Landingstore } from "../zustand/storeLanding";
@@ -24,7 +25,7 @@ const Landing = () => {
   }, []);
 
   useEffect(() => {
-    const sse = new EventSource("https://dorundorun.shop/api/sse");
+    const sse = new EventSource(`${server_url}api/sse`);
 
     sse.addEventListener("connect", (e) => {
       // console.log("e : ", e);
