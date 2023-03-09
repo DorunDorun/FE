@@ -60,6 +60,7 @@ const Chat = ({ props }) => {
       client.debug = null;
       client.disconnect(() => {
         client.unsubscribe("sub-0");
+        sendMessage.setState({ data: [] });
       }, headers);
     } catch (e) {
       console.log(e);
@@ -344,7 +345,6 @@ const Chat = ({ props }) => {
             <img
               src={process.env.PUBLIC_URL + "/asset/images/button/pic.png"}
             />
-            {/* <AiOutlinePlusSquare size="38px" /> */}
           </label>
           <input
             type="file"
