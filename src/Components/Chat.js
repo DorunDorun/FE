@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { AiOutlinePlusSquare } from "react-icons/ai";
 import Wait from "./Wait";
 import { TiDeleteOutline } from "react-icons/ti";
+import Modal from "react-modal";
 
 // 스토어
 import useStoreRoomCreate from "../zustand/storeRoomCreate";
@@ -32,13 +33,16 @@ const Chat = ({ props }) => {
   const sock = new SockJS("https://dorundorun.shop/ws-stomp");
   const client = Stomp.over(sock);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
   const headers = {
     Authorization: accessToken,
     Refresh: refreshToken,
   };
 
   //소켓
-  const msg = sendMessage((state) => state.data);
+  const message = sendMessage((state) => state.data);
   const loading = sendMessage((state) => state.loading);
   const hasErrors = sendMessage((state) => state.hasErrors);
   const fetchData = sendMessage((state) => state.fetch);
@@ -107,7 +111,7 @@ const Chat = ({ props }) => {
     }
     // 메시지나 이미지가 있을 때
     sendButtonRef.current.disabled = true;
-    sendButtonRef.current.innerText = "전송 중...";
+    sendButtonRef.current.innerText = "ing...";
     if (msg === "" && !img) {
       return;
     }
@@ -191,10 +195,31 @@ const Chat = ({ props }) => {
   }
 
   // console.log("주스탠드 타고와", msg);
+  const seenMessageIdsObj = {};
+  const seenFileIdsObj = {};
+  const filteredMessages = [];
 
-  // const chatlog = msg.map((chatting) => {
-  //   console.log(1234, chatting.receive.message);
-  //   console.log(9875, chatting.receive);
+  message.forEach((msg) => {
+    const messageId = msg.receive.messageId;
+    const fileId = msg.receive.fileId;
+
+    if (messageId !== null && seenMessageIdsObj[messageId]) {
+      // messageId가 이미 중복된 경우
+      return;
+    } else if (fileId !== null && seenFileIdsObj[fileId]) {
+      // fileId가 이미 중복된 경우
+      return;
+    } else {
+      // 중복이 없는 경우
+      filteredMessages.push(msg);
+      seenMessageIdsObj[messageId] = true;
+      seenFileIdsObj[fileId] = true;
+    }
+  });
+
+  // console.log("버그배열", message);
+  // console.log("클린", filteredMessages);
+
   // return (
   //   <div>
   //     <span>{chatting.message}</span>
@@ -214,6 +239,11 @@ const Chat = ({ props }) => {
   // const chatlog = todos.map(
   //   (chating) => console.log(1234, chatlog)
 
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setIsModalOpen(true);
+  };
+
   return (
     <Container>
       <ChatHistory>
@@ -228,7 +258,7 @@ const Chat = ({ props }) => {
           </StImg>
         )}
         {sessionId &&
-          msg
+          filteredMessages
             .slice(0)
             .reverse()
             .map((chating) =>
@@ -238,54 +268,75 @@ const Chat = ({ props }) => {
                 >
                   <SendSet>
                     <img src={profile} />
-                    <p>{nickId}</p>
+                    <span>{nickId}</span>
                   </SendSet>
                   <SendBox>
                     {chating.receive.imgUrl && (
-                      <img src={chating.receive.imgUrl} />
+                      <img
+                        src={chating.receive.imgUrl}
+                        onClick={() => handleImageClick(chating.receive.imgUrl)}
+                      />
                     )}
                     {chating.receive.message && (
                       <span>{chating.receive.message}</span>
                     )}
                   </SendBox>
-                  <span style={{ fontSize: "small" }}>
-                    {new Date(chating.receive.createdAt).toLocaleTimeString(
-                      "ko-KR",
-                      {
-                        hour12: true,
-                        hour: "numeric",
-                        minute: "numeric",
-                      }
-                    )}
+                  <span style={{ fontSize: "small", marginRight: "30px" }}>
+                    <div>
+                      {new Date(chating.receive.createdAt).toLocaleTimeString(
+                        "ko-KR",
+                        {
+                          hour12: true,
+                          hour: "numeric",
+                          minute: "numeric",
+                        }
+                      )}
+                    </div>
                   </span>
                 </SendMessage>
               ) : (
                 <ReceivedMessage>
                   <Set>
                     <img src={chating.receive.profile} />
-                    <p>{chating.receive.nickname}</p>
+                    <span>{chating.receive.nickname}</span>
                   </Set>
                   <Box>
                     {chating.receive.imgUrl && (
-                      <img src={chating.receive.imgUrl} />
+                      <img
+                        src={chating.receive.imgUrl}
+                        onClick={() => handleImageClick(chating.receive.imgUrl)}
+                      />
                     )}
                     {chating.receive.message && (
                       <span>{chating.receive.message}</span>
                     )}
                   </Box>
                   <span style={{ fontSize: "small" }}>
-                    {new Date(chating.receive.createdAt).toLocaleTimeString(
-                      "ko-KR",
-                      {
-                        hour12: true,
-                        hour: "numeric",
-                        minute: "numeric",
-                      }
-                    )}
+                    <div>
+                      {new Date(chating.receive.createdAt).toLocaleTimeString(
+                        "ko-KR",
+                        {
+                          hour12: true,
+                          hour: "numeric",
+                          minute: "numeric",
+                        }
+                      )}
+                    </div>
                   </span>
                 </ReceivedMessage>
               )
             )}
+        {/* <StyledModal
+          isOpen={isModalOpen}
+          onRequestClose={() => setIsModalOpen(false)}
+          contentLabel="Image Modal"
+        >
+          {selectedImage && (
+            <ShowModal>
+              <img src={selectedImage} />
+            </ShowModal>
+          )}
+        </StyledModal> */}
       </ChatHistory>
       <Wirte>
         <Select>
@@ -364,6 +415,9 @@ const SendMessage = styled.div`
   justify-content: center;
   align-items: flex-end;
   margin-bottom: 15px;
+  div {
+    margin-top: 10px;
+  }
 `;
 
 const ReceivedMessage = styled.div`
@@ -373,6 +427,9 @@ const ReceivedMessage = styled.div`
   word-break: break-all;
   justify-content: center;
   align-items: flex-start;
+  div {
+    margin-top: 10px;
+  }
 `;
 
 const SendSet = styled.div`
@@ -383,12 +440,12 @@ const SendSet = styled.div`
   align-items: center;
   img {
     display: flex;
-    /* object-fit: cover;
-    margin-bottom: 30px; */
     width: 30px;
     height: 30px;
-
     border-radius: 100px;
+  }
+  span {
+    font: bold 14px/22px Pretendard;
   }
 `;
 
@@ -399,12 +456,12 @@ const Set = styled.div`
   align-items: center;
   img {
     display: flex;
-    /* object-fit: cover;
-    margin-bottom: 30px; */
     width: 30px;
     height: 30px;
-
     border-radius: 100px;
+  }
+  span {
+    font: 14px/22px Pretendard;
   }
 `;
 
@@ -422,6 +479,7 @@ const SendBox = styled.div`
     height: 105px;
     object-fit: scale-down;
     background-color: #fff;
+    cursor: pointer;
   }
   span {
     font: 14px/22px Pretendard;
@@ -447,6 +505,7 @@ const Box = styled.div`
     height: 105px;
     object-fit: scale-down;
     background-color: #fff;
+    cursor: pointer;
   }
   span {
     font: 14px/22px Pretendard;
@@ -505,6 +564,32 @@ const Click = styled.button`
   border-radius: 5px;
   justify-content: center;
   align-items: center;
+`;
+
+const StyledModal = styled(Modal)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 25%;
+  width: 1000px;
+  height: 100vh;
+  background-color: transparent;
+  z-index: 14;
+`;
+
+const ShowModal = styled.div`
+  display: flex;
+  flex-direction: row-reverse;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* background-color: transparent; */
+  img {
+    width: 50%;
+    height: 100%;
+    width: 1000px;
+    height: 1000px;
+    object-fit: contain;
+  }
 `;
 
 export default React.memo(Chat);
