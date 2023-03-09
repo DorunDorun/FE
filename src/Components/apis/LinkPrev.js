@@ -8,7 +8,7 @@ import { BsArrowLeftCircle } from "react-icons/bs";
 import { COLOR } from "../style/style";
 
 
-const LinkPrev = ({title, roomDelete, hoverBgColor}) => {
+const LinkPrev = ({title, roomDelete, hoverBgColor, left}) => {
 
   const navigate = useNavigate()
 
@@ -18,7 +18,9 @@ const LinkPrev = ({title, roomDelete, hoverBgColor}) => {
   }
 
   return (
-    <StButtonNormal onClick={onClickGoPrev} title={title || "뒤로가기"} hoverBgColor={hoverBgColor || COLOR.baseDefault}>
+    <StButtonNormal onClick={onClickGoPrev} title={title || "뒤로가기"} 
+      hoverBgColor={hoverBgColor || COLOR.baseDefault} left={left || "55px"}
+    > 
       <BsArrowLeftCircle/>
     </StButtonNormal>
   )
@@ -30,7 +32,7 @@ const StButtonNormal=styled.button`
   border: none;
   font-size: 30px;
   position: absolute;
-  left: -55px;
+  left: ${(props)=>props.left};
   top: 0;
   color: ${COLOR.grayLight};
   cursor: pointer;

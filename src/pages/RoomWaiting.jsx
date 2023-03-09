@@ -346,7 +346,7 @@ const RoomWaiting = () => {
       <StRoomWaitingContainer>
 
         {/*뒤로가기*/}
-        <LinkPrev title="목록으로 이동" roomDelete={roomDelete} hoverBgColor={COLOR.baseRedDeep}/>
+        <LinkPrev title="목록으로 이동" left="-5px" roomDelete={roomDelete} hoverBgColor={COLOR.baseRedDeep}/>
       
         <StRoomWaitingTitle>[{title}]</StRoomWaitingTitle>
         <StRoomWaitingWelcome>{message.welcome}</StRoomWaitingWelcome>

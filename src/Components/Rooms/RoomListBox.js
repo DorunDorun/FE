@@ -19,24 +19,6 @@ const RoomListBox = ({
 }) => {
   const navigate = useNavigate();
 
-  //방 입장하기
-  const onClickRoomJoin = (title, sessionId, status) => {
-    const info = {
-      title: title,
-      sessionId: sessionId,
-      status: status,
-    };
-    console.log(" 방 목록 info : ", info);
-    if (status) {
-      //공개 방 입장
-      localStorage.setItem("title", title);
-      localStorage.setItem("sessionId", sessionId);
-      localStorage.setItem("status", status);
-      pageCountReset();
-
-      return navigate(`/roomWaiting`);
-    }
-  };
 
   console.log("룸 리스트 박스");
 
@@ -68,14 +50,6 @@ const RoomListBox = ({
                 userCount={room.cntUser}
                 password={room.password}
                 pageCountReset={pageCountReset}
-                onClick={() => {
-                  onClickRoomJoin(
-                    room.title,
-                    room.sessionId,
-                    room.status,
-                    room.password
-                  );
-                }}
               />
             );
           })}

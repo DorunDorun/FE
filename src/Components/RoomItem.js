@@ -20,9 +20,42 @@ const RoomItem = ({
   password,
   userCount,
   pageCountReset,
-  onClick,
+  
 }) => {
+
   const navigate = useNavigate();
+  
+  //방 입장하기
+
+  const onClickRoomJoin = (title, sessionId, status) => {
+
+    if(userCount === 6) return alert("방이 꽉 찼네요! 더 이상 입장할 수 없습니다!")
+
+    console.log("🙋‍♂️🙋‍♂️ title ", title)
+    console.log("🙋‍♂️🙋‍♂️ sessionId ", sessionId)
+    console.log("🙋‍♂️🙋‍♂️ roomStatus ", status)
+
+    if (!status) { //비공개 상태에 따른 비밀번호 입력 인풋 컨트롤
+      setIsPasswordInputHide(status)
+
+    }else{ //공개 방 입장
+      const info = {
+        title: title,
+        sessionId: sessionId,
+        status: status,
+      }
+
+      console.log(" 방 목록 info : ", info);
+
+      localStorage.setItem("title", title);
+      localStorage.setItem("sessionId", sessionId);
+      localStorage.setItem("status", status);
+      pageCountReset();
+
+      return navigate(`/roomWaiting`);
+    }
+  };
+
 
   //password 입력 상태
   const [isPasswordInputHide, setIsPasswordInputHide] = useState(true);
@@ -31,15 +64,6 @@ const RoomItem = ({
   //참가자 인원 상태
   const [userStatus, setUserStatus] = useState(COLOR.greenDefault);
   const maxUserCount = 6;
-
-  //click props + 비밀번호 창 컨트롤
-  const onClickProps = () => {
-    onClick();
-    if (!status) {
-      //비공개 상태에 따른 비밀번호 입력 인풋 컨트롤
-      setIsPasswordInputHide(status);
-    }
-  };
 
   //방 참여 인원별 상태 circle 컨트롤
   useEffect(() => {
@@ -145,7 +169,7 @@ const RoomItem = ({
           {/*입장 버튼*/}
           <StRoomItemMainInfoButtonBox>
             <StRoomItemMainInfoJoinButtonBox>
-              <StRoomItemMainInfoJoinButton onClick={onClickProps}>
+              <StRoomItemMainInfoJoinButton onClick={()=>onClickRoomJoin(title, sessionId, status)}>
                 입장
               </StRoomItemMainInfoJoinButton>
             </StRoomItemMainInfoJoinButtonBox>
