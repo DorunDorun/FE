@@ -326,7 +326,7 @@ const Chat = ({ props }) => {
                 </ReceivedMessage>
               )
             )}
-        {/* <StyledModal
+        <StyledModal
           isOpen={isModalOpen}
           onRequestClose={() => setIsModalOpen(false)}
           contentLabel="Image Modal"
@@ -336,7 +336,7 @@ const Chat = ({ props }) => {
               <img src={selectedImage} />
             </ShowModal>
           )}
-        </StyledModal> */}
+        </StyledModal>
       </ChatHistory>
       <Wirte>
         <Select>
@@ -581,8 +581,8 @@ const StyledModal = styled(Modal)`
 const ShowModal = styled.div`
   display: flex;
   flex-direction: row-reverse;
-  background-color: rgba(0, 0, 0, 0.5);
-  /* background-color: transparent; */
+  /* background-color: rgba(0, 0, 0, 0.5); */
+  background-color: transparent;
   img {
     width: 50%;
     height: 100%;
