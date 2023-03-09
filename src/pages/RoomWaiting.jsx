@@ -141,7 +141,7 @@ const RoomWaiting = () => {
     //prev : true
     const fetchDeleteRoomInfo={
       sessionId: sessionId,
-      prevStatus:true
+      prevStatus:false
     }
     fetchDeleteRoom(fetchDeleteRoomInfo).then((res)=>{ //멤버체크 이슈
       console.log("대기룸 삭제 res " , res)
