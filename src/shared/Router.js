@@ -31,15 +31,16 @@ const Router = () => {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/test" element={<Test />} />
 
-        {/* 리다이렉트 주소 */}
+        {/*리다이렉트 주소*/}
         <Route path="/kakao" element={<Kakao />} />
         <Route path="/google" element={<Google />} />
         <Route path="/naver" element={<Naver />} />
 
-        {/* Room 영역*/}
+        {/*Room 영역*/}
         <Route path="/roomCreate" element={<RoomCreate />} />
         <Route path="/roomList" element={<RoomList />} />
-        <Route path="/roomWaiting" element={<RoomWaiting />} />
+        <Route path="/roomWaiting" element={<RoomWaiting />} />  {/*일반 입장*/}
+        <Route path="/roomWaiting/:info" element={<RoomWaiting />} /> {/*초대 받기 입장*/}
         <Route path="/room/:id" element={<Room />} />
       </Routes>
     </BrowserRouter>
