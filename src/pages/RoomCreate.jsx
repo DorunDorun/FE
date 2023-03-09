@@ -235,7 +235,7 @@ function RoomCreate() {
         <StRoomCreateTitleBox>
 
            {/*뒤로가기*/}
-          <LinkPrev/>
+          <LinkPrev title="방 목록으로 돌아가기"/>
 
            {/*방 생성 타이틀*/}
           <StRoomCreateTitle className="roomCreateTitle">

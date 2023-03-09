@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useBeforeunload } from "react-beforeunload";
 import html2canvas from "html2canvas";
 import { nanoid } from "nanoid";
-import queryString from "query-string";
+
 
 /*컴포넌트*/
 import UserVideoComponent from "./UserVideoComponent";
@@ -47,39 +47,40 @@ function ChatRoom() {
   useEffect(() => {
     console.log("ChatRoom 시작!");
 
-    /*초대받은 유저 입장일 경우 
-    url query string [세션, 타이틀] 저장. 
-    비밀번호 있을 경우 비밀번호도 저장*/
-
-    const searchParams = window.location.search;
-    const query = queryString.parse(searchParams);
-
-    const qSessionId = query.sessionId;
-    const qTitle = query.title;
-    const qStatus = query.status;
-    const qPassword = query.password;
-
-    if (qStatus !== undefined) {
-      //초대 받은 유저일 경우 params가 있음
-      console.log("🙋‍♂️ query : ", query);
-      console.log("🙋‍♂️ query.sessionId : ", query.sessionId);
-      console.log("🙋‍♂️ query.title : ", query.title);
-      console.log("🙋‍♂️ query.password : ", query.password);
-      console.log("🙋‍♂️ query.status : ", query.status);
-
-      localStorage.setItem("sessionId", qSessionId);
-      localStorage.setItem("title", qTitle);
-      localStorage.setItem("status", qStatus);
-
-      if (qPassword) localStorage.setItem("password", qPassword);
-    }
-
     //로그인(토큰) 검증
     const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) {
       return navigate("/login");
     }
   }, []);
+
+
+
+  /*뒤로가기 클릭
+    1. 뒤로가기 이벤트 막기
+    2. confirm 확인 시 방 나가기 로직 실행 > 삭제 api 후 방 목록으로 이동
+  */
+  const locationBack = ()=>{
+    console.log("locationBack 1")
+    window.history.pushState(null, null, window.location.href)
+    console.log("locationBack 2")
+    if(window.confirm("저장하지 않은 정보를 잃을 수 있습니다. 뒤로 가시겠습니까?")){
+      console.log("locationBack 3")
+      return leaveSession()
+    }
+  }
+
+  //뒤로가기 감지 및 컨트롤
+  useEffect(()=>{
+    window.history.pushState(null, null, window.location.href)
+    window.addEventListener("popstate", locationBack)
+    return()=>{
+      window.removeEventListener("popstate", locationBack)
+    }
+  },[])
+
+  
+
 
   //roomTitle, userSessionId, userToken, userNickName, loading, hasErrors
   const roomTitle = localStorage.getItem("title");
@@ -371,6 +372,17 @@ function ChatRoom() {
     const title = "두런두런에 초대합니다!";
     const description = roomTitle;
 
+    const protocol = window.location.protocol
+    const host = window.location.host
+
+    const shareUrl = `${protocol}//${host}/roomWaiting/join?`
+
+    console.log("🔥route : ", route)
+    console.log("🔥protocol : ", protocol)
+    console.log("🔥host : ", host)
+    console.log("🔥get url : ", ``)
+
+
     /*공유링크 썸네일*/
     //const imgFilter = MediaBackImageList.filter((img) => img.name === "1"); //두런두런 기본 이미지 필터링
     //const imgUrl = imgFilter[0].medium; //이미지 경로 가져오기 .제거
@@ -380,17 +392,18 @@ function ChatRoom() {
     console.log("imgFilter:", imgFilter);
     console.log("imgUrl:", imgUrl);
 
+    
     if (status) {
       //공개방
-      const routeOpen = route + `&title=${description}&status=${status}`;
+      const routeOpen = shareUrl + `&sessionId=${userSessionId}&title=${description}&status=${status}`;
       return shareKakao(routeOpen, title, description, imgUrl);
     } else {
       //비공개방
       const password = localStorage.getItem("password");
-      const routePrivate =
-        route + `&title=${description}&status=${status}&password=${password}`;
+      const routePrivate = shareUrl + `&sessionId=${userSessionId}&title=${description}&status=${status}&password=${password}`;
       return shareKakao(routePrivate, title, description, imgUrl);
     }
+    
   };
 
   //캔버스 컨트롤
@@ -612,11 +625,8 @@ function ChatRoom() {
           },
         });
       })
-      .catch((error) => {
-        //에러일 경우 연결 종료
-        //alert(error.message)
-        //leaveSession()
-        leaveSessionWaiting();
+      .catch((error) => { //에러일 경우 연결 종료
+        leaveSessionWaiting() //삭제 후 대기페이지로 이동
       });
   }
 
@@ -646,14 +656,23 @@ function ChatRoom() {
 
   //나가기-대기 페이지
   const leaveSessionWaiting = () => {
-    fetchDeleteRoom(userSessionId);
+    const fetchDeleteRoomInfo={
+      sessionId: userSessionId,
+      prevStatus:false
+    }
+    fetchDeleteRoom(fetchDeleteRoomInfo)
     resetSession();
     return navigate("/roomWaiting");
   };
 
   //나가기
   const leaveSession = () => {
-    fetchDeleteRoom(userSessionId).then((res) => {
+    const fetchDeleteRoomInfo={
+      sessionId: userSessionId,
+      prevStatus:false
+    }
+    //prev false
+    fetchDeleteRoom(fetchDeleteRoomInfo).then((res) => {
       console.log("방 삭제 res ", res);
       //api 삭제 요청
       if (res.status === 200) {
@@ -908,7 +927,7 @@ function ChatRoom() {
                 <StMyDeviceButton
                   onClick={switchCamera}
                   className={isSwitchCamera && "buttonOn"}
-                  title="카메라 변경"
+                  title="카메라가 2대 이상일 경우 전환됩니다"
                 >
                   <MyControllButtonImg src={cameraSwtichImage.default} />
                 </StMyDeviceButton>

@@ -12,7 +12,7 @@ const useStoreRoomDelete = create((set) => ({
     try {
       console.log("방 삭제 payload:", payload)
       const data = await api.delete(
-        `api/rooms/${payload}`
+        `api/rooms/${payload.sessionId}?prev=${payload.prevStatus}`
       );
       set((state) => ({ data: (state.data = data.data), loading: false }));
       return data
