@@ -326,7 +326,7 @@ const Chat = ({ props }) => {
                 </ReceivedMessage>
               )
             )}
-        {/* <StyledModal
+        <StyledModal
           isOpen={isModalOpen}
           onRequestClose={() => setIsModalOpen(false)}
           contentLabel="Image Modal"
@@ -336,7 +336,7 @@ const Chat = ({ props }) => {
               <img src={selectedImage} />
             </ShowModal>
           )}
-        </StyledModal> */}
+        </StyledModal>
       </ChatHistory>
       <Wirte>
         <Select>
