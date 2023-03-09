@@ -25,7 +25,7 @@ const Landing = () => {
   }, []);
 
   useEffect(() => {
-    const sse = new EventSource(`${server_url}/api/sse`);
+    const sse = new EventSource(`${server_url}api/sse`);
 
     sse.addEventListener("connect", (e) => {
       // console.log("e : ", e);

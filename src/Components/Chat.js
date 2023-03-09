@@ -581,8 +581,8 @@ const StyledModal = styled(Modal)`
 const ShowModal = styled.div`
   display: flex;
   flex-direction: row-reverse;
-  background-color: rgba(0, 0, 0, 0.5);
-  /* background-color: transparent; */
+  /* background-color: rgba(0, 0, 0, 0.5); */
+  background-color: transparent;
   img {
     width: 50%;
     height: 100%;
