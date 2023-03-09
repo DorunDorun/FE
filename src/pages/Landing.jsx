@@ -154,7 +154,7 @@ const Duruning = styled.div`
   cursor: default;
   margin-top: 120px;
   margin-left: 140px;
-  width: 270px;
+  width: 300px;
   height: 44px;
   /* UI Properties */
   background: #0000004d 0% 0% no-repeat padding-box;
