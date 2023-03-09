@@ -1,20 +1,25 @@
-import React from 'react'
-import styled from 'styled-components';
-import { useNavigate } from 'react-router';
-import { nanoid } from 'nanoid';
+import React from "react";
+import styled from "styled-components";
+import { useNavigate } from "react-router";
+import { nanoid } from "nanoid";
 
 //컴포넌트
-import RoomItem from "../RoomItem"
+import RoomItem from "../RoomItem";
 import { COLOR } from "../style/style";
 
 const RoomListBox = ({
-    message, scrollBoxRef, roomData, isNoRooms, pageCountReset, isRoomEnd, isLoading, target
+  message,
+  scrollBoxRef,
+  roomData,
+  isNoRooms,
+  pageCountReset,
+  isRoomEnd,
+  isLoading,
+  target,
 }) => {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate()
-
-
-    //방 입장하기
+  //방 입장하기
   const onClickRoomJoin = (title, sessionId, status) => {
     const info = {
       title: title,
@@ -27,34 +32,33 @@ const RoomListBox = ({
       localStorage.setItem("title", title);
       localStorage.setItem("sessionId", sessionId);
       localStorage.setItem("status", status);
-      pageCountReset()
+      pageCountReset();
 
       return navigate(`/roomWaiting`);
     }
   };
 
-  console.log("룸 리스트 박스")
+  console.log("룸 리스트 박스");
 
   return (
-
     <StRoomListBox>
-        {/*방 목록 위 타이틀*/}
-        <StRoomListBoxInfo>
+      {/*방 목록 위 타이틀*/}
+      <StRoomListBoxInfo>
         <StRoomListBoxInfoH2>{message.welcome}</StRoomListBoxInfoH2>
-        </StRoomListBoxInfo>
+      </StRoomListBoxInfo>
 
-        {/*방 목록*/}
-        <StRoomListBoxRooms>
+      {/*방 목록*/}
+      <StRoomListBoxRooms>
         <StRoomListBoxRoomsContainer ref={scrollBoxRef}>
-            {/*방 목록 없을 떄 문구*/}
-            {roomData.length === 0 && isNoRooms && (
+          {/*방 목록 없을 떄 문구*/}
+          {roomData.length === 0 && isNoRooms && (
             <StNoRooms>{message.noRooms}</StNoRooms>
-            )}
+          )}
 
-            {/*방 목록 컴포넌트*/}
-            {roomData.map((room) => {
+          {/*방 목록 컴포넌트*/}
+          {roomData.map((room) => {
             return (
-                <RoomItem
+              <RoomItem
                 key={nanoid()}
                 sessionId={room.sessionId}
                 title={room.title}
@@ -65,30 +69,28 @@ const RoomListBox = ({
                 password={room.password}
                 pageCountReset={pageCountReset}
                 onClick={() => {
-                    onClickRoomJoin(
+                  onClickRoomJoin(
                     room.title,
                     room.sessionId,
                     room.status,
                     room.password
-                    );
+                  );
                 }}
-                />
+              />
             );
-            })}
+          })}
 
-            {/*방 목록 옵저버 타겟 - 불러올 목록 남아있고, 로딩 중이 아닐 때만 활성화*/}
-            {roomData.length > 0 && !isRoomEnd && !isLoading && (
+          {/*방 목록 옵저버 타겟 - 불러올 목록 남아있고, 로딩 중이 아닐 때만 활성화*/}
+          {roomData.length > 0 && !isRoomEnd && !isLoading && (
             <StScrollTarget ref={target}>
-                <StScrollTargetLoading></StScrollTargetLoading>
+              <StScrollTargetLoading></StScrollTargetLoading>
             </StScrollTarget>
-            )}
+          )}
         </StRoomListBoxRoomsContainer>
-        </StRoomListBoxRooms>
+      </StRoomListBoxRooms>
     </StRoomListBox>
-  )
-}
-
-
+  );
+};
 
 const StScrollTargetLoading = styled.div`
   width: 50px;
@@ -158,7 +160,4 @@ const StRoomListBox = styled.div`
   margin-top: 30px;
 `;
 
-
-
-
-export default React.memo(RoomListBox)
+export default React.memo(RoomListBox);
