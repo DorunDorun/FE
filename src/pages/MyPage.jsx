@@ -97,7 +97,6 @@ const Myinfo = styled.div`
     margin-bottom: 30px;
     width: 125px;
     height: 125px;
-
     border-radius: 100px;
   }
 `;

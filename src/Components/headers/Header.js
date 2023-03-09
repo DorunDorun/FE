@@ -110,6 +110,8 @@ const Thumbnail = styled.div`
   border: none;
   background: url(thumbnail);
   span {
+    font: bold 15px/24px Pretendard;
+    margin-right: 10px;
   }
   img {
     width: 48px;
