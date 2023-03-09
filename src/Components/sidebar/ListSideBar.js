@@ -43,7 +43,7 @@ const ListSideBar = () => {
   };
 
   const gotoList = () => {
-    navigate("/RoomList");
+    return navigate("/roomList")
   };
 
   const goToLanding = () => {

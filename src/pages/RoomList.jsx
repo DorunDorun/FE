@@ -7,15 +7,17 @@ import { useInView } from "react-intersection-observer";
 
 //컴포넌트, 스타일
 import ButtonDefault from "../Components/ButtonDefault";
-import RoomItem from "../Components/RoomItem";
 import Wait from "../Components/Wait";
 import ListSideBar from "../Components/sidebar/ListSideBar";
 import { categoryList } from "../Components/lists/CategoryList";
 import { regExpSearch } from "../Components/apis/RegExp";
+import RoomListBox from '../Components/Rooms/RoomListBox';
+import RoomListHeaderSearch from '../Components/Rooms/RoomListHeaderSearch';
+
 
 //아이콘
 import { GrSort } from "react-icons/gr";
-import { IoIosSearch } from "react-icons/io";
+
 import { BsFillGridFill } from "react-icons/bs";
 import { SlArrowLeft } from "react-icons/sl";
 import { SlArrowRight } from "react-icons/sl";
@@ -132,7 +134,7 @@ const RoomList = () => {
           console.log("방 목록 끝!");
         } else if (resRoomListData.length === 0) {
           setIsRoomEnd(true); //옵저버 target element 숨기기
-          setIsNoRooms(true); //방 목록 없는 상태
+          //setIsNoRooms(true); //방 목록 없는 상태
           console.log("방 목록 끝!");
         }
       });
@@ -141,9 +143,9 @@ const RoomList = () => {
 
   //상황별 방 목록 불러오기
   useEffect(() => {
-    if (roomListMode === listMode.all && pageCount === 1) {
+    if (roomListMode === listMode.all && pageCount === 1) { //방 목록 처음, 전체 불러오기
       console.log("🎄 처음 방 목록 불러오기 mode : ", roomListMode);
-      getRoomList();
+      getRoomList()
     } else if (pageCount > 1) {
       console.log("🎄 방 목록 mode : ", roomListMode);
       //리스트 모드에 따른 조건문
@@ -178,14 +180,15 @@ const RoomList = () => {
 
   useEffect(() => {
     console.log("⭐ roomData 갯수 : ", roomData.length);
+    if(roomData.length === 0 ) setIsNoRooms(true); //방 목록 없는 상태
   }, [roomData]);
 
   //검색어 변경시 pagecount 초기화
   const onChangeSearchValue = (e) => {
     const { value } = e.target;
     setSearchValue(value);
-    setPageCount(1);
-  };
+    //setPageCount(1);
+  }
 
   //방 검색 버튼 클릭
   const onSubmitGetRoomSerachList = async (e) => {
@@ -196,7 +199,7 @@ const RoomList = () => {
       return false;
     }
     setRoomListMode(listMode.search); //목록 모드 검색으로 변경
-    setPageCount(1); //검색 버튼을 누르면 무조건 페이지 카운트 초기화
+    setPageCount(1); //검색 버튼 클릭 시 페이지 카운트 초기화
     setIsSerachStatus(true); //검색 상태 true
   };
 
@@ -260,15 +263,13 @@ const RoomList = () => {
     }
   };
 
-  useEffect(() => {
-    //카테고리 버튼 클릭일 경우
-
-    //처음 검색(true)일 경우 카테고리 목록 불러오기
-    //처음 검색이 아니면 옵저버 영역에서 컨트롤함
+  useEffect(() => { //카테고리 버튼 클릭일 경우
+    /*처음 검색(true)일 경우 카테고리 목록 불러오기
+    처음 검색이 아니면 옵저버 영역에서 컨트롤함*/
     isCategorySearch && getRoomCategorySearchList();
   }, [isCategorySearch]);
 
-  const getRoomCategorySearchList = async () => {
+  const getRoomCategorySearchList = async () => { //카테고리 검색
     setIsLoading(true);
 
     //해당 키워드 첫 검색일 경우 스크롤 위치 최상단으로 이동
@@ -306,31 +307,6 @@ const RoomList = () => {
     setIsCategorySearch(false);
   };
 
-  //방 입장하기
-  const onClickRoomJoin = (title, sessionId, status) => {
-    const info = {
-      title: title,
-      sessionId: sessionId,
-      status: status,
-    };
-    console.log(" 방 목록 info : ", info);
-    if (status) {
-      //공개 방 입장
-      localStorage.setItem("title", title);
-      localStorage.setItem("sessionId", sessionId);
-      localStorage.setItem("status", status);
-      pageCountReset()
-
-      return navigate(`/roomWaiting`);
-    }
-  };
-
-  //방 만들기 클릭
-  const onClickRoomCreate = () => {
-    pageCountReset()
-    
-    navigate("/roomCreate");
-  };
 
   if (loading) { //첫 랜딩에서만 호출
     pageCount === 1 && <Wait />;
@@ -346,41 +322,23 @@ const RoomList = () => {
   return (
     <StRoomListWrap>
       <StRoomListSideNav>
+        
+        {/* 사이드 메뉴 */}
         <ListSideBar />
+        
       </StRoomListSideNav>
 
       <StRoomListCenter>
         <StRoomListTopContainer>
-          <StRoomListHeader>
-            {/*검색*/}
-            <StRoomListSearchBox onSubmit={(e) => onSubmitGetRoomSerachList(e)}>
-              <StRoomListSearchInput
-                ref={searchInputRef}
-                value={searchValue}
-                onChange={(e) => onChangeSearchValue(e)}
-                placeholder="관심있는 키워드를 검색해보세요!"
-                maxLength={20}
-              />
-              <StRoomListSearchButton>
-                <IoIosSearch className="iconSearch" />
-              </StRoomListSearchButton>
-            </StRoomListSearchBox>
-            <ButtonDefault
-              width="auto"
-              height="auto"
-              padding="12px 44px"
-              bgColor={COLOR.baseDefault}
-              fontColor="#fff"
-              hoverBgColor={COLOR.greenDefault}
-              hoverFontColor="#000"
-              onClick={onClickRoomCreate}
-              boxShadow="0px 3px 4px #8600F01A"
-              fontFamily="Pretendard"
-              fontWeight="normal"
-            >
-              라이브룸 만들기
-            </ButtonDefault>
-          </StRoomListHeader>
+
+          {/*검색 + 방 만들기 박스*/}
+          <RoomListHeaderSearch
+            onSubmitGetRoomSerachList={onSubmitGetRoomSerachList}
+            searchInputRef={searchInputRef}
+            searchValue={searchValue}
+            onChangeSearchValue={onChangeSearchValue}
+            pageCountReset={pageCountReset}
+          />
 
           {/*카테고리*/}
           <StRoomListCategorySlide>
@@ -422,130 +380,29 @@ const RoomList = () => {
         </StRoomListTopContainer>
 
         {/*방 목록 영역*/}
-        <StRoomListBox>
+        <RoomListBox 
+          message={message} 
+          scrollBoxRef={scrollBoxRef}
+          roomData={roomData}
+          isNoRooms={isNoRooms}
+          pageCountReset={pageCountReset}
+          isRoomEnd={isRoomEnd}
+          isLoading={isLoading}
+          target={target}
+        />
 
-          {/*방 목록 위 타이틀*/}
-          <StRoomListBoxInfo>
-            <StRoomListBoxInfoH2>{message.welcome}</StRoomListBoxInfoH2>
-          </StRoomListBoxInfo>
-
-          {/*방 목록*/}
-          <StRoomListBoxRooms>
-            <StRoomListBoxRoomsContainer ref={scrollBoxRef}>
-              {/*방 목록 없을 떄 문구*/}
-              {roomData.length === 0 && isNoRooms && (
-                <StNoRooms>{message.noRooms}</StNoRooms>
-              )}
-
-              {/*방 목록 컴포넌트*/}
-              {roomData.map((room) => {
-                return (
-                  <RoomItem
-                    key={nanoid()}
-                    sessionId={room.sessionId}
-                    title={room.title}
-                    subTitle={room.subtitle}
-                    category={room.category}
-                    status={room.status}
-                    userCount={room.cntUser}
-                    password={room.password}
-                    pageCountReset={pageCountReset}
-                    onClick={() => {
-                      onClickRoomJoin(
-                        room.title,
-                        room.sessionId,
-                        room.status,
-                        room.password
-                      );
-                    }}
-                  />
-                );
-              })}
-
-              {/*방 목록 옵저버 타겟 - 불러올 목록 남아있고, 로딩 중이 아닐 때만 활성화*/}
-              {roomData.length > 0 && !isRoomEnd && !isLoading && (
-                <StScrollTarget ref={target}>
-                  <StScrollTargetLoading></StScrollTargetLoading>
-                </StScrollTarget>
-              )}
-            </StRoomListBoxRoomsContainer>
-          </StRoomListBoxRooms>
-        </StRoomListBox>
       </StRoomListCenter>
     </StRoomListWrap>
   );
 };
 
-const StScrollTargetLoading = styled.div`
-  width: 50px;
-  height: 50px;
-  border: 5px solid #fff;
-  border-bottom-color: ${COLOR.baseDefault};
-  border-radius: 50%;
-  display: inline-block;
-  box-sizing: border-box;
-  animation: rotation 1s linear infinite;
-  @keyframes rotation {
-    //방 목록 옵저버 타겟 로딩 중 spin
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-`;
-const StScrollTarget = styled.div`
-  width: 100%;
-  height: 300px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const StNoRooms = styled.p`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 28px;
-`;
 
 const StRoomListSideNav = styled.div`
   width: 340px;
   height: 100vh;
 `;
 
-const StRoomListBoxRoomsContainer = styled.div`
-  overflow: hidden;
-  height: 71vh;
-  overflow-y: auto;
-  text-align: left;
-  ::-webkit-scrollbar {
-    //스크롤바 비활성화
-    /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
-    display: none;
-  }
-  -ms-overflow-style: none; /* 인터넷 익스플로러 */
-  scrollbar-width: none; /* 파이어폭스 */
-`;
-const StRoomListBoxRooms = styled.div`
-  text-align: center;
-`;
-
-const StRoomListBoxInfoH2 = styled.h2`
-  font-family: "LottriaChab";
-  font-size: 30px;
-  padding-left: 10px;
-`;
-const StRoomListBoxInfo = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-`;
-const StRoomListBox = styled.div`
-  margin-top: 30px;
-`;
+const StRoomCreateButton = styled.button``;
 
 const StButtonCircle = styled.div`
   border: 1px solid #707070;
@@ -583,51 +440,6 @@ const StRoomListCategorySlide = styled.div`
   max-width: 1200px;
   height: 44px;
   margin: 0 auto;
-`;
-const StRoomCreateButton = styled.button``;
-const StRoomListSearchButton = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  top: 1px;
-  right: 1px;
-  bottom: 1px;
-  width: 80px;
-  height: 43px;
-  border-radius: 0 8px 8px 0;
-  border: none;
-  border-left: 1px solid #c1c1c1;
-  background-color: #f3f3f3;
-  color: #8b8b8b;
-  cursor: pointer;
-  :hover {
-    background-color: ${COLOR.baseLight};
-    color: #fff;
-  }
-`;
-const StRoomListSearchInput = styled.input.attrs((props) => ({
-  type: props.type || "text",
-}))`
-  width: 600px;
-  height: 45px;
-  border: 1px solid ${COLOR.grayLight};
-  border-radius: 8px;
-  padding: 8px 85px 10px 10px;
-  ::placeholder{
-    font-size: 16px;
-    font-family: "Pretendard";
-  }
-`;
-const StRoomListSearchBox = styled.form`
-  position: relative;
-  margin-right: 15px;
-`;
-const StRoomListHeader = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 30px;
 `;
 
 const StRoomListTopContainer = styled.div`

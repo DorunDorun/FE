@@ -79,7 +79,10 @@ const RoomItem = ({
   const [backgroundImage, setBackgroundImage] = useState(undefined);
 
   useEffect(() => {
-    //카테고리 응답값 영어로 변환, 현재 한글로 응답 오는 중
+    /*카테고리 응답값 영어로 변환
+    현재 한글로 응답 오는 중
+    카테고리 배경 이미지 가져오기 위한 코드
+    */
     switch (category) {
       case "공부":
         setCategoryEN("STUDY");
@@ -112,6 +115,8 @@ const RoomItem = ({
   useEffect(() => {
     setBackgroundImage(CategoryImageList[categoryEN]?.backgroundImageUrl);
   }, [categoryEN]);
+
+
 
   return (
     <StRoomItem>
@@ -348,7 +353,7 @@ const StRoomItemMainInfoCategoryBox = styled.div`
   background-image: url(${(props) => props.backgroundImage});
   background-position: top;
   background-repeat: no-repeat;
-  background-size: 100% auto;
+  background-size: 101% auto;
   border-radius: 6px 6px 0 0;
 `;
 const StRoomItemMainInfo = styled.div`
@@ -374,4 +379,4 @@ const StRoomItem = styled.div`
   }
 `;
 
-export default RoomItem;
+export default React.memo(RoomItem)

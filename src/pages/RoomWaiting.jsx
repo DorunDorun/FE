@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { nanoid } from "nanoid";
+import queryString from "query-string";
 
 //컴포넌트
 import ButtonDefault from "../Components/ButtonDefault";
@@ -10,6 +11,7 @@ import MediaBackImageList from "../Components/lists/MediaBackImageList";
 import RadioGroup from "../Components/RadioGroup";
 import ButtonImageList from "../Components/lists/ButtonImageList";
 import UserMediaBackImage from "../Components/UserMediaBackImage";
+import LinkPrev from '../Components/apis/LinkPrev';
 
 //아이콘
 import { BsMicFill } from "react-icons/bs";
@@ -19,21 +21,54 @@ import { BsFillCameraVideoOffFill } from "react-icons/bs";
 
 //스토어-방 입장
 import useStoreRoomJoin from "../zustand/storeRoomJoin";
+//스토어-방 삭제
+import useStoreRoomDelete from '../zustand/storeRoomDelete';
+
 import { COLOR } from "../Components/style/style";
 
 const RoomWaiting = () => {
-  const navigate = useNavigate();
 
+  const navigate = useNavigate()
 
 
   //유저 미디어 정보 불러오기
   useEffect(() => {
 
+    /*초대받은 유저 입장일 경우 
+    url query string [세션, 타이틀] 저장. 
+    비밀번호 있을 경우 비밀번호도 저장*/
+
+    const searchParams = window.location.search;
+    const query = queryString.parse(searchParams);
+
+    const qSessionId = query.sessionId;
+    const qTitle = query.title;
+    const qStatus = query.status;
+    const qPassword = query.password;
+
+    if (qStatus !== undefined) {
+      //초대 받은 유저일 경우 params가 있음
+      console.log("🙋‍♂️ query : ", query);
+      console.log("🙋‍♂️ query.sessionId : ", query.sessionId);
+      console.log("🙋‍♂️ query.title : ", query.title);
+      console.log("🙋‍♂️ query.password : ", query.password);
+      console.log("🙋‍♂️ query.status : ", query.status);
+
+      localStorage.setItem("sessionId", qSessionId);
+      localStorage.setItem("title", qTitle);
+      localStorage.setItem("status", qStatus);
+
+      if (qPassword) localStorage.setItem("password", qPassword);
+    }
+
+    window.history.pushState(null, null, 'roomWaiting')
+
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
-    
+
     //로그인 토큰 체크
     if (!accessToken && !refreshToken) return window.location.href="/login"
+
     getUserMedia();
     
   }, []);
@@ -55,6 +90,8 @@ const RoomWaiting = () => {
   const fetchPostRoomJoinPassword = useStoreRoomJoin(
     (state) => state.fetchPostRoomJoinPassword
   );
+  //스토어-방 삭제
+  const fetchDeleteRoom = useStoreRoomDelete((state) => state.fetchDeleteRoom);
 
   //방 정보 불러오기
   const title = localStorage.getItem("title");
@@ -98,11 +135,48 @@ const RoomWaiting = () => {
     console.log("setMediaBackImage : ", mediaBackImageChecked);
   }, [mediaBackImageChecked]);
 
+
+  const roomDelete=()=>{
+    deviceStop()
+    //prev : true
+    const fetchDeleteRoomInfo={
+      sessionId: sessionId,
+      prevStatus:true
+    }
+    fetchDeleteRoom(fetchDeleteRoomInfo).then((res)=>{ //멤버체크 이슈
+      console.log("대기룸 삭제 res " , res)
+      return navigate("/roomList")
+    })
+  }
+
+  /*뒤로가기 클릭
+    1. 뒤로가기 이벤트 막기
+    2. confirm 확인 시 방 나가기 로직 실행 > 삭제 api 후 방 목록으로 이동
+  */
+    const locationBack = ()=>{
+      console.log("locationBack 1")
+      window.history.pushState(null, null, window.location.href)
+      console.log("locationBack 2")
+      roomDelete() //스트림 및 방 삭제
+    }
+  
+    //뒤로가기 감지 및 컨트롤
+    useEffect(()=>{
+      window.history.pushState(null, null, window.location.href)
+      window.addEventListener("popstate", locationBack)
+      return()=>{
+        window.removeEventListener("popstate", locationBack)
+      }
+    },[])
+
+
   //방 정보가 없다면 이전 페이지로 이동
   if (!title && !nickNameBefroe && !sessionId && !status) {
-    alert("방 정보 불러오기 에러! 다시 시도해주세요!");
-    return navigate(-1);
+    alert("로그인 후 다시 시도해주세요!");
+    return navigate("/roomList");
   }
+
+  
 
   //비디오, 오디오 불러오기
   const getUserMedia = async () => {
@@ -181,6 +255,19 @@ const RoomWaiting = () => {
     setMediaBackImageChecked(value);
   };
 
+  //디바이스 미리보기 종료
+  const deviceStop=()=>{
+    const stream = videoRef.current.srcObject
+    const tracks = stream.getTracks()
+    console.log(" stream : ", stream)
+    console.log(" tracks : ", tracks)
+    tracks.forEach(function(track) {
+      track.stop()
+      console.log(" track 종료! : ", track)
+    })
+    videoRef.current.srcObject = null
+  }
+
   //방 입장 api
   const onClickJoinRoom = (e) => {
     e.preventDefault();
@@ -217,6 +304,7 @@ const RoomWaiting = () => {
       fetchPostRoomJoin(roomJoinPayloadOpen).then((res) => { //공개방 입장
         console.log("공개 방 입장!! res : ", res);
         if (res.data.statusCode === "200") {
+          deviceStop() //디바이스 stop
           return navigate(`/room/join?sessionId=${sessionId}`);
         } else {
           return alert("다시 시도해주세요!");
@@ -237,6 +325,7 @@ const RoomWaiting = () => {
       fetchPostRoomJoinPassword(roomJoinPayloadPrivate).then((res) => { //비공개방 입장
         console.log("비공개 방 입장! ", res);
         if (res.data.statusCode === "200") {
+          deviceStop() //디바이스 stop
           return navigate(`/room/join?sessionId=${sessionId}`);
         } else {
           return alert("다시 시도해주세요!");
@@ -247,10 +336,18 @@ const RoomWaiting = () => {
   };
 
 
+  
+
+
 
   return (
     <StRoomWaitingWrap>
+      
       <StRoomWaitingContainer>
+
+        {/*뒤로가기*/}
+        <LinkPrev title="목록으로 이동" roomDelete={roomDelete} hoverBgColor={COLOR.baseRedDeep}/>
+      
         <StRoomWaitingTitle>[{title}]</StRoomWaitingTitle>
         <StRoomWaitingWelcome>{message.welcome}</StRoomWaitingWelcome>
         <StRoomWaitingSettingBox>
@@ -494,6 +591,7 @@ const StRoomWaitingContainer = styled.div`
   align-items: center;
   flex-direction: column;
   margin-top: -30px;
+  position: relative;
 `;
 const StRoomWaitingWrap = styled.div`
   width: 100vw;
