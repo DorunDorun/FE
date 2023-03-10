@@ -20,15 +20,13 @@ api.interceptors.request.use(
       const accessToken = localStorage.getItem("accessToken");
       const refreshToken = localStorage.getItem("refreshToken");
 
-      const pathname = window.location.pathname
-      console.log("searchParams", pathname)
-
       try { //토큰 체크
-        if (accessToken && refreshToken) { //랜딩페이지 제외
+        if (accessToken && refreshToken) { 
           config.headers.authorization = accessToken;
           config.headers.refresh = refreshToken;
         }
-        else{
+        else{ //로그인 페이지로 보내기, 랜딩페이지 제외
+          const pathname = window.location.pathname
           if(pathname !== "/") return window.location.href="/login"
         }
         return config;

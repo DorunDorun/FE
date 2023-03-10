@@ -24,7 +24,7 @@ const RoomItem = ({
 }) => {
 
   const navigate = useNavigate();
-  
+  console.log("목록 아이템 컴포넌트")
   //방 입장하기
 
   const onClickRoomJoin = (title, sessionId, status) => {
