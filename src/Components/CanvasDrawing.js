@@ -103,9 +103,9 @@ function CanvasDrawing({className, defaultClass, isCapture}) {
                 setShowColor((s) => !s);
               }}
             >
-              <span role="img" aria-label="">
+              <span role="img" aria-label="팔레트 선택">
                 🎨
-              </span>{" "}
+              </span>
               color
             </button>
             {showColor && (
@@ -126,24 +126,24 @@ function CanvasDrawing({className, defaultClass, isCapture}) {
               canvasRef.current.undo();
             }}
           >
-            <span role="img" aria-label="">
+            <span role="img" aria-label="지우기">
               ↩️
-            </span>{" "}
+            </span>
             undo
           </button>
           <button className="clear canvasButton" onClick={handleClear}>
-            <span className="non-hover" role="img" aria-label="">
+            <span className="non-hover" role="img" aria-label="모두 지우기">
               💣
-            </span>{" "}
-            <span className="hover" role="img" aria-label="">
+            </span>
+            <span className="hover" role="img" aria-label="모두 지우기">
               🧨
-            </span>{" "}
+            </span>
             clear
           </button>
           {/* <button className="save" onClick={handleSave}>
             <span role="img" aria-label="">
               💾
-            </span>{" "}
+            </span>
             save
           </button> */}
         </StCanvasDrawingButtonBox>
