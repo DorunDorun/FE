@@ -1,24 +1,21 @@
 //기본
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import styled from "styled-components";
 import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
+
 
 //컴포넌트, 스타일
 import ButtonDefault from "../Components/ButtonDefault";
 import Wait from "../Components/Wait";
 import ListSideBar from "../Components/sidebar/ListSideBar";
 import { categoryList } from "../Components/lists/CategoryList";
-import { regExpSearch } from "../Components/apis/RegExp";
 import RoomListBox from '../Components/Rooms/RoomListBox';
 import RoomListHeaderSearch from '../Components/Rooms/RoomListHeaderSearch';
 
 
 //아이콘
-import { GrSort } from "react-icons/gr";
-
-import { BsFillGridFill } from "react-icons/bs";
 import { SlArrowLeft } from "react-icons/sl";
 import { SlArrowRight } from "react-icons/sl";
 
@@ -30,6 +27,10 @@ import { COLOR } from "../Components/style/style";
 
 //스토어 방 목록
 import useStoreRoomList from "../zustand/storeRoomList";
+//스토어 방 검색어
+import useStoreRoomSearch from '../zustand/storeRoomSearch';
+
+
 
 const RoomList = () => {
   const navigate = useNavigate();
@@ -49,10 +50,10 @@ const RoomList = () => {
 
   //검색
   const [searchValue, setSearchValue] = useState(""); //검색 input 값
-  const [prevSearchValue, setPrevSearchValue] = useState(searchValue);
   const [isSerachStatus, setIsSerachStatus] = useState(false);
   const scrollBoxRef = useRef(); //검색 후 scroll top을 위한 target 설정
   const searchInputRef = useRef();
+  const roomSearchValue = useStoreRoomSearch((state)=>state.roomSearchValue) //검색 컴포넌트에서 전달 받은 값
 
   //room list 모드
   const listMode = {
@@ -83,25 +84,32 @@ const RoomList = () => {
   const [roomData, setRoomData] = useState([]); //방 목록 추가
   const [isRoomEnd, setIsRoomEnd] = useState(false); //마지막 목록 체크
 
-  const pageCountReset=()=>{
+
+  const pageCountReset=()=>{ //페이지 카운터 초기화
     console.log("👋 pageCountReset!!!")
     setPageCount(1)
     setRoomData([])
   }
 
+
   //무한 스크롤 옵션
   const [target, inView] = useInView({
     root: null,
     rootMargin: "0px",
-    threshold: 0, //옵저버 target element 활성화 view 퍼센트 , 0 : 보이자마자 , 1 : 모두 보일 때
+    threshold: 0, /*옵저버 target element 활성화 view 퍼센트
+                    0 : 보이자마자
+                    1 : 모두 보일 때*/
   });
 
-  //카테고리 슬라이더
+  //카테고리 슬라이더 영역
   const categorySliderBoxRef = useRef();
-  const categorySliderBox = categorySliderBoxRef.current;
-  const handleNextButtonClick = (nextType) => {
-    const slideWidth = 300;
+  const categorySliderBox = categorySliderBoxRef.current
+
+  const handleNextButtonClick = (nextType) => { //카테고리 슬라이더
+    const slideWidth = 300 //슬라이딩 width px
+
     if (!categorySliderBox) return false;
+
     if (nextType === "prev") {
       categorySliderBox.scrollTo({
         left: categorySliderBox.scrollLeft - slideWidth,
@@ -115,6 +123,7 @@ const RoomList = () => {
       });
     }
   };
+
 
   //방 목록 불러오기 api
   const getRoomList = async () => {
@@ -132,6 +141,7 @@ const RoomList = () => {
           //방 목록 갯수가 응답 최대 값보다 작다면
           setIsRoomEnd(true); //옵저버 target element 숨기기
           console.log("방 목록 끝!");
+
         } else if (resRoomListData.length === 0) {
           setIsRoomEnd(true); //옵저버 target element 숨기기
           //setIsNoRooms(true); //방 목록 없는 상태
@@ -146,8 +156,10 @@ const RoomList = () => {
     if (roomListMode === listMode.all && pageCount === 1) { //방 목록 처음, 전체 불러오기
       console.log("🎄 처음 방 목록 불러오기 mode : ", roomListMode);
       getRoomList()
+
     } else if (pageCount > 1) {
       console.log("🎄 방 목록 mode : ", roomListMode);
+
       //리스트 모드에 따른 조건문
       switch (roomListMode) {
         case listMode.all: //전체 목록
@@ -166,38 +178,26 @@ const RoomList = () => {
     }
   }, [pageCount]);
 
-  useEffect(() => {
-    //무한 스크롤
-    console.log("옵저버 시작", inView);
 
-    if (inView && !loading) {
-      //target 감지 && 로딩 중이 아닐 떄
-      setPageCount((prevState) => prevState + 1);
+  useEffect(() => { //무한 스크롤 옵저버
+    
+    console.log("옵저버 시작", inView)
+
+    if (inView && !loading) { //target 감지 && 로딩 중이 아닐 떄 페이지 카운트 +1
+      setPageCount((prevState) => prevState + 1)
     }
-
     console.log("옵저버 끝", inView);
   }, [inView]);
 
-  useEffect(() => {
+
+  useEffect(() => { //방 목록 데이터 변경 시
     console.log("⭐ roomData 갯수 : ", roomData.length);
     if(roomData.length === 0 ) setIsNoRooms(true); //방 목록 없는 상태
   }, [roomData]);
 
-  //검색어 변경시 pagecount 초기화
-  const onChangeSearchValue = (e) => {
-    const { value } = e.target;
-    setSearchValue(value);
-    //setPageCount(1);
-  }
 
   //방 검색 버튼 클릭
-  const onSubmitGetRoomSerachList = async (e) => {
-    e.preventDefault();
-    if (!regExpSearch(searchValue)) {
-      //검색어 유효성 검사 실패일 경우
-      searchInputRef.current.focus();
-      return false;
-    }
+  const onSubmitGetRoomSerachList = async () => {
     setRoomListMode(listMode.search); //목록 모드 검색으로 변경
     setPageCount(1); //검색 버튼 클릭 시 페이지 카운트 초기화
     setIsSerachStatus(true); //검색 상태 true
@@ -210,23 +210,22 @@ const RoomList = () => {
 
   //방 검색
   const getRoomSerachList = async () => {
-    console.log("검색 시작 : ", searchValue);
+    console.log("검색 시작 : ", roomSearchValue);
 
     //첫 검색일 경우(검색 버튼 클릭일 경우) 스크롤 위치 최상단으로 이동
     if (pageCount === 1) {
       scrollBoxRef.current.scrollTo({
         top: 0,
         behavior: "auto",
-      });
+      })
+
       setRoomData([]); // 첫 목록이라면 방 목록 초기화
     }
-
-    await setPrevSearchValue(searchValue); //이전 검색 기록을 현재 검색어로 세팅
     setIsLoading(true);
 
     const serachRoomPayload = {
       pageCount: pageCount,
-      searchValue: searchValue,
+      searchValue: roomSearchValue, //store value
     };
 
     await fetchGetRoomSearchList(serachRoomPayload).then((res) => {
@@ -238,11 +237,12 @@ const RoomList = () => {
 
       if (resRoomSearchListData.length < 16) {
         setIsRoomEnd(true); //마지막 목록 상태
-        console.log("방 목록 끝!");
+        console.log("방 목록 끝!")
+        
       } else if (resRoomSearchListData.length === 0) {
         setIsRoomEnd(true); //마지막 목록 상태
         setIsNoRooms(true); //방 목록 없는 상태
-        console.log("방 목록 끝!");
+        console.log("방 목록 끝!")
       }
     });
     setIsLoading(false);
@@ -277,7 +277,7 @@ const RoomList = () => {
       scrollBoxRef.current.scrollTo({
         top: 0,
         behavior: "auto",
-      });
+      })
       setRoomData([]); // 첫 목록이라면 방 목록 초기화
     }
 
@@ -286,7 +286,8 @@ const RoomList = () => {
     const serachRoomPayload = {
       pageCount: pageCount,
       categoryValue: prevCategoryValue,
-    };
+    }
+
     await fetchGetRoomCategoryList(serachRoomPayload).then((res) => {
       const resRoomSearchListData = res.data.data.chattingRoomList;
 
@@ -297,6 +298,7 @@ const RoomList = () => {
       if (resRoomSearchListData.length < 16) {
         setIsRoomEnd(true); //마지막 목록 상태
         console.log("방 목록 끝!");
+
       } else if (resRoomSearchListData.length === 0) {
         setIsRoomEnd(true); //마지막 목록 상태
         setIsNoRooms(true); //방 목록 없는 상태
@@ -335,8 +337,6 @@ const RoomList = () => {
           <RoomListHeaderSearch
             onSubmitGetRoomSerachList={onSubmitGetRoomSerachList}
             searchInputRef={searchInputRef}
-            searchValue={searchValue}
-            onChangeSearchValue={onChangeSearchValue}
             pageCountReset={pageCountReset}
           />
 

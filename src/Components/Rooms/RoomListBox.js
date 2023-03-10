@@ -17,7 +17,6 @@ const RoomListBox = ({
   isLoading,
   target,
 }) => {
-  const navigate = useNavigate();
 
 
   console.log("룸 리스트 박스");
@@ -33,9 +32,9 @@ const RoomListBox = ({
       <StRoomListBoxRooms>
         <StRoomListBoxRoomsContainer ref={scrollBoxRef}>
           {/*방 목록 없을 떄 문구*/}
-          {roomData.length === 0 && isNoRooms && (
-            <StNoRooms>{message.noRooms}</StNoRooms>
-          )}
+          <StNoRooms 
+            display={roomData.length === 0 && isNoRooms ? "flex" : "none"}
+          >{message.noRooms}</StNoRooms>
 
           {/*방 목록 컴포넌트*/}
           {roomData.map((room) => {
@@ -94,12 +93,14 @@ const StScrollTarget = styled.div`
 `;
 
 const StNoRooms = styled.p`
-  display: flex;
+  display: ${(props)=>props.display};
   justify-content: center;
   align-items: center;
   font-size: 40px;
   height: 300px;
   font-weight: bold;
+  color: #000;
+
 `;
 
 const StRoomListBoxRoomsContainer = styled.div`

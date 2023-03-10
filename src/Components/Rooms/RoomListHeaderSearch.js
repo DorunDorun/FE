@@ -1,20 +1,41 @@
-import React from "react";
+import React, {useState, useRef} from "react";
 import styled from "styled-components";
 import { COLOR } from "../style/style";
 import { useNavigate } from "react-router";
 
+//컴포넌트
 import ButtonDefault from "../ButtonDefault";
+import { regExpSearch } from '../apis/RegExp';
+
+//스토어
+import useStoreRoomSearch from '../../zustand/storeRoomSearch';
 
 import { IoIosSearch } from "react-icons/io";
 
 const RoomListHeaderSearch = ({
   onSubmitGetRoomSerachList,
-  searchInputRef,
-  searchValue,
-  onChangeSearchValue,
   pageCountReset,
 }) => {
+
   const navigate = useNavigate();
+
+  const roomSearch = useStoreRoomSearch((state) => state.roomSearch)
+  const [searchValue, setSearchValue]=useState("")
+  const searchInputRef = useRef()
+  
+  //방 검색 클릭
+  const onSubmitGetRoomSerach=(e)=>{ 
+    e.preventDefault()
+    console.log("검색 컴포넌트 실행")
+    if (!regExpSearch(searchValue)) {
+      //검색어 유효성 검사 실패일 경우
+      searchInputRef.current.focus();
+      return false;
+    }
+    roomSearch(searchValue) //스토어로 값 전달
+    onSubmitGetRoomSerachList(searchValue) //검색 실행 함수
+  }
+  
 
   //방 만들기 클릭
   const onClickRoomCreate = () => {
@@ -23,14 +44,16 @@ const RoomListHeaderSearch = ({
     navigate("/roomCreate");
   };
 
+
+
   return (
     <StRoomListHeader>
       {/*검색*/}
-      <StRoomListSearchBox onSubmit={(e) => onSubmitGetRoomSerachList(e)}>
+      <StRoomListSearchBox onSubmit={(e) => onSubmitGetRoomSerach(e)}>
         <StRoomListSearchInput
           ref={searchInputRef}
           value={searchValue}
-          onChange={(e) => onChangeSearchValue(e)}
+          onChange={(e) => setSearchValue(e.target.value)}
           placeholder="관심있는 키워드를 검색해보세요!"
           maxLength={20}
         />
@@ -102,4 +125,4 @@ const StRoomListHeader = styled.div`
   margin-bottom: 30px;
 `;
 
-export default RoomListHeaderSearch;
+export default React.memo(RoomListHeaderSearch)

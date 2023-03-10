@@ -19,7 +19,7 @@ const LinkPrev = ({title, roomDelete, hoverBgColor, left}) => {
 
   return (
     <StButtonNormal onClick={onClickGoPrev} title={title || "뒤로가기"} 
-      hoverBgColor={hoverBgColor || COLOR.baseDefault} left={left || "55px"}
+      hoverBgColor={hoverBgColor || COLOR.baseDefault} left={left || "-55px"}
     > 
       <BsArrowLeftCircle/>
     </StButtonNormal>
