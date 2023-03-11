@@ -227,6 +227,8 @@
    
 ## <img src="https://user-images.githubusercontent.com/119986005/224276307-a28461c6-d908-4454-ae1a-aef16801a522.png" width="40" height="40"/> 트러블 슈팅
 
+<br />
+
 **Backend**
 
 <details><summary> Web RTC
@@ -386,6 +388,7 @@ public RoomFileMessage BinaryImageChange(ChatMessageRequestDto chatMessageReques
 
 - 30mb까지 저장할 수 있게 되었다.
 </details>
+<br />
 
 **Frontend**
 

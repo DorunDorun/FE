@@ -386,6 +386,10 @@ const ChatHistory = styled.div`
   -ms-overflow-style: none; /* 인터넷 익스플로러 */
   scrollbar-width: none; /* 파이어폭스 */
   padding: 10px;
+  img {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const StImg = styled.div`

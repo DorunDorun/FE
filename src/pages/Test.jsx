@@ -5,16 +5,9 @@ import Header from "../Components/headers/Header";
 import ListSideBar from "../Components/sidebar/ListSideBar";
 import "../css/fonts/Fonts.css";
 import MyPage from "./MyPage";
-import { StorePalette } from "../zustand/storePalette";
 
 const Test = () => {
-  const colorData = StorePalette((state) => state.color);
-  console.log(colorData); // 주스탠드에서 넘겨받은 chatRoomData 값 출력
-  return (
-    <>
-      <MyPage />
-    </>
-  );
+  return <></>;
 };
 
 export default Test;
