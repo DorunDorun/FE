@@ -160,8 +160,8 @@ function ChatRoom() {
 
 
   //배경 색상 변경
-  //const colorData = StorePalette((state) => state.color);
-  //console.log(colorData); // 주스탠드에서 넘겨받은 chatRoomData 값 출력
+  const colorData = StorePalette((state) => state.color);
+  console.log(colorData); // 주스탠드에서 넘겨받은 chatRoomData 값 출력
 
 
 
@@ -763,7 +763,9 @@ function ChatRoom() {
             <ChatRoomSideBar />
           </StSideNav>
 
-          <StSessionVideoBox ref={captureBoxRef}>
+          <StSessionVideoBox ref={captureBoxRef} background={colorData 
+          ? `transparent linear-gradient(0deg, #d699ff 7%, ${colorData} 101%, #d699ff 50%) 0% 0% no-repeat;` 
+          : `transparent linear-gradient(0deg, #d699ff 7%, #831fc5 101%, #d699ff 50%) 0% 0% no-repeat`}>
             <StSessionHeader>
               <StSessionHeaderContainer>
                 <StSessionH1Box>
@@ -917,7 +919,9 @@ function ChatRoom() {
                 </StSessionMainVideo>
               )}
             */}
-            <StMyStreamControlBox display={isCapture ? "none" : "flex"}>
+            <StMyStreamControlBox 
+              display={isCapture ? "none" : "flex"}
+            >
               <StMyStreamControlBoxLeft>
                 <StMyStreamNickNameBox>
                   {userProfileImage && (
@@ -1288,8 +1292,7 @@ const StSessionVideoBox = styled.div`
   //min-width: 1150px;
   margin: 0 auto;
   position: relative;
-  background: transparent
-    linear-gradient(0deg, #d699ff 7%, #831fc5 101%, #d699ff 50%) 0% 0% no-repeat;
+  background: ${(props)=>props.background};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
