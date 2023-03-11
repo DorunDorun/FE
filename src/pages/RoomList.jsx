@@ -386,17 +386,19 @@ const RoomList = () => {
   }
   //스크롤 감지
   useEffect(() => {
-    scrollBoxRef.current.addEventListener("scroll", onScroll);
+    const scrollBox = scrollBoxRef.current
+    scrollBox.addEventListener("scroll", onScroll);
     return () => {
-      scrollBoxRef.current.removeEventListener("scroll", onScroll);
+      scrollBox.removeEventListener("scroll", onScroll);
     };
   }, []);  
 
-
-  if (loading) { //첫 랜딩에서만 호출
-    <Wait />;
+  {/*
+  if (loading && pageCount === 1) { //첫 랜딩에서만 사용
+    return <Wait />
   }
-
+  */}
+  
   if (hasErrors) {
     //alert("다시 시도해주세요!");
     return navigate("/login");

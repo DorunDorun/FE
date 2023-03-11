@@ -6,6 +6,7 @@ import { nanoid } from "nanoid";
 //컴포넌트
 import RoomItem from "../RoomItem";
 import { COLOR } from "../style/style";
+import Wait from '../Wait';
 
 const RoomListBox = ({
   message,
@@ -32,7 +33,7 @@ const RoomListBox = ({
       <StRoomListBoxRooms>
         <StRoomListBoxRoomsContainer ref={scrollBoxRef}>
           {/*방 목록 없을 떄 문구*/}
-          {roomData.length === 0 && isNoRooms 
+          {roomData.length === 0 && isNoRooms && !isLoading
             && <StNoRooms>{message.noRooms}</StNoRooms>
           }
 
@@ -59,6 +60,7 @@ const RoomListBox = ({
               <StScrollTargetLoading></StScrollTargetLoading>
             </StScrollTarget>
           )}
+          
 
         </StRoomListBoxRoomsContainer>
       </StRoomListBoxRooms>
