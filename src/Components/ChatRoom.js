@@ -28,8 +28,6 @@ import ShareImages from "./lists/Share";
 import { StorePalette } from "../zustand/storePalette";
 
 
-
-
 /*유틸*/
 //카카오톡 공유하기
 import { shareKakao } from "../utils/shareKakaoLink";
