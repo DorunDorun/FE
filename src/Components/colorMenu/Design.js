@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { AiFillCheckSquare } from "react-icons/ai";
-import { StoreDesign } from "../../zustand/storeDesign";
 
 const Design = () => {
   const images = [
@@ -33,19 +32,12 @@ const Design = () => {
     }
   };
 
-  // Zustand 스토어에 접근하여 상태를 변경합니다.
-  const setDesignColor = StoreDesign((state) => state.setColor);
-
   const handleButtonClick = () => {
     if (selectedImage !== null) {
       const selectedFrame = frames[images.indexOf(selectedImage)];
-      // console.log(`선택한 이미지: ${selectedFrame}`);
-      setDesignColor(selectedFrame);
+      console.log(`선택한 이미지: ${selectedFrame}`);
     }
   };
-
-  const colorData = StoreDesign((state) => state.color);
-  console.log(colorData); // Zustand에서 넘겨받은 colorData 값 출력
 
   return (
     <Container>
