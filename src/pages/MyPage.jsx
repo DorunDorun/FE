@@ -57,7 +57,7 @@ const Container = styled.div`
 `;
 
 const StRoomListSideNav = styled.div`
-  width: 340px;
+  width: 341.5px;
   height: 100vh;
   border-right: 1px solid #dfdfdf;
 `;
