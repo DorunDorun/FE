@@ -4,59 +4,15 @@ import styled from "styled-components";
 import Header from "../Components/headers/Header";
 import ListSideBar from "../Components/sidebar/ListSideBar";
 import "../css/fonts/Fonts.css";
+import MyPage from "./MyPage";
+import { StorePalette } from "../zustand/storePalette";
 
 const Test = () => {
-  const navigate = useNavigate();
-
-  const email = localStorage.getItem("email");
-  const social = localStorage.getItem("social");
-  const thumbnail = localStorage.getItem("profile");
-  const id = localStorage.getItem("id");
-  const name = localStorage.getItem("name");
-  const gender = localStorage.getItem("gender");
-  const birthday = localStorage.getItem("birthday");
-  const birthyear = localStorage.getItem("birthyear");
-  const age_range = localStorage.getItem("age_range");
-
-  // console.log("id", id);
-  // console.log("name", name);
-  // console.log("gender", gender);
-  // console.log("birthday", birthday);
-  // console.log("birthyear", birthyear);
-  // console.log("age_range", age_range);
-  // 연령대, 생일, 출생년도, 이메일, 성별,이름, 닉네임, 프로필 사진 네이버 유사페이지 사용시
+  const colorData = StorePalette((state) => state.color);
+  console.log(colorData); // 주스탠드에서 넘겨받은 chatRoomData 값 출력
   return (
     <>
-      <Container>
-        <StRoomListSideNav>
-          <ListSideBar />
-        </StRoomListSideNav>
-        <InContainer>
-          <Myinfo>
-            <div>
-              <span>프로필</span>
-            </div>
-            <img src={thumbnail} />
-            <Acount>
-              <span>계정&nbsp;&nbsp;&nbsp; {email}</span>
-            </Acount>
-            <Stsocial>
-              <span>소셜&nbsp;&nbsp;&nbsp; {social}</span>
-            </Stsocial>
-            <StTest>
-              <span>연령대&nbsp;&nbsp;&nbsp; {age_range}</span>
-              <span>생일&nbsp;&nbsp;&nbsp; {birthday}</span>
-              <span>출생년도&nbsp;&nbsp;&nbsp; {birthyear}</span>
-              <span>성별&nbsp;&nbsp;&nbsp; {gender}</span>
-              <span>이름&nbsp;&nbsp;&nbsp; {name}</span>
-              <span>닉네임&nbsp;&nbsp;&nbsp; {} </span>
-            </StTest>
-
-            <Bye>로그아웃</Bye>
-          </Myinfo>
-        </InContainer>
-      </Container>
-      <StFooter></StFooter>
+      <MyPage />
     </>
   );
 };

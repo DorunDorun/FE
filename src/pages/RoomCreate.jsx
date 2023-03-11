@@ -1,5 +1,5 @@
 /*기본*/
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
@@ -33,7 +33,7 @@ function RoomCreate() {
   //방 만들기 정보
   const [roomInfo, setRoomInfo] = useState({
     roomTitle: "",
-    roomSubTitle: "",
+    roomSubTitle: "같이 두런두런해요!",
     roomCategory: "",
     roomStatus: true,
     roomPassword: "",
@@ -43,6 +43,19 @@ function RoomCreate() {
 
   //비밀번호 인풋 활성화
   const [isDisabled, setIsDisabled] = useState(true);
+
+  //방 이름 인풋
+  const inputRefTitle = useRef()
+
+  /*소개글 기본 문구 
+    자동 유효성 검사 onBlur 실행을 위한
+    방 이름 인풋으로 포커스 이동*/
+  useEffect(()=>{
+    setTimeout(()=>{
+      inputRefTitle.current.focus()
+    }, 0)
+  },[])
+
 
   //유효성 검사
   const [isRegExp, setIsRegExp] = useState({
@@ -256,6 +269,7 @@ function RoomCreate() {
               inputType="text"
               inputId="roomTitleInput"
               inputValue={roomTitle}
+              inputRef={inputRefTitle}
               onChange={(e) => {
                 setRoomInfo({ ...roomInfo, roomTitle: e.target.value });
               }}
@@ -375,6 +389,7 @@ function RoomCreate() {
               labelText="소개글"
               inputPaceholder={messageForm.subTitle}
               maxLength={20}
+              autoFocus
             />
           </StRoomCreateInputDiv>
 

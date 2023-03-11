@@ -84,6 +84,9 @@ const RoomList = () => {
   const [roomData, setRoomData] = useState([]); //방 목록 추가
   const [isRoomEnd, setIsRoomEnd] = useState(false); //마지막 목록 체크
 
+  
+  const [isGetRoomRefreshMode, setIsGetRoomRefreshMode]=useState(false)
+
 
   const pageCountReset=()=>{ //페이지 카운터 초기화
     console.log("👋 pageCountReset!!!")
@@ -125,7 +128,29 @@ const RoomList = () => {
   };
 
 
-  //방 목록 불러오기 api
+  //방 목록 처음으로 초기화
+  const resetRoomList = async ()=>{
+    if(pageCount > 1){
+      await setRoomListMode(listMode.all); //방 목록 모드 전체로 변경
+      return pageCountReset()
+    }else{
+      await setRoomData([])
+      return setIsGetRoomRefreshMode(true)
+    }
+  }
+
+  useEffect(()=>{
+    if(isGetRoomRefreshMode){
+      getRoomList()
+      setIsGetRoomRefreshMode(false)
+    }
+    
+  },[isGetRoomRefreshMode])
+
+
+
+
+  //방 전체 목록 불러오기 api
   const getRoomList = async () => {
     setRoomListMode(listMode.all); //방 목록 모드 전체로 변경
     setIsLoading(true); //옵저버 target element 비활성화
@@ -151,8 +176,10 @@ const RoomList = () => {
     setIsLoading(false); //옵저버 target element 활성화
   };
 
+
   //상황별 방 목록 불러오기
   useEffect(() => {
+    window.history.pushState(null, null, `roomList`) //url 값 변경
     if (roomListMode === listMode.all && pageCount === 1) { //방 목록 처음, 전체 불러오기
       console.log("🎄 처음 방 목록 불러오기 mode : ", roomListMode);
       getRoomList()
@@ -235,6 +262,8 @@ const RoomList = () => {
       console.log("fetchGetRoomList 완료 ", resRoomSearchListData);
       setIsRoomEnd(false); //마지막 목록 상태가 아님
 
+      window.history.pushState(null, null, `roomList?search=${serachRoomPayload.searchValue}`) //url 값 변경
+
       if (resRoomSearchListData.length < 16) {
         setIsRoomEnd(true); //마지막 목록 상태
         console.log("방 목록 끝!")
@@ -249,13 +278,14 @@ const RoomList = () => {
     setIsSerachStatus(false);
   };
 
+
   //카테고리 검색
   const onClickCategorySearch = (value) => {
+
     //카테고리 버튼 클릭
     console.log("카테고리 value ", value);
 
-    if (value) {
-      //검색한 값이 있다면 > 버튼 클릭일 경우에만 해당
+    if (value) { //검색한 값이 있다면 > 버튼 클릭일 경우에만 해당
       setRoomListMode(listMode.category); //목록 모드 변경
       setIsCategorySearch(true); //버튼 클릭 상태(첫 검색)
       setPageCount(1); //첫 검색이므로 페이지 카운트 초기화
@@ -295,6 +325,8 @@ const RoomList = () => {
       console.log("fetchGetRoomList 완료 ", resRoomSearchListData);
       setIsRoomEnd(false); //마지막 목록 상태가 아님
 
+      window.history.pushState(null, null, `roomList?search=${serachRoomPayload.categoryValue}`) //url 값 변경
+
       if (resRoomSearchListData.length < 16) {
         setIsRoomEnd(true); //마지막 목록 상태
         console.log("방 목록 끝!");
@@ -311,7 +343,7 @@ const RoomList = () => {
 
 
   if (loading) { //첫 랜딩에서만 호출
-    pageCount === 1 && <Wait />;
+    <Wait />;
   }
 
   if (hasErrors) {
@@ -326,7 +358,7 @@ const RoomList = () => {
       <StRoomListSideNav>
         
         {/* 사이드 메뉴 */}
-        <ListSideBar />
+        <ListSideBar resetRoomList={resetRoomList}/>
         
       </StRoomListSideNav>
 
@@ -353,9 +385,7 @@ const RoomList = () => {
                 return (
                   <ButtonDefault
                     key={nanoid()}
-                    onClick={() =>
-                      onClickCategorySearch(category.categoryValue)
-                    }
+                    onClick={() => onClickCategorySearch(category.categoryValue)}
                     width="auto"
                     height="44px"
                     padding="10px 20px"
@@ -365,6 +395,7 @@ const RoomList = () => {
                     fontColor="#6F6F6F"
                     hoverBgColor={COLOR.baseLight}
                     hoverFontColor="#fff"
+                    onValue={category.categoryValue}
                   >
                     {category.categorySubTitle}
                   </ButtonDefault>
