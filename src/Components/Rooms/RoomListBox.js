@@ -32,9 +32,9 @@ const RoomListBox = ({
       <StRoomListBoxRooms>
         <StRoomListBoxRoomsContainer ref={scrollBoxRef}>
           {/*방 목록 없을 떄 문구*/}
-          <StNoRooms 
-            display={roomData.length === 0 && isNoRooms ? "flex" : "none"}
-          >{message.noRooms}</StNoRooms>
+          {roomData.length === 0 && isNoRooms 
+            && <StNoRooms>{message.noRooms}</StNoRooms>
+          }
 
           {/*방 목록 컴포넌트*/}
           {roomData.map((room) => {
@@ -93,7 +93,7 @@ const StScrollTarget = styled.div`
 `;
 
 const StNoRooms = styled.p`
-  display: ${(props)=>props.display};
+  display: flex;
   justify-content: center;
   align-items: center;
   font-size: 40px;
