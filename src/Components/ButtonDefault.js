@@ -1,15 +1,24 @@
-import React from 'react'
+import React, {useState} from 'react'
 import styled from 'styled-components'
-
+import queryString from "query-string";
 
 function ButtonDefault({
     width, height, bgColor, hoverBgColor, fontColor, fontSize, lineHeight, 
     padding, margin, hoverFontColor, onClick, children, borderRadius, boxShadow, title,
-    fontFamily, fontWeight, borderNormal}) {
+    fontFamily, fontWeight, borderNormal, onValue}) {
+
+      /*카테고리 목록 클릭 view 관련 코드*/
+    const searchParams = window.location.search;
+    const query = queryString.parse(searchParams);
+    const qSearch = query.search
+    const onValueStatus = qSearch !== undefined && qSearch === onValue
+
+
+
   return (
     <StButtonDefault 
     width={width} height={height} 
-    fontSize={fontSize} fontColor={fontColor} bgColor={bgColor} 
+    fontSize={fontSize} fontColor={onValueStatus ? hoverFontColor : fontColor} bgColor={onValueStatus ? hoverBgColor : bgColor} 
     hoverBgColor={hoverBgColor} hoverFontColor={hoverFontColor}
     borderRadius={borderRadius} padding={padding} margin={margin}
     lineHeight={lineHeight} boxShadow={boxShadow}

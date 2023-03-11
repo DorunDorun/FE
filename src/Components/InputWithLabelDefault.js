@@ -3,7 +3,8 @@ import styled from 'styled-components'
 
 
 function InputWithLabelDefault({autoFocus, inputType, inputId, inputValue, inputPaceholder, 
-  onChange, onBlur, validMessage, width, labelWidth, positionLeft,height, labelText, className, inputRef, disabled, maxLength}) {
+  onChange, onBlur, validMessage, width, labelWidth, positionLeft, height, 
+  labelText, className, inputRef, disabled, maxLength}) {
   return (
     <>
       { labelText

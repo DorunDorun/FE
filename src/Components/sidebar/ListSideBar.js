@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import "../../css/fonts/Fonts.css";
 
-const ListSideBar = () => {
+const ListSideBar = ({resetRoomList}) => {
   const navigate = useNavigate();
 
   const setting = () => {
@@ -43,6 +43,7 @@ const ListSideBar = () => {
   };
 
   const gotoList = () => {
+    resetRoomList()
     return navigate("/roomList")
   };
 
