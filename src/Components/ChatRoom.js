@@ -23,6 +23,12 @@ import ButtonImageList from "./lists/ButtonImageList";
 import { server_url } from "../shared/api";
 import ShareImages from "./lists/Share";
 
+//스토어 배경 색상 변경
+import { StorePalette } from "../zustand/storePalette";
+
+
+
+
 /*유틸*/
 //카카오톡 공유하기
 import { shareKakao } from "../utils/shareKakaoLink";
@@ -152,6 +158,16 @@ function ChatRoom() {
   //화이트보드
   const [isWhiteBoard, setIsWhiteBoard] = useState(false);
 
+
+  //배경 색상 변경
+  //const colorData = StorePalette((state) => state.color);
+  //console.log(colorData); // 주스탠드에서 넘겨받은 chatRoomData 값 출력
+
+
+
+
+
+
   //브라우저 새로고침, 종료 시 실행
   const deleteSession = async (e) => {
     //await fetchDeleteRoom(userSessionId);
@@ -164,11 +180,8 @@ function ChatRoom() {
     };
     console.log("❌ 방 삭제 navigator.sendBeacon 실행!");
 
-    await navigator.sendBeacon(
-      `${server_url}api/rooms/${userSessionId}/delete`,
-      JSON.stringify(headers)
-    );
-    await navigator.sendBeacon(`${server_url}api/count`); //sse 실시간 감지
+    await navigator.sendBeacon(`${server_url}api/rooms/${userSessionId}/delete`, JSON.stringify(headers)) //삭제 api
+    await navigator.sendBeacon(`${server_url}api/count`) //sse 실시간 감지
 
     resetSession();
     return navigate("/roomWaiting");
@@ -186,7 +199,7 @@ function ChatRoom() {
   useEffect(() => {
     window.addEventListener("unload", deleteSession);
     return () => {
-      window.addEventListener("unload", deleteSession);
+      window.removeEventListener("unload", deleteSession);
     };
   }, []);
 
@@ -254,21 +267,13 @@ function ChatRoom() {
 
   //나간 인원, 참여자 목록에서 삭제
   const deleteSubscriber = (streamManager) => {
-    console.log("streamManager :::::::: ", streamManager);
-    let index = subscribers.indexOf(streamManager, 0);
-    console.log("❌ deleteSubscriber subscribers : ", subscribers);
-    console.log("deleteSubscriber subscribers length : ", subscribers.length);
+    let index = subscribers.indexOf(streamManager, 0)
     if (index > -1) {
-      subscribers.splice(index, 1);
-      setSubscribers(subscribers);
-      console.log("❌❌ deleteSubscriber subscribers : ", subscribers);
-      console.log(
-        "deleteSubscriber subscribers length 2222 : ",
-        subscribers.length
-      );
+      subscribers.splice(index, 1)
+      setSubscribers(subscribers)
     }
-    subscribers.length === 0 && setSubscribers([]);
-  };
+    subscribers.length === 0 && setSubscribers([])
+  }
 
   /*게시자 디바이스 컨트롤*/
 
@@ -384,8 +389,6 @@ function ChatRoom() {
 
 
     /*공유링크 썸네일*/
-    //const imgFilter = MediaBackImageList.filter((img) => img.name === "1"); //두런두런 기본 이미지 필터링
-    //const imgUrl = imgFilter[0].medium; //이미지 경로 가져오기 .제거
     console.log("ShareImages : ", ShareImages);
     const imgFilter = ShareImages.filter((img) => img.name === "1");
     const imgUrl = imgFilter[0].imageUrl; //이미지 경로 가져오기 .제거
