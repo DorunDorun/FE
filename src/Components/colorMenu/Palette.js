@@ -128,7 +128,7 @@ const Palette = () => {
           hideRGB
           hideHSV
         />
-        <button onClick={handleClick}>선택 완료</button>
+        <Stbutton onClick={handleClick}>선택 완료</Stbutton>
       </Stpicker>
       <Stpalette>
         <StMenu>
@@ -163,9 +163,12 @@ const Palette = () => {
           <button
             disabled={selectedBox === null}
             onClick={boxClick}
-            style={{ cursor: selectedBox !== null ? "pointer" : "default" }}
+            style={{
+              cursor: selectedBox !== null ? "pointer" : "default",
+              backgroundColor: selectedBox !== null ? "#8600f0" : "gray",
+            }}
           >
-            버튼
+            선택 완료
           </button>
         </StMenu>
       </Stpalette>
@@ -184,6 +187,15 @@ const Stpalette = styled.div`
   display: flex;
   cursor: pointer;
   margin-left: 10px;
+`;
+
+const Stbutton = styled.button`
+  display: flex;
+  justify-content: center;
+  background-color: #8600f0;
+  border-radius: 5px;
+  border: none;
+  color: #fff;
 `;
 
 const Stpicker = styled.div`
@@ -219,5 +231,8 @@ const StMenu = styled.div`
     align-items: center;
     margin-top: 30px;
     width: 100px;
+    border-radius: 5px;
+    border: none;
+    color: #fff;
   }
 `;

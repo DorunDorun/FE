@@ -1,16 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { AiFillCheckSquare } from "react-icons/ai";
+import { StoreDesign } from "../../zustand/storeDesign";
 
 const Design = () => {
   const images = [
-    `${process.env.PUBLIC_URL}/asset/images/design/썸네일-01.png`,
-    `${process.env.PUBLIC_URL}/asset/images/design/썸네일-02.png`,
-    `${process.env.PUBLIC_URL}/asset/images/design/썸네일-03.png`,
-    `${process.env.PUBLIC_URL}/asset/images/design/썸네일-04.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/thumb-01.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/thumb-02.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/thumb-03.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/thumb-04.png`,
   ];
-
-  const [selectedImage, setSelectedImage] = React.useState(images[0]);
+  const frames = [
+    `${process.env.PUBLIC_URL}/asset/images/design/frame-01.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/frame-02.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/frame-03.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/frame-04.png`,
+  ];
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const handleImageChange = (event) => {
     setSelectedImage(images[event.target.selectedIndex]);
@@ -19,26 +26,29 @@ const Design = () => {
   const handleImageClick = (image) => {
     if (selectedImage === image) {
       setSelectedImage(null);
+      setIsButtonDisabled(true);
     } else {
       setSelectedImage(image);
+      setIsButtonDisabled(false);
     }
   };
 
+  // Zustand 스토어에 접근하여 상태를 변경합니다.
+  const setDesignColor = StoreDesign((state) => state.setColor);
+
+  const handleButtonClick = () => {
+    if (selectedImage !== null) {
+      const selectedFrame = frames[images.indexOf(selectedImage)];
+      // console.log(`선택한 이미지: ${selectedFrame}`);
+      setDesignColor(selectedFrame);
+    }
+  };
+
+  const colorData = StoreDesign((state) => state.color);
+  console.log(colorData); // Zustand에서 넘겨받은 colorData 값 출력
+
   return (
     <Container>
-      <StMenu>
-        <Stselect
-          id="design-select"
-          value={images.indexOf(selectedImage)}
-          onChange={handleImageChange}
-        >
-          <option value="">선택</option>
-          <option value="0">봄</option>
-          <option value="1">여름</option>
-          <option value="2">가을</option>
-          <option value="3">겨울</option>
-        </Stselect>
-      </StMenu>
       <StDesign>
         {images.map((image, index) => (
           <div key={image}>
@@ -47,10 +57,24 @@ const Design = () => {
               className={selectedImage === image ? "selected" : ""}
               onClick={() => handleImageClick(image)}
             />
-            {selectedImage === image && <AiFillCheckSquare />}
+            {selectedImage === image && (
+              <StCheck>
+                <AiFillCheckSquare />
+              </StCheck>
+            )}
           </div>
         ))}
       </StDesign>
+      <button
+        disabled={isButtonDisabled}
+        onClick={handleButtonClick}
+        style={{
+          cursor: selectedImage !== null ? "pointer" : "default",
+          backgroundColor: selectedImage !== null ? "#8600f0" : "gray",
+        }}
+      >
+        선택 완료
+      </button>
     </Container>
   );
 };
@@ -60,19 +84,17 @@ export default Design;
 const Container = styled.div`
   position: relative;
   height: 100%;
-`;
-
-const StMenu = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-bottom: 10px;
-`;
-
-const Stselect = styled.select`
-  display: flex;
-  cursor: pointer;
-  width: 200px;
-  height: 35px;
+  button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    margin-left: 15px;
+    width: 100px;
+    border-radius: 5px;
+    border: none;
+    color: #fff;
+  }
 `;
 
 const StDesign = styled.div`
@@ -89,4 +111,11 @@ const StDesign = styled.div`
       width: 200px;
     }
   }
+`;
+
+const StCheck = styled.div`
+  position: absolute;
+  color: #fff;
+  width: 30px;
+  height: 30px;
 `;
