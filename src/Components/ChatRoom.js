@@ -23,10 +23,9 @@ import ButtonImageList from "./lists/ButtonImageList";
 import { server_url } from "../shared/api";
 import ShareImages from "./lists/Share";
 
+
 //스토어 배경 색상 변경
 import { StorePalette } from "../zustand/storePalette";
-
-
 
 
 /*유틸*/
@@ -161,12 +160,31 @@ function ChatRoom() {
 
   //배경 색상 변경
   const colorData = StorePalette((state) => state.color);
-  console.log(colorData); // 주스탠드에서 넘겨받은 chatRoomData 값 출력
+  const colorDataName = StorePalette((state) => state.color);
 
+  const [colorDataValue, setColorDataValue]=useState(`transparent linear-gradient(0deg, #d699ff 7%, #831fc5 101%, #d699ff 50%) 0% 0% no-repeat`)
+    useEffect(()=>{
+      const colorDataFunc=()=>{
+        switch(colorDataName){
+          case ("color"):
+            setColorDataValue(`transparent linear-gradient(0deg, #d699ff 7%, ${colorData} 101%, #d699ff 50%) 0% 0% no-repeat` )
+            break;
+          case ("design"):
+            setColorDataValue(`url(${colorData})`)
+            break;
+          default:
+            setColorDataValue(`transparent linear-gradient(0deg, #d699ff 7%, #831fc5 101%, #d699ff 50%) 0% 0% no-repeat`)
+        }
+      } 
+      colorDataFunc()
 
-
-
-
+      return()=>{
+        colorDataFunc()
+      }
+      
+    
+    },[])
+  
 
   //브라우저 새로고침, 종료 시 실행
   const deleteSession = async (e) => {
@@ -763,9 +781,9 @@ function ChatRoom() {
             <ChatRoomSideBar />
           </StSideNav>
 
-          <StSessionVideoBox ref={captureBoxRef} background={colorData 
-          ? `transparent linear-gradient(0deg, #d699ff 7%, ${colorData} 101%, #d699ff 50%) 0% 0% no-repeat;` 
-          : `transparent linear-gradient(0deg, #d699ff 7%, #831fc5 101%, #d699ff 50%) 0% 0% no-repeat`}>
+          <StSessionVideoBox ref={captureBoxRef} background={colorDataValue}>
+            {/* ? `transparent linear-gradient(0deg, #d699ff 7%, ${colorData} 101%, #d699ff 50%) 0% 0% no-repeat;` 
+          : `transparent linear-gradient(0deg, #d699ff 7%, #831fc5 101%, #d699ff 50%) 0% 0% no-repeat` */}
             <StSessionHeader>
               <StSessionHeaderContainer>
                 <StSessionH1Box>
