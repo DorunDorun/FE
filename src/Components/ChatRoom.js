@@ -162,21 +162,29 @@ function ChatRoom() {
   const colorData = StorePalette((state) => state.color);
   const colorDataName = StorePalette((state) => state.color);
 
-  const [colorDataValue, setColorDataValue]=useState(`
-  transparent linear-gradient(0deg, #d699ff 7%, #831fc5 101%, #d699ff 50%) 0% 0% no-repeat;
-  `)
-    
-  switch(colorDataName){
-    case ("color"):
-      setColorDataValue(`transparent linear-gradient(0deg, #d699ff 7%, ${colorData} 101%, #d699ff 50%) 0% 0% no-repeat;` )
-      break;
-    case ("design"):
-      setColorDataValue(`url(${colorData})`)
-      break;
-    default:
-      setColorDataValue(`transparent linear-gradient(0deg, #d699ff 7%, #831fc5 101%, #d699ff 50%) 0% 0% no-repeat;`)
-  }
+  const [colorDataValue, setColorDataValue]=useState(`transparent linear-gradient(0deg, #d699ff 7%, #831fc5 101%, #d699ff 50%) 0% 0% no-repeat`)
+    useEffect(()=>{
+      const colorDataFunc=()=>{
+        switch(colorDataName){
+          case ("color"):
+            setColorDataValue(`transparent linear-gradient(0deg, #d699ff 7%, ${colorData} 101%, #d699ff 50%) 0% 0% no-repeat` )
+            break;
+          case ("design"):
+            setColorDataValue(`url(${colorData})`)
+            break;
+          default:
+            setColorDataValue(`transparent linear-gradient(0deg, #d699ff 7%, #831fc5 101%, #d699ff 50%) 0% 0% no-repeat`)
+        }
+      } 
+      colorDataFunc()
 
+      return()=>{
+        colorDataFunc()
+      }
+      
+    
+    },[])
+  
 
   //브라우저 새로고침, 종료 시 실행
   const deleteSession = async (e) => {
@@ -773,7 +781,7 @@ function ChatRoom() {
             <ChatRoomSideBar />
           </StSideNav>
 
-          <StSessionVideoBox ref={captureBoxRef} background={colorData}>
+          <StSessionVideoBox ref={captureBoxRef} background={colorDataValue}>
             {/* ? `transparent linear-gradient(0deg, #d699ff 7%, ${colorData} 101%, #d699ff 50%) 0% 0% no-repeat;` 
           : `transparent linear-gradient(0deg, #d699ff 7%, #831fc5 101%, #d699ff 50%) 0% 0% no-repeat` */}
             <StSessionHeader>
