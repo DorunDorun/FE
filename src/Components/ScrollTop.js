@@ -11,7 +11,6 @@ const ScrollTop = ({onClick, display}) => {
         onClick={onClick} title="위로 올라가기"
         display={display}
     >
-
         <StImg src={scrollTopImage} alt="위로 올라가기"/>
     </StButton>
   )
@@ -24,7 +23,7 @@ const StButton=styled.button`
     background: none;
     position: fixed;
     bottom: 6%;
-    right: 10%;
+    right: 9%;
     cursor: pointer;
     :hover{
         transform: scale(1.15);
