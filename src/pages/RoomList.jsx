@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { nanoid } from "nanoid";
 import { useNavigate } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
-
+import queryString from "query-string";
 
 //컴포넌트, 스타일
 import ButtonDefault from "../Components/ButtonDefault";
@@ -13,7 +13,7 @@ import ListSideBar from "../Components/sidebar/ListSideBar";
 import { categoryList } from "../Components/lists/CategoryList";
 import RoomListBox from '../Components/Rooms/RoomListBox';
 import RoomListHeaderSearch from '../Components/Rooms/RoomListHeaderSearch';
-
+import ScrollTop from '../Components/ScrollTop';
 
 //아이콘
 import { SlArrowLeft } from "react-icons/sl";
@@ -84,8 +84,8 @@ const RoomList = () => {
   const [roomData, setRoomData] = useState([]); //방 목록 추가
   const [isRoomEnd, setIsRoomEnd] = useState(false); //마지막 목록 체크
 
-  
-  const [isGetRoomRefreshMode, setIsGetRoomRefreshMode]=useState(false)
+  //전체 목록 상태 값
+  const [isGetRoomRefreshMode, setIsGetRoomRefreshMode] = useState(false)
 
 
   const pageCountReset=()=>{ //페이지 카운터 초기화
@@ -139,6 +139,7 @@ const RoomList = () => {
     }
   }
 
+  //방 목록 전체보기
   useEffect(()=>{
     if(isGetRoomRefreshMode){
       getRoomList()
@@ -146,6 +147,7 @@ const RoomList = () => {
     }
     
   },[isGetRoomRefreshMode])
+
 
 
 
@@ -180,6 +182,7 @@ const RoomList = () => {
   //상황별 방 목록 불러오기
   useEffect(() => {
     window.history.pushState(null, null, `roomList`) //url 값 변경
+    
     if (roomListMode === listMode.all && pageCount === 1) { //방 목록 처음, 전체 불러오기
       console.log("🎄 처음 방 목록 불러오기 mode : ", roomListMode);
       getRoomList()
@@ -241,10 +244,7 @@ const RoomList = () => {
 
     //첫 검색일 경우(검색 버튼 클릭일 경우) 스크롤 위치 최상단으로 이동
     if (pageCount === 1) {
-      scrollBoxRef.current.scrollTo({
-        top: 0,
-        behavior: "auto",
-      })
+      scrollTop("auto")
 
       setRoomData([]); // 첫 목록이라면 방 목록 초기화
     }
@@ -279,6 +279,28 @@ const RoomList = () => {
   };
 
 
+
+  /*
+  const [position, setPosition] = useState(0);
+  function onScroll() {
+    setPosition(window.scrollY);
+    
+  }
+  useEffect(() => {
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [])
+
+  useEffect(() => {
+    console.log("scroll position : ", position)
+  }, [position])
+  */
+
+
+
+
   //카테고리 검색
   const onClickCategorySearch = (value) => {
 
@@ -291,6 +313,7 @@ const RoomList = () => {
       setPageCount(1); //첫 검색이므로 페이지 카운트 초기화
       setPrevCategoryValue(value); //이전 검색 값에 현재 카테고리 값 설정
     }
+    
   };
 
   useEffect(() => { //카테고리 버튼 클릭일 경우
@@ -338,8 +361,36 @@ const RoomList = () => {
       }
     });
     setIsLoading(false);
-    setIsCategorySearch(false);
+    setIsCategorySearch(false)
+
   };
+
+  //위로 올라가기
+  const scrollTop=(behaviorValue)=>{
+    scrollBoxRef.current.scrollTo({
+      top: 0,
+      behavior: behaviorValue,
+    })
+  }
+
+  //스크롤 감지 및 스크롤 top 버튼 컨트롤
+  const [isScrollTopStatus, setIsScrollTopStatus]=useState(false)
+  const onScroll=()=>{
+    const scrollY = scrollBoxRef.current.scrollTop //목록 컴포넌트 스크롤 값
+
+    if(scrollY > 1600 && !isScrollTopStatus){  //2번째 목록 중간부터, 비활성화가 되어 있다면
+      setIsScrollTopStatus(true)
+    }else{
+      setIsScrollTopStatus(false)
+    }
+  }
+  //스크롤 감지
+  useEffect(() => {
+    scrollBoxRef.current.addEventListener("scroll", onScroll);
+    return () => {
+      scrollBoxRef.current.removeEventListener("scroll", onScroll);
+    };
+  }, []);  
 
 
   if (loading) { //첫 랜딩에서만 호출
@@ -411,7 +462,7 @@ const RoomList = () => {
         </StRoomListTopContainer>
 
         {/*방 목록 영역*/}
-        <RoomListBox 
+        <RoomListBox
           message={message} 
           scrollBoxRef={scrollBoxRef}
           roomData={roomData}
@@ -422,7 +473,14 @@ const RoomList = () => {
           target={target}
         />
 
+        {/*위로가기*/}
+        <ScrollTop 
+          display={isScrollTopStatus ? "block" : "none"}
+          onClick={()=>scrollTop("smooth")}
+        />
+
       </StRoomListCenter>
+      
     </StRoomListWrap>
   );
 };
