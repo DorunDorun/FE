@@ -59,6 +59,7 @@ const RoomListBox = ({
               <StScrollTargetLoading></StScrollTargetLoading>
             </StScrollTarget>
           )}
+
         </StRoomListBoxRoomsContainer>
       </StRoomListBoxRooms>
     </StRoomListBox>
