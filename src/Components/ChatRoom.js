@@ -65,7 +65,7 @@ function ChatRoom() {
     if (window.confirm("저장하지 않은 정보를 잃을 수 있습니다. 뒤로 가시겠습니까?")) {
       return leaveSession();
     }
-  };
+  }
 
   //뒤로가기 감지 및 컨트롤
   useEffect(() => {
