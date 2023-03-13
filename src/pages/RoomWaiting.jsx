@@ -595,6 +595,7 @@ const StRoomWaitingWrap = styled.div`
   width: 100vw;
   min-width: 800px;
   height: 100vh;
+  min-height: 940px;
   background: transparent
     linear-gradient(
       0deg,
