@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { AiFillCheckSquare } from "react-icons/ai";
+import { StorePalette } from "../../zustand/storePalette";
 
 const Design = () => {
   const images = [
@@ -32,10 +33,15 @@ const Design = () => {
     }
   };
 
+  const setSelectedFrameInStore = StorePalette(
+    (state) => state.setSelectedFrame
+  );
+
   const handleButtonClick = () => {
     if (selectedImage !== null) {
       const selectedFrame = frames[images.indexOf(selectedImage)];
       console.log(`선택한 이미지: ${selectedFrame}`);
+      setSelectedFrameInStore(selectedFrame);
     }
   };
 

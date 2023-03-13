@@ -7,7 +7,7 @@ import { AiFillCheckSquare } from "react-icons/ai";
 import { StorePalette } from "../../zustand/storePalette";
 
 const Palette = () => {
-  const [color, setColor] = useColor("hex", "#BE5FFD");
+  const [color, setColor] = useColor("hex", "#831fc5");
   const [colorData, setColorData] = useState("");
   const [selectedBox, setSelectedBox] = useState(null);
 
