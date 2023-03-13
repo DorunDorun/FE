@@ -5,8 +5,6 @@ import "./css/style.css";
 import Modal from "react-modal";
 
 const App = () => {
-  Modal.setAppElement("#root");
-
   if (process.env.NODE_ENV === "production") {
     console.log = function no_console() {};
     console.warn = function no_console() {};
