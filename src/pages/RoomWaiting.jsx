@@ -111,10 +111,10 @@ const RoomWaiting = () => {
 
   //버튼 이미지
   const image = {
-    videoOnS: ButtonImageList.video.onSmall,
-    videoOffS: ButtonImageList.video.offSmall,
-    audioOnS: ButtonImageList.audio.onSmall,
-    audioOffS: ButtonImageList.audio.offSmall,
+    videoOnM: ButtonImageList.video.onMedium,
+    videoOffM: ButtonImageList.video.offMedium,
+    audioOnM: ButtonImageList.audio.onMedium,
+    audioOffM: ButtonImageList.audio.offMedium,
   };
 
   //타겟
@@ -383,7 +383,7 @@ const RoomWaiting = () => {
                 onClick={onClickPublisherVideoToggle}
               >
                 <StButtonIconImage
-                  src={isPublisherVideo ? image.videoOnS : image.videoOffS}
+                  src={isPublisherVideo ? image.videoOnM : image.videoOffM}
                 />
               </StButtonMyDeviceOnOff>
               <StButtonMyDeviceOnOff
@@ -398,7 +398,7 @@ const RoomWaiting = () => {
                 onClick={onClickPublisherAudioToggle}
               >
                 <StButtonIconImage
-                  src={isPublisherAudio ? image.audioOnS : image.audioOffS}
+                  src={isPublisherAudio ? image.audioOnM : image.audioOffM}
                 />
               </StButtonMyDeviceOnOff>
             </StRoomWaitingControllBox>
@@ -491,8 +491,6 @@ const StRoomWaitingInputBoxTop = styled.div`
 
 const StButtonIconImage = styled.img`
   src: ${(props) => props.src};
-  width: 30px;
-  height: 30px;
 `;
 const StButtonMyDeviceOnOff = styled.button`
   width: 48px;
@@ -533,7 +531,7 @@ const StRoomWaitingVideo = styled.video`
 `;
 const StRoomWaitingVideoBox = styled.div`
   width: 500px;
-  height: 295px;
+  //height: 295px;
   //background-color: #000;
   border: 2px solid #bf6dff;
   border-radius: 14px;
