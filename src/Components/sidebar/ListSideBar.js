@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import "../../css/fonts/Fonts.css";
+import queryString from "query-string";
 
 const ListSideBar = ({ resetRoomList }) => {
   const navigate = useNavigate();
@@ -42,9 +43,9 @@ const ListSideBar = ({ resetRoomList }) => {
     navigate("/Mypage");
   };
 
-  const gotoList = () => {
-    resetRoomList();
-    return navigate("/RoomList");
+  const gotoList = async () => {
+    const pathName = window.location.pathname
+    pathName !== "/roomList" ? navigate("/roomList") : resetRoomList()
   };
 
   const goToLanding = () => {
