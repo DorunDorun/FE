@@ -402,7 +402,7 @@ const StImg = styled.div`
     display: flex;
     position: absolute;
     top: 150px;
-    left: 1530px;
+    right: 30px;
     width: 30px;
     cursor: pointer;
     color: #000;
