@@ -162,12 +162,13 @@ function ChatRoom() {
   //배경 색상 변경
   const colorData = StorePalette((state) => state.colorData);
   const colorDataName = StorePalette((state) => state.colorDataName);
+  const colorDataDefault = "#831fc5"
 
-  const colorDataForm=(colorData = '#831fc5')=>{
+  const colorDataForm=(colorData)=>{
     return `transparent linear-gradient(0deg, #d699ff 7%, ${colorData} 101%, #d699ff 50%) 0% 0% no-repeat`
   }
 
-  const [colorDataValue, setColorDataValue]=useState(colorDataForm)
+  const [colorDataValue, setColorDataValue]=useState(colorDataForm(colorDataDefault))
   
 
     useEffect(()=>{
@@ -178,10 +179,10 @@ function ChatRoom() {
             setColorDataValue(colorDataForm(colorData))
             break;
           case ("frame"):
-            setColorDataValue(`url("${colorData}") no-repeat center center/ 150% 100%`)
+            setColorDataValue(`url("${colorData}") no-repeat center center/ 100% 100%`)
             break;
           default:
-            setColorDataValue(colorDataForm)
+            setColorDataValue(colorDataForm(colorDataDefault))
         }
       } 
       colorDataFunc()

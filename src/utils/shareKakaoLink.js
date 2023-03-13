@@ -21,7 +21,7 @@ export const shareKakao = (route, title, description, imgUrl) => {
       content: {
         title: title,
         description: description,
-        imageUrl: `https://dorundourn.vercel.app${imgUrl}`,
+        imageUrl: `https://dorun-dorun.vercel.app${imgUrl}`,
         link: {
           mobileWebUrl: route,
           webUrl: route,
