@@ -38,6 +38,11 @@ const SubscriberVideoItem = ({
     console.log("isAudioStatus : ", isAudioStatus)
   };
 
+  useEffect(()=>{
+    console.log(`useEffect 참여자 sub ${subStreamConnectionConnectionId} streamManager : `, sub)
+  },[sub])
+  console.log(`참여자 sub ${subStreamConnectionConnectionId} streamManager : `, sub)
+
   //디바이스 on off 버튼
   const image = {
     videoOnS: ButtonImageList.video.onSmall,
@@ -62,7 +67,7 @@ const SubscriberVideoItem = ({
         <StStreamNickNamePublisher>{userNickName} 님</StStreamNickNamePublisher>
 
         {/*비디오*/}
-        <UserVideoComponent streamManager={sub} />
+        <UserVideoComponent streamManager={sub} userMediaBackImage={userMediaBackImage} />
 
         <StStreamControlButtonBox>
           <StButtonDeviceOnOff

@@ -149,6 +149,7 @@ function ChatRoom() {
   //캔버스 컨트롤
   const [isCanvas, setIsCanvas] = useState(false);
   const [isCanvasDefault, setIsCanvasDefault] = useState(true);
+  const [isWhiteBoardCanvasDefault, setIsWhiteBoardCanvasDefault] = useState(true);
   const [isCapture, setIsCapture] = useState(false);
 
   //캔버스 컨테이너 (캡쳐용)
@@ -435,6 +436,7 @@ function ChatRoom() {
 
   //화이트보드 컨트롤
   const onClickWhiteBoardToggle = () => {
+    setIsWhiteBoardCanvasDefault(false)
     setIsWhiteBoard(!isWhiteBoard);
   };
 
@@ -671,6 +673,7 @@ function ChatRoom() {
     //캔버스 초기화
     setIsCanvas(false);
     setIsCanvasDefault(true);
+    setIsWhiteBoardCanvasDefault(true)
 
     console.log("방 삭제 , 초기화 완료!");
   };
@@ -909,6 +912,8 @@ function ChatRoom() {
                             sub.stream.connection.connectionId
                           );
                         }}
+                        videoActive={sub.stream.connection.stream.videoActive}
+                        audioActive={sub.stream.connection.stream.audioActive}
                         userMediaBackImage={
                           JSON.parse(
                             sub.stream.connection.data.substring(
@@ -1028,6 +1033,7 @@ function ChatRoom() {
                   {/* <TfiBlackboard /> */}
                   <MyControllButtonImg src={whiteBoardImage.default} />
                 </StMyDeviceButton>
+                
               </StMyStreamControlBoxLeft>
               <StMyStreamControlBoxRight>
                 <ButtonDefault
@@ -1085,6 +1091,21 @@ function ChatRoom() {
               className={isWhiteBoard ? "block" : "none"}
               isCapture={isCapture}
             />
+
+
+            <StCanvasContianer
+              className={isWhiteBoard ? "d-block" : "d-none"}
+              defaultClass={isWhiteBoardCanvasDefault ? "defaultNone" : ""}
+            >
+              <CanvasDrawing 
+                canvasName="whiteBoard"
+                className={isWhiteBoard ? "d-block" : "d-none"}
+                defaultClass={isWhiteBoardCanvasDefault ? "defaultNone" : ""}
+                isCapture={isCapture ? "captureOn" : ""}
+              />
+            </StCanvasContianer>
+
+
           </StSessionVideoBox>
 
           <Chat props={newNickName} />
