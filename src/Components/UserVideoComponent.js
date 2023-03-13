@@ -6,7 +6,7 @@ const UserVideoComponent = (props) => {
     return (
         <div className="UserVideoComponent">
             {props.streamManager !== undefined ? (
-                <OpenViduVideoComponent streamManager={props.streamManager} />
+                <OpenViduVideoComponent streamManager={props.streamManager} userMediaBackImage={props.userMediaBackImage} />
             ) : null}
         </div>
     );
