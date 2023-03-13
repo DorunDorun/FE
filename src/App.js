@@ -1,11 +1,11 @@
 import Router from "./shared/Router";
 import React from "react";
-import './css/reset.css'
-import './css/style.css'
-
+import "./css/reset.css";
+import "./css/style.css";
+import Modal from "react-modal";
 
 const App = () => {
-  
+  Modal.setAppElement("#root");
 
   if (process.env.NODE_ENV === "production") {
     console.log = function no_console() {};
@@ -14,7 +14,6 @@ const App = () => {
   }
 
   return <Router />;
-
 };
 
 export default App;
