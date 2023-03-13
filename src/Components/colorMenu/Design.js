@@ -9,6 +9,11 @@ const Design = () => {
     `${process.env.PUBLIC_URL}/asset/images/design/thumb-02.png`,
     `${process.env.PUBLIC_URL}/asset/images/design/thumb-03.png`,
     `${process.env.PUBLIC_URL}/asset/images/design/thumb-04.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/thumb-05.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/thumb-06.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/thumb-07.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/thumb-08.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/thumb-09.png`,
   ];
   const frames = [
     `${process.env.PUBLIC_URL}/asset/images/design/frame-01.png`,
