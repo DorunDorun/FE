@@ -43,7 +43,7 @@ const ListSideBar = ({ resetRoomList }) => {
   };
 
   const gotoList = () => {
-    // resetRoomList();
+    resetRoomList();
     return navigate("/RoomList");
   };
 
