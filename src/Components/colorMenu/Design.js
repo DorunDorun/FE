@@ -110,12 +110,22 @@ const StDesign = styled.div`
   cursor: pointer;
   flex-direction: column;
   align-items: center;
+  width: 228px;
+  height: 77vh;
+  overflow: hidden;
+  overflow-y: auto;
+  ::-webkit-scrollbar {
+    //스크롤바 비활성화
+    /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
+    display: none;
+  }
+  -ms-overflow-style: none; /* 인터넷 익스플로러 */
+  scrollbar-width: none; /* 파이어폭스 */
   div {
     display: flex;
     img {
       margin-bottom: 10px;
       justify-content: center;
-
       width: 200px;
     }
   }
