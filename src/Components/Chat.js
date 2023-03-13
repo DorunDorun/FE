@@ -327,17 +327,6 @@ const Chat = ({ props }) => {
                 </ReceivedMessage>
               )
             )}
-        <StyledModal
-          isOpen={isModalOpen}
-          onRequestClose={() => setIsModalOpen(false)}
-          contentLabel="Image Modal"
-        >
-          {selectedImage && (
-            <ShowModal>
-              <img src={selectedImage} />
-            </ShowModal>
-          )}
-        </StyledModal>
       </ChatHistory>
       <Wirte>
         <Select>
@@ -361,6 +350,17 @@ const Chat = ({ props }) => {
           전송
         </Click>
       </Wirte>
+      <StyledModal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="Image Modal"
+      >
+        {selectedImage && (
+          <ShowModal>
+            <img src={selectedImage} />
+          </ShowModal>
+        )}
+      </StyledModal>
     </Container>
   );
 };
@@ -400,15 +400,17 @@ const StImg = styled.div`
   height: 250px;
   .cross {
     display: flex;
-    position: relative;
-    top: 40px;
-    left: 150px;
+    position: absolute;
+    top: 150px;
+    left: 1530px;
+    width: 30px;
     cursor: pointer;
+    color: #000;
   }
   img {
-    width: 300px;
-    height: 200px;
-    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 `;
 
@@ -575,11 +577,13 @@ const StyledModal = styled(Modal)`
   justify-content: center;
   align-items: center;
   position: absolute;
-  left: 25%;
-  width: 1000px;
+  /* position: relative; */
+  left: 27%;
+  width: 750px;
   height: 100vh;
+  z-index: 999;
   background-color: transparent;
-  z-index: 14;
+  /* background-color: #000; */
 `;
 
 const ShowModal = styled.div`
@@ -590,8 +594,8 @@ const ShowModal = styled.div`
   img {
     width: 50%;
     height: 100%;
-    width: 1000px;
-    height: 1000px;
+    width: 800px;
+    height: 800px;
     object-fit: contain;
   }
 `;
