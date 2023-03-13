@@ -274,7 +274,7 @@ const RoomWaiting = () => {
     console.log("selectDevice : ", selectDevice);
     if (!selectDevice) {
       //디바이스 선택 상태 값
-      alert("디바이스를 선택해주세요!");
+      alert("카메라와 마이크 허용은 필수입니다!");
       return false;
     }
 
