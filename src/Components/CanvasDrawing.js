@@ -53,7 +53,7 @@ const colors = [
 
 //const width = `${Math.ceil(colors.length / 2) * 32}px`;
 
-function CanvasDrawing({className, defaultClass, isCapture}) {
+function CanvasDrawing({className, defaultClass, isCapture, canvasName}) {
   const classNameProps=className
   const defaultClassProps=defaultClass
   const canvasRef = useRef()
@@ -84,7 +84,7 @@ function CanvasDrawing({className, defaultClass, isCapture}) {
 
   const props = {
     ...defaultProps,
-    className: classNames("canvas"),
+    className: classNames(canvasName !== undefined ? `canvas ${canvasName}` : "canvas"),
     onChange: handleCanvasChange,
     ref: canvasRef,
     brushColor,
@@ -95,7 +95,7 @@ function CanvasDrawing({className, defaultClass, isCapture}) {
     <div className={"canvasWrap " + classNameProps + " " + defaultClassProps}>
       <StCaptureStatusBox className={isCapture}>
         <CanvasDraw {...props} />
-        <StCanvasDrawingButtonBox className="button-container">
+        <StCanvasDrawingButtonBox className={canvasName !== undefined ? `button-container ${canvasName}` : "button-container"}>
           <div ref={paletteRef} className="picker-container">
             <button
               className="palette canvasButton"

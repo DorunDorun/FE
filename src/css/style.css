@@ -83,6 +83,20 @@
   margin: 6px 4px 6px 0;
 }
 
+.canvas:not(.disabled).whiteBoard{
+  width: 91% !important;
+  border: none !important;
+  border-radius: 10px;
+  cursor: none;
+  /*box-shadow: 4px 4px #995;*/
+  margin: 0 auto;
+}
+
+.canvas.whiteBoard > canvas{
+  width: 91% !important;
+  margin: 0 auto;
+}
+
 .button-container {
   display: flex;
   flex-direction: row;
@@ -92,6 +106,17 @@
   position: absolute;
   bottom: 10px;
   left: 10px;
+}
+
+.button-container.whiteBoard {
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+  width: 100%;
+  justify-content: flex-start;
+  position: absolute;
+  bottom: -9px;
+  left: 56px;
 }
 
 .button-container > * {
@@ -234,7 +259,7 @@ textarea {
 }
 .UserVideoComponent{
   height: 100%;
-  overflow: auto;
+  /*overflow: auto;*/
   background-color: #A12AFF;
 }
 .UserVideoComponent video{
