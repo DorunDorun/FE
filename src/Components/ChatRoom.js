@@ -7,6 +7,7 @@ import { useBeforeunload } from "react-beforeunload";
 import html2canvas from "html2canvas";
 import { nanoid } from "nanoid";
 
+
 /*컴포넌트*/
 import UserVideoComponent from "./UserVideoComponent";
 import CanvasDrawing from "./CanvasDrawing";
@@ -22,8 +23,10 @@ import ButtonImageList from "./lists/ButtonImageList";
 import { server_url } from "../shared/api";
 import ShareImages from "./lists/Share";
 
+
 //스토어 배경 색상 변경
 import { StorePalette } from "../zustand/storePalette";
+
 
 /*유틸*/
 //카카오톡 공유하기
@@ -56,32 +59,33 @@ function ChatRoom() {
     }
   }, []);
 
+
+
   /*뒤로가기 클릭
     1. 뒤로가기 이벤트 막기
     2. confirm 확인 시 방 나가기 로직 실행 > 삭제 api 후 방 목록으로 이동
   */
-  const locationBack = () => {
-    console.log("locationBack 1");
-    window.history.pushState(null, null, window.location.href);
-    console.log("locationBack 2");
-    if (
-      window.confirm(
-        "저장하지 않은 정보를 잃을 수 있습니다. 뒤로 가시겠습니까?"
-      )
-    ) {
-      console.log("locationBack 3");
-      return leaveSession();
+  const locationBack = ()=>{
+    console.log("locationBack 1")
+    window.history.pushState(null, null, window.location.href)
+    console.log("locationBack 2")
+    if(window.confirm("저장하지 않은 정보를 잃을 수 있습니다. 뒤로 가시겠습니까?")){
+      console.log("locationBack 3")
+      return leaveSession()
     }
-  };
+  }
 
   //뒤로가기 감지 및 컨트롤
-  useEffect(() => {
-    window.history.pushState(null, null, window.location.href);
-    window.addEventListener("popstate", locationBack);
-    return () => {
-      window.removeEventListener("popstate", locationBack);
-    };
-  }, []);
+  useEffect(()=>{
+    window.history.pushState(null, null, window.location.href)
+    window.addEventListener("popstate", locationBack)
+    return()=>{
+      window.removeEventListener("popstate", locationBack)
+    }
+  },[])
+
+  
+
 
   //roomTitle, userSessionId, userToken, userNickName, loading, hasErrors
   const roomTitle = localStorage.getItem("title");
@@ -154,36 +158,41 @@ function ChatRoom() {
   //화이트보드
   const [isWhiteBoard, setIsWhiteBoard] = useState(false);
 
+
   //배경 색상 변경
-  const colorData = StorePalette((state) => state.color);
-  const colorDataName = StorePalette((state) => state.color);
+  const colorData = StorePalette((state) => state.colorData);
+  const colorDataName = StorePalette((state) => state.colorDataName);
 
-  const [colorDataValue, setColorDataValue] = useState(
-    `transparent linear-gradient(0deg, #d699ff 7%, #831fc5 101%, #d699ff 50%) 0% 0% no-repeat`
-  );
-  useEffect(() => {
-    const colorDataFunc = () => {
-      switch (colorDataName) {
-        case "color":
-          setColorDataValue(
-            `transparent linear-gradient(0deg, #d699ff 7%, ${colorData} 101%, #d699ff 50%) 0% 0% no-repeat`
-          );
-          break;
-        case "frame":
-          setColorDataValue(`url(${colorData})`);
-          break;
-        default:
-          setColorDataValue(
-            `transparent linear-gradient(0deg, #d699ff 7%, #831fc5 101%, #d699ff 50%) 0% 0% no-repeat`
-          );
+  const colorDataForm=(colorData = '#831fc5')=>{
+    return `transparent linear-gradient(0deg, #d699ff 7%, ${colorData} 101%, #d699ff 50%) 0% 0% no-repeat`
+  }
+
+  const [colorDataValue, setColorDataValue]=useState(colorDataForm)
+  
+
+    useEffect(()=>{
+      const colorDataFunc=()=>{
+        console.log(" colorDataName : ", colorDataName)
+        switch(colorDataName){
+          case ("color"):
+            setColorDataValue(colorDataForm(colorData))
+            break;
+          case ("frame"):
+            setColorDataValue(`url("${colorData}") no-repeat center center/ 150% 100%`)
+            break;
+          default:
+            setColorDataValue(colorDataForm)
+        }
+      } 
+      colorDataFunc()
+
+      return()=>{
+        colorDataFunc()
       }
-    };
-    colorDataFunc();
-
-    return () => {
-      colorDataFunc();
-    };
-  }, []);
+      
+    
+    },[colorData])
+  
 
   //브라우저 새로고침, 종료 시 실행
   const deleteSession = async (e) => {
@@ -197,11 +206,8 @@ function ChatRoom() {
     };
     console.log("❌ 방 삭제 navigator.sendBeacon 실행!");
 
-    await navigator.sendBeacon(
-      `${server_url}api/rooms/${userSessionId}/delete`,
-      JSON.stringify(headers)
-    ); //삭제 api
-    await navigator.sendBeacon(`${server_url}api/count`); //sse 실시간 감지
+    await navigator.sendBeacon(`${server_url}api/rooms/${userSessionId}/delete`, JSON.stringify(headers)) //삭제 api
+    await navigator.sendBeacon(`${server_url}api/count`) //sse 실시간 감지
 
     resetSession();
     return navigate("/roomWaiting");
@@ -287,13 +293,13 @@ function ChatRoom() {
 
   //나간 인원, 참여자 목록에서 삭제
   const deleteSubscriber = (streamManager) => {
-    let index = subscribers.indexOf(streamManager, 0);
+    let index = subscribers.indexOf(streamManager, 0)
     if (index > -1) {
-      subscribers.splice(index, 1);
-      setSubscribers(subscribers);
+      subscribers.splice(index, 1)
+      setSubscribers(subscribers)
     }
-    subscribers.length === 0 && setSubscribers([]);
-  };
+    subscribers.length === 0 && setSubscribers([])
+  }
 
   /*게시자 디바이스 컨트롤*/
 
@@ -397,15 +403,16 @@ function ChatRoom() {
     const title = "두런두런에 초대합니다!";
     const description = roomTitle;
 
-    const protocol = window.location.protocol;
-    const host = window.location.host;
+    const protocol = window.location.protocol
+    const host = window.location.host
 
-    const shareUrl = `${protocol}//${host}/roomWaiting/join?`;
+    const shareUrl = `${protocol}//${host}/roomWaiting/join?`
 
-    console.log("🔥route : ", route);
-    console.log("🔥protocol : ", protocol);
-    console.log("🔥host : ", host);
-    console.log("🔥get url : ", ``);
+    console.log("🔥route : ", route)
+    console.log("🔥protocol : ", protocol)
+    console.log("🔥host : ", host)
+    console.log("🔥get url : ", ``)
+
 
     /*공유링크 썸네일*/
     console.log("ShareImages : ", ShareImages);
@@ -414,20 +421,18 @@ function ChatRoom() {
     console.log("imgFilter:", imgFilter);
     console.log("imgUrl:", imgUrl);
 
+    
     if (status) {
       //공개방
-      const routeOpen =
-        shareUrl +
-        `&sessionId=${userSessionId}&title=${description}&status=${status}`;
+      const routeOpen = shareUrl + `&sessionId=${userSessionId}&title=${description}&status=${status}`;
       return shareKakao(routeOpen, title, description, imgUrl);
     } else {
       //비공개방
       const password = localStorage.getItem("password");
-      const routePrivate =
-        shareUrl +
-        `&sessionId=${userSessionId}&title=${description}&status=${status}&password=${password}`;
+      const routePrivate = shareUrl + `&sessionId=${userSessionId}&title=${description}&status=${status}&password=${password}`;
       return shareKakao(routePrivate, title, description, imgUrl);
     }
+    
   };
 
   //캔버스 컨트롤
@@ -650,9 +655,8 @@ function ChatRoom() {
           },
         });
       })
-      .catch((error) => {
-        //에러일 경우 연결 종료
-        leaveSessionWaiting(); //삭제 후 대기페이지로 이동
+      .catch((error) => { //에러일 경우 연결 종료
+        leaveSessionWaiting() //삭제 후 대기페이지로 이동
       });
   }
 
@@ -683,21 +687,21 @@ function ChatRoom() {
 
   //나가기-대기 페이지
   const leaveSessionWaiting = () => {
-    const fetchDeleteRoomInfo = {
+    const fetchDeleteRoomInfo={
       sessionId: userSessionId,
-      prevStatus: false,
-    };
-    fetchDeleteRoom(fetchDeleteRoomInfo);
+      prevStatus:false
+    }
+    fetchDeleteRoom(fetchDeleteRoomInfo)
     resetSession();
     return navigate("/roomWaiting");
   };
 
   //나가기
   const leaveSession = () => {
-    const fetchDeleteRoomInfo = {
+    const fetchDeleteRoomInfo={
       sessionId: userSessionId,
-      prevStatus: false,
-    };
+      prevStatus:false
+    }
     //prev false
     fetchDeleteRoom(fetchDeleteRoomInfo).then((res) => {
       console.log("방 삭제 res ", res);
@@ -945,7 +949,9 @@ function ChatRoom() {
                 </StSessionMainVideo>
               )}
             */}
-            <StMyStreamControlBox display={isCapture ? "none" : "flex"}>
+            <StMyStreamControlBox 
+              display={isCapture ? "none" : "flex"}
+            >
               <StMyStreamControlBoxLeft>
                 <StMyStreamNickNameBox>
                   {userProfileImage && (
@@ -1304,6 +1310,8 @@ const StStreamNickNamePublisher = styled.span`
 
 const StSessionVidoContainerInner = styled.div`
   text-align: left;
+  height: 476px;
+  overflow: hidden;
 `;
 
 const StSessionVidoContainer = styled.div`
@@ -1332,7 +1340,7 @@ const StSessionVideoBox = styled.div`
   //min-width: 1150px;
   margin: 0 auto;
   position: relative;
-  background: ${(props) => props.background};
+  background: ${(props)=>props.background};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
