@@ -154,9 +154,7 @@ const RoomWaiting = () => {
     2. confirm 확인 시 방 나가기 로직 실행 > 삭제 api 후 방 목록으로 이동
   */
     const locationBack = ()=>{
-      console.log("locationBack 1")
       window.history.pushState(null, null, window.location.href)
-      console.log("locationBack 2")
       roomDelete() //스트림 및 방 삭제
     }
   
