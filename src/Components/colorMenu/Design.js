@@ -15,6 +15,11 @@ const Design = () => {
     `${process.env.PUBLIC_URL}/asset/images/design/frame-02.png`,
     `${process.env.PUBLIC_URL}/asset/images/design/frame-03.png`,
     `${process.env.PUBLIC_URL}/asset/images/design/frame-04.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/frame-05.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/frame-06.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/frame-07.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/frame-08.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/frame-09.png`,
   ];
   const [selectedImage, setSelectedImage] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
