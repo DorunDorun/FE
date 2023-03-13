@@ -9,12 +9,22 @@ const Design = () => {
     `${process.env.PUBLIC_URL}/asset/images/design/thumb-02.png`,
     `${process.env.PUBLIC_URL}/asset/images/design/thumb-03.png`,
     `${process.env.PUBLIC_URL}/asset/images/design/thumb-04.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/thumb-05.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/thumb-06.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/thumb-07.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/thumb-08.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/thumb-09.png`,
   ];
   const frames = [
     `${process.env.PUBLIC_URL}/asset/images/design/frame-01.png`,
     `${process.env.PUBLIC_URL}/asset/images/design/frame-02.png`,
     `${process.env.PUBLIC_URL}/asset/images/design/frame-03.png`,
     `${process.env.PUBLIC_URL}/asset/images/design/frame-04.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/frame-05.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/frame-06.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/frame-07.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/frame-08.png`,
+    `${process.env.PUBLIC_URL}/asset/images/design/frame-09.png`,
   ];
   const [selectedImage, setSelectedImage] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
@@ -100,12 +110,22 @@ const StDesign = styled.div`
   cursor: pointer;
   flex-direction: column;
   align-items: center;
+  width: 228px;
+  height: 77vh;
+  overflow: hidden;
+  overflow-y: auto;
+  ::-webkit-scrollbar {
+    //스크롤바 비활성화
+    /* ( 크롬, 사파리, 오페라, 엣지 ) 동작 */
+    display: none;
+  }
+  -ms-overflow-style: none; /* 인터넷 익스플로러 */
+  scrollbar-width: none; /* 파이어폭스 */
   div {
     display: flex;
     img {
       margin-bottom: 10px;
       justify-content: center;
-
       width: 200px;
     }
   }

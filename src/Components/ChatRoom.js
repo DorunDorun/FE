@@ -1230,6 +1230,7 @@ const StStreamWrap = styled.div`
   display: flex;
   height: calc(100vh - 70px);
   overflow-x: auto;
+  min-height: 790px;
 `;
 const StFooter = styled.footer`
   width: 100%;
