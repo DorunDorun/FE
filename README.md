@@ -180,7 +180,7 @@
    
 ## <img src="https://user-images.githubusercontent.com/119986005/224274600-db2b23d5-2e4a-46ce-832a-afb58c229b0d.png" width="40" height="40"/> 아키텍쳐
 
-<img src="" width="100%" height="100%"/>
+<img src="https://user-images.githubusercontent.com/119986005/224610115-d6affbd6-cd96-4a58-8d4b-ca29ac71fac1.png" width="100%" height="100%"/>
 
 <br >
 
