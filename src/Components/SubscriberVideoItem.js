@@ -2,10 +2,6 @@ import React, { useState, useEffect} from "react";
 import styled from "styled-components";
 
 import UserVideoComponent from "./UserVideoComponent";
-import { BsCameraVideo } from "react-icons/bs";
-import { BsCameraVideoOff } from "react-icons/bs";
-import { BsMic } from "react-icons/bs";
-import { BsMicMute } from "react-icons/bs";
 import UserMediaBackImage from "./UserMediaBackImage";
 import ButtonImageList from "./lists/ButtonImageList";
 
@@ -23,6 +19,7 @@ const SubscriberVideoItem = ({
   userMediaBackImage,
 }) => {
 
+
   const [isVideoStatus, setIsVideoStatus] = useState(true);
   const [isAudioStatus, setIsAudioStatus] = useState(true);
 
@@ -38,10 +35,6 @@ const SubscriberVideoItem = ({
     console.log("isAudioStatus : ", isAudioStatus)
   };
 
-  useEffect(()=>{
-    console.log(`useEffect 참여자 sub ${subStreamConnectionConnectionId} streamManager : `, sub)
-  },[sub])
-  console.log(`참여자 sub ${subStreamConnectionConnectionId} streamManager : `, sub)
 
   //디바이스 on off 버튼
   const image = {

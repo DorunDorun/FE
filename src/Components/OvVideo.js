@@ -9,8 +9,10 @@ const OpenViduVideoComponent = (props) => {
             props.streamManager.addVideoElement(videoRef.current);
             //console.log("videoRef.current.srcObject getVideoTracks : " , videoRef.current.srcObject.getVideoTracks()[0])
         }
+ 
         return () => {};
     }, [props.streamManager, videoRef]);
+
 
     return <video autoPlay={true} ref={videoRef} className="userVideoStream" />
 };
