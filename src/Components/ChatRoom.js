@@ -271,6 +271,7 @@ function ChatRoom() {
         userNickNameData,
         String(nowUserFilter[0].mediaBackImage)
       );
+
     });
   }, []);
 
@@ -313,11 +314,20 @@ function ChatRoom() {
   };
 
   //게시자 비디오 컨트롤
+ 
   useEffect(() => {
     if (publisher) {
+    
+      console.log("onClickPublisherVVVideoToggle publisher : ", publisher)
+      
       publisher.publishVideo(isPublisherVideo);
     }
   }, [isPublisherVideo]);
+
+    
+
+  
+
 
   /*참여자 디바이스 컨트롤*/
 
@@ -474,14 +484,7 @@ function ChatRoom() {
     if (mySession) {
       mySession.on("publisherStartSpeaking", (event) => {
         //음성감지 음성 시작
-        const speakerId = event.connection.connectionId;
-        console.log(
-          "음성감지 시작 User " +
-            event.connection.connectionId +
-            " start speaking"
-        );
-        console.log("음성감지 시작 게시자 : ", publisherConnectionId);
-        console.log("음성감지 시작 참여자 : ", event.connection.connectionId);
+        const speakerId = event.connection.connectionId
         speakerId === publisherConnectionId
           ? setIsPublisherSpeaker(true)
           : setSubscriberSpeakerConnectionId(speakerId);
@@ -489,12 +492,7 @@ function ChatRoom() {
 
       mySession.on("publisherStopSpeaking", (event) => {
         //음성감지 음성 종료
-        const speakerId = event.connection.connectionId;
-        console.log(
-          "음성감지 종료 " + event.connection.connectionId + " stop speaking"
-        );
-        console.log("음성감지 종료 : ", publisherConnectionId);
-        console.log("음성감지 종료 : ", event.connection.connectionId);
+        const speakerId = event.connection.connectionId
         speakerId === publisherConnectionId
           ? setIsPublisherSpeaker(false)
           : setSubscriberSpeakerConnectionId(undefined);
@@ -631,11 +629,14 @@ function ChatRoom() {
             );
             console.log("currentVideoDevice @@@@@@@@ : ", currentVideoDevice);
 
+            
             setCurrentVideoDevice(currentVideoDevice);
             setPublisher(publisher);
             setMainStreamManager(publisher);
             setPublisherConnectionId(publisher.stream.connection.connectionId);
           });
+          
+
         });
 
         //음성 감지 컨트롤
@@ -755,6 +756,8 @@ function ChatRoom() {
     }
   };
 
+
+
   const cameraSwtichImage = {
     default: process.env.PUBLIC_URL + "/asset/images/button/cameraSwtich.png",
   };
@@ -766,6 +769,7 @@ function ChatRoom() {
   const whiteBoardImage = {
     default: process.env.PUBLIC_URL + "/asset/images/button/whiteBoard.png",
   };
+
 
   // if (loading) {
   //     return <p>Loading</p>;
@@ -911,8 +915,6 @@ function ChatRoom() {
                             sub.stream.connection.connectionId
                           );
                         }}
-                        videoActive={sub.stream.connection.stream.videoActive}
-                        audioActive={sub.stream.connection.stream.audioActive}
                         userMediaBackImage={
                           JSON.parse(
                             sub.stream.connection.data.substring(
