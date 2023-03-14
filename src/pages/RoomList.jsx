@@ -130,8 +130,9 @@ const RoomList = () => {
 
   //방 목록 처음으로 초기화
   const resetRoomList = async ()=>{
+    window.history.pushState(null, null, 'roomList')
     if(pageCount > 1){
-      await setRoomListMode(listMode.all); //방 목록 모드 전체로 변경
+      await setRoomListMode(listMode.all) //방 목록 모드 전체로 변경
       return pageCountReset()
     }else{
       await setRoomData([])

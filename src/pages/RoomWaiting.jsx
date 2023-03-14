@@ -111,10 +111,10 @@ const RoomWaiting = () => {
 
   //버튼 이미지
   const image = {
-    videoOnS: ButtonImageList.video.onSmall,
-    videoOffS: ButtonImageList.video.offSmall,
-    audioOnS: ButtonImageList.audio.onSmall,
-    audioOffS: ButtonImageList.audio.offSmall,
+    videoOnM: ButtonImageList.video.onMedium,
+    videoOffM: ButtonImageList.video.offMedium,
+    audioOnM: ButtonImageList.audio.onMedium,
+    audioOffM: ButtonImageList.audio.offMedium,
   };
 
   //타겟
@@ -154,9 +154,7 @@ const RoomWaiting = () => {
     2. confirm 확인 시 방 나가기 로직 실행 > 삭제 api 후 방 목록으로 이동
   */
     const locationBack = ()=>{
-      console.log("locationBack 1")
       window.history.pushState(null, null, window.location.href)
-      console.log("locationBack 2")
       roomDelete() //스트림 및 방 삭제
     }
   
@@ -383,7 +381,7 @@ const RoomWaiting = () => {
                 onClick={onClickPublisherVideoToggle}
               >
                 <StButtonIconImage
-                  src={isPublisherVideo ? image.videoOnS : image.videoOffS}
+                  src={isPublisherVideo ? image.videoOnM : image.videoOffM}
                 />
               </StButtonMyDeviceOnOff>
               <StButtonMyDeviceOnOff
@@ -398,7 +396,7 @@ const RoomWaiting = () => {
                 onClick={onClickPublisherAudioToggle}
               >
                 <StButtonIconImage
-                  src={isPublisherAudio ? image.audioOnS : image.audioOffS}
+                  src={isPublisherAudio ? image.audioOnM : image.audioOffM}
                 />
               </StButtonMyDeviceOnOff>
             </StRoomWaitingControllBox>
@@ -491,8 +489,6 @@ const StRoomWaitingInputBoxTop = styled.div`
 
 const StButtonIconImage = styled.img`
   src: ${(props) => props.src};
-  width: 30px;
-  height: 30px;
 `;
 const StButtonMyDeviceOnOff = styled.button`
   width: 48px;
@@ -533,7 +529,7 @@ const StRoomWaitingVideo = styled.video`
 `;
 const StRoomWaitingVideoBox = styled.div`
   width: 500px;
-  height: 295px;
+  //height: 295px;
   //background-color: #000;
   border: 2px solid #bf6dff;
   border-radius: 14px;
@@ -597,6 +593,7 @@ const StRoomWaitingWrap = styled.div`
   width: 100vw;
   min-width: 800px;
   height: 100vh;
+  min-height: 940px;
   background: transparent
     linear-gradient(
       0deg,

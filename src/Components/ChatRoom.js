@@ -61,18 +61,11 @@ function ChatRoom() {
     2. confirm 확인 시 방 나가기 로직 실행 > 삭제 api 후 방 목록으로 이동
   */
   const locationBack = () => {
-    console.log("locationBack 1");
     window.history.pushState(null, null, window.location.href);
-    console.log("locationBack 2");
-    if (
-      window.confirm(
-        "저장하지 않은 정보를 잃을 수 있습니다. 뒤로 가시겠습니까?"
-      )
-    ) {
-      console.log("locationBack 3");
+    if (window.confirm("저장하지 않은 정보를 잃을 수 있습니다. 뒤로 가시겠습니까?")) {
       return leaveSession();
     }
-  };
+  }
 
   //뒤로가기 감지 및 컨트롤
   useEffect(() => {
@@ -203,10 +196,7 @@ function ChatRoom() {
     };
     console.log("❌ 방 삭제 navigator.sendBeacon 실행!");
 
-    await navigator.sendBeacon(
-      `${server_url}api/rooms/${userSessionId}/delete`,
-      JSON.stringify(headers)
-    ); //삭제 api
+    await navigator.sendBeacon(`${server_url}api/rooms/${userSessionId}/delete`, JSON.stringify(headers)); //삭제 api
     await navigator.sendBeacon(`${server_url}api/count`); //sse 실시간 감지
 
     resetSession();
@@ -1230,6 +1220,7 @@ const StStreamWrap = styled.div`
   display: flex;
   height: calc(100vh - 70px);
   overflow-x: auto;
+  min-height: 790px;
 `;
 const StFooter = styled.footer`
   width: 100%;
