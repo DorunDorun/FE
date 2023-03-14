@@ -128,19 +128,43 @@
 
 </details>
 
-<br>
+<br />
 
 ## <img src="https://user-images.githubusercontent.com/119986005/224386396-7b3fbeec-c20a-42a7-95de-17a34991d56d.png" width="40" height="40"/> 두런두런 서비스 화면
 
-| title1 | title2 | title3 |
-| ------ | ------ | ------ |
-| 1      | 2      | 3      |
-| title1 | title2 | title3 |
-| 4      | 5      | 6      |
-| title1 | title2 | title3 |
-| 7      | 8      | 9      |
+<br />
 
-<BR/>
+<p aligh="center">
+
+**방목록~검색**
+
+ <br />
+ <img src="https://user-images.githubusercontent.com/119986005/225036356-67f5e44d-a7cc-49ff-b6f0-c570d1807d3f.gif"></p>
+<br />
+
+<p aligh="center">
+
+**방생성~입장**
+
+ <br />
+ <img src="https://user-images.githubusercontent.com/119986005/225036385-ac499a75-d6f7-4bcc-a526-6abd4cd48694.gif"></p>
+<br />
+
+<p aligh="center">
+
+**방초대-참여자-입장**
+
+ <br />
+ <img src="https://user-images.githubusercontent.com/119986005/225036393-79aea9a4-e796-44f5-9c94-929729aba836.gif"></p>
+<br />
+
+<p aligh="center">
+
+**채팅방 기능**
+
+ <br />
+ <img src="https://user-images.githubusercontent.com/119986005/225043932-3f8946bf-f289-48d6-8921-6a0a05fd82b1.gif"></p>
+<br />
 
 ## <img src="https://user-images.githubusercontent.com/119986005/224274030-3075300c-3e32-4090-b88d-246d52e04169.png" width="40" height="40"/> 두런두런 서비스 주요기능
 
