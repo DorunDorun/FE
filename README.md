@@ -14,7 +14,7 @@
 
 ## <img src="https://user-images.githubusercontent.com/119986005/224248700-28e1011e-43d6-4cef-a44a-47a1bb29d1b0.png" width="40" height="40"/> 바로가기
 
-- 사이트 바로가기 : https://dorundourn.vercel.app/
+- 사이트 바로가기 : https://dorun-dorun.vercel.app/
 - 프론트엔드 GitHub Repository :https://github.com/DorunDorun/FE
 - 백엔드 GitHub Respository : https://github.com/DorunDorun/BE
 
